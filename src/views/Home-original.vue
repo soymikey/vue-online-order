@@ -8,16 +8,10 @@
           class="pos-order"
           id="order-list"
         >
-          <home-Left
-            :shopId='shopId'
-            :menu="menuList"
-          ></home-Left>
+          <home-Left></home-Left>
         </el-col>
         <el-col :span="16">
-          <home-Right
-            :shopId='shopId'
-            :menu="menuList"
-          ></home-Right>
+          <home-Right :menu="menuList"></home-Right>
         </el-col>
 
       </el-row>
@@ -28,7 +22,7 @@
 
 <script>
 // @ is an alias to /src
-import { mapState, mapMutations } from 'vuex'
+import axios from 'axios'
 import homeLeft from '@/components/home/left.vue'
 import homeRight from '@/components/home/right.vue'
 import homeNav from '@/components/home/nav.vue'
@@ -36,23 +30,50 @@ import { shopDetails, foodMenu } from '@/service/getData'
 export default {
   name: 'home',
   components: { homeNav, homeLeft, homeRight },
+
   data() {
     return {
-      shopId: null, //商店id值
-
-      shopDetailData: null, //商铺详情
-      showActivities: false, //是否显示活动详情
-      menuList: [] //食品列表
+      tableData: [], //订单列表的值
+      oftenGoods: [],
+      type0Goods: [],
+      type1Goods: [],
+      type2Goods: [],
+      type3Goods: [],
+      totalMoney: 0, //订单总价格
+      totalCount: 0, //订单商品总数量
+      shopId: null,
+      menuList: []
     }
   },
   created() {
     this.shopId = '2'
+    // axios
+    //   .get('http://localhost:8001/shopping/v2/menu?restaurant_id=2')
+    //   .then(response => {
+    //     // console.log("response", response);
+    //     // this.oftenGoods = response.data;
+    //     this.data = response.data
+
+    //     console.log('data', this.data)
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     alert('网络错误，不能访问')
+    //   })
+    // //读取分类商品列表
+
+    // // const appData = require("../../assets/data.json");
+    // // this.data = appData.goods;
+    // // this.tableData = this.data[0].foods;
+    // // console.log("appData", appData.goods[0]);
+
+    // // const newData = JSON.parse(appData);
+    // // console.log("newData", newData);
   },
   mounted() {
     this.initData()
-    // this.windowHeight = window.innerHeight
+    this.windowHeight = window.innerHeight
   },
-  computed: {},
   methods: {
     async initData() {
       //获取商铺信息
@@ -63,12 +84,6 @@ export default {
       // );
       //获取商铺食品列表
       this.menuList = await foodMenu(this.shopId)
-      //获取商铺信息
-      this.shopDetailData = await shopDetails(
-        this.shopId,
-        this.latitude,
-        this.longitude
-      )
     }
   }
 }

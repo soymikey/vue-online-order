@@ -1,53 +1,26 @@
-{
-  "name": "vue-order-system",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
-  "dependencies": {
-    "axios": "^0.18.0",
-    "core-js": "^2.6.5",
-    "element-ui": "^2.8.2",
-    "vue": "^2.6.10",
-    "vue-router": "^3.0.3",
-    "vuex": "^3.0.1"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.7.0",
-    "@vue/cli-plugin-eslint": "^3.7.0",
-    "@vue/cli-service": "^3.7.0",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.16.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.5.21"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "@vue/standard"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
+cartList: function(val) {
+      const cartListCopyVersion = JSON.parse(JSON.stringify(this.cartList))
+      console.log('cartListCopyVersion', cartListCopyVersion)
+
+      let newTableData = []
+      let totalMoney = 0
+      let totalCount = 0
+      const categories = Object.values(Object.values(cartListCopyVersion)[0])
+      categories.forEach(category => {
+        Object.values(category).forEach(food => {
+          Object.values(food).forEach(foodSpecs => {
+            newTableData.push(foodSpecs)
+          })
+        })
+      })
+      newTableData.forEach(item => {
+        totalMoney += item.num * item.price
+        totalCount += item.num
+        item.name = `${item.name}${
+          item.specs == '默认' ? '' : '+' + item.specs
+        }`
+      })
+      this.tableData = newTableData
+      this.totalCount = totalCount
+      this.totalMoney = totalMoney
     }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ]
-}

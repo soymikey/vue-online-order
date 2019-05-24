@@ -1,7 +1,8 @@
 <template>
   <div class="home-right">
     <div class="often-goods">
-      <div class="title">常用商品</div>
+      <div class="title">常用商品<div>{{specsIndex}}</div>
+      </div>
       <div class="often-goods-list">
 
         <ul>
@@ -32,7 +33,7 @@
             >
               <section
                 v-if="!item.specifications.length"
-                @click="addToCart(item.category_id, item.item_id, item.food_id, item.name, item.price, item.specs)"
+                @click="addToCart(item.category_id, item.item_id, item.specfoods[0].food_id, item.specfoods[0].name, item.specfoods[0].price, '', item.specfoods[0].packing_fee, item.specfoods[0].sku_id, item.specfoods[0].stock)"
               >
                 <!-- <span class="foodImg">
                       <img
@@ -49,9 +50,7 @@
                 @click="showChooseList(item)"
               > <span class="foodName">{{item.name}}</span>
                 <span class="foodPrice">￥{{item.specfoods[0].price}}元</span>
-
               </section>
-
             </li>
           </ul>
         </el-tab-pane>
@@ -92,6 +91,7 @@
         </footer>
 
       </el-dialog>
+
     </section>
 
   </div>
@@ -99,51 +99,50 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import SpecDiaglog from '@/components/common/SpecDiaglog.vue'
 export default {
   name: 'home-right',
   props: {
-    menu: { type: Array }
+    menu: { type: Array },
+    shopId: { type: String }
   },
-  components: {
-    SpecDiaglog
-  },
+  components: {},
   data() {
     return {
-      shopId: '',
+      choosedFoods: null,
       showSpecs: false,
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      formLabelWidth: '120px',
-      specsIndex: 0, //当前选中的规格索引值
-      choosedFoods: null //当前选中视频数据
+      specsIndex: 0
     }
   },
-  created() {
-    this.shopId = '2'
-  },
+  created() {},
+  computed: {},
   methods: {
-    ...mapMutations(['Add_TO_BASKET', 'REMOVE_FROM_BASKET']),
+    ...mapMutations(['ADD_CART']),
     //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-    addToCart(category_id, item_id, food_id, name, price, specs) {
-      this.Add_TO_BASKET({
+    addToCart(
+      category_id,
+      item_id,
+      food_id,
+      name,
+      price,
+      specs,
+      packing_fee,
+      sku_id,
+      stock
+    ) {
+      this.ADD_CART({
         shopid: this.shopId,
         category_id,
         item_id,
         food_id,
         name,
         price,
-        specs
+        specs,
+        packing_fee,
+        sku_id,
+        stock
       })
     },
+
     showChooseList(foods) {
       if (foods) {
         this.choosedFoods = foods
@@ -167,7 +166,16 @@ export default {
       sku_id,
       stock
     ) {
-      this.Add_TO_BASKET({
+      console.log(
+        'add with specs',
+        category_id,
+        item_id,
+        food_id,
+        name,
+        price,
+        specs
+      )
+      this.ADD_CART({
         shopid: this.shopId,
         category_id,
         item_id,
