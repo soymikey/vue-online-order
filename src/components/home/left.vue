@@ -3,14 +3,30 @@
     <el-tabs>
       <el-tab-pane label="点餐">
         <el-table
-          :data="cartFoodList"
+          :data="cartList"
           border
           style="width: 100%"
+          @cell-dblclick="showDialog"
         >
+
+          >
           <el-table-column
-            prop="name"
+            prop="nameWithSpecs"
             label="商品"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              {{ scope.row.nameWithSpecs }}
+
+              <div v-if="scope.row.extra">
+                <el-tag
+                  size="medium"
+                  v-for="item in scope.row.extra"
+                >{{item.name }}</el-tag>
+              </div>
+
+            </template>
+
+          </el-table-column>
           <el-table-column
             prop="num"
             label="数量"
@@ -29,12 +45,12 @@
               <el-button
                 type="primary"
                 size="small"
-                @click="addToCart(scope.row.category_id, scope.row.item_id, scope.row.food_id, scope.row.name, scope.row.price, scope.row.specs)"
+                @click="addToCart(scope.row.id, scope.row.name, scope.row.price, scope.row.specs,scope.row.extra)"
               >+</el-button>
               <el-button
                 type="danger"
                 size="small"
-                @click="removeOutCart(scope.row.category_id, scope.row.item_id, scope.row.food_id, scope.row.name, scope.row.price, scope.row.specs)"
+                @click="removeOutCart(scope.row.id, scope.row.name, scope.row.price, scope.row.specs,scope.row.extra)"
               >-</el-button>
             </template>
           </el-table-column>
@@ -49,7 +65,6 @@
         </div>
 
         <div class="order-btn">
-
           <el-button type="warning">挂单</el-button>
           <el-button
             type="danger"
@@ -71,11 +86,49 @@
       </el-tab-pane>
 
     </el-tabs>
+    <!-- 显示额外添加 -->
+    <section
+      class='extra-dialog'
+      v-if="showExtra"
+    >
+      <el-dialog
+        title='额外'
+        :visible.sync="showExtra"
+        width="80%"
+      >
+
+        <el-tabs
+          type="border-card"
+          tab-position='left'
+          style="height: 100%;"
+        >
+          <el-tab-pane
+            v-bind:key="category.name"
+            v-for="category in extraMenu "
+            :label="category.name"
+          >
+            <el-checkbox-button
+              v-for="item in category.children"
+              :label="item"
+              v-model="item.selected"
+            >{{item.name}}</el-checkbox-button>
+          </el-tab-pane>
+        </el-tabs>
+        <el-button @click="cancelExtra">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmExtra"
+        >确 定</el-button>
+        </span>
+      </el-dialog>
+    </section>
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import extraMenu from '../../assets/extraMenu.js'
+
 export default {
   props: {
     menu: { type: Array },
@@ -85,15 +138,15 @@ export default {
     return {
       data: [],
       tableData: [], //订单列表的值
-      cartFoodList: [],
+
       totalMoney: 0, //订单总价格
 
-      totalPrice: 0
+      showExtra: false,
+      extraMenu: extraMenu,
+      selectedFood: null
     }
   },
-  created() {
-    this.initCategoryNum()
-  },
+  created() {},
   mounted: function() {
     var orderHeight = document.body.clientHeight
     document.getElementById('order-list').style.height = orderHeight + 'px'
@@ -104,110 +157,109 @@ export default {
     shopCart: function() {
       return { ...this.cartList[this.shopId] }
     },
+    //购物车中总共商品的价格
+    totalPrice: function() {
+      let total = 0
+      this.cartList.forEach(item => {
+        total += item.num * item.price
+      })
+      return total.toFixed(2)
+    },
+
     //购物车中总共商品的数量
     totalNum: function() {
       let num = 0
-      this.cartFoodList.forEach(item => {
+      this.cartList.forEach(item => {
         num += item.num
       })
       return num
     }
   },
-  watch: {
-    //showLoading变化时说明组件已经获取初始化数据，在下一帧nextTick进行后续操作
-
-    shopCart: function(value) {
-      this.initCategoryNum()
-    },
-    //购物车列表发生变化，没有商铺时，隐藏
-    cartFoodList: function(value) {
-      if (!value.length) {
-        this.showCartList = false
-      }
-    }
-  },
+  watch: {},
   methods: {
     ...mapMutations(['ADD_CART', 'REDUCE_CART', 'CLEAR_CART']),
     //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-    addToCart(category_id, item_id, food_id, name, price, specs) {
-      // console.log('add', category_id, item_id, food_id, name, price, specs)
 
+    addToCart(food_id, name, price, specs, extra) {
+      // console.log('add', category_id, item_id, food_id, name, price, specs)
+      let nameWithSpecs = specs ? `${name}+${specs}` : name
       this.ADD_CART({
         shopid: this.shopId,
-        category_id,
-        item_id,
         food_id,
         name,
         price,
-        specs
+        specs,
+        nameWithSpecs,
+        extra
       })
     },
 
     //移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-    removeOutCart(category_id, item_id, food_id, name, price, specs) {
-      // console.log('remove', category_id, item_id, food_id, name, price, specs)
-
+    removeOutCart(food_id, name, price, specs, extra) {
       this.REDUCE_CART({
         shopid: this.shopId,
-        category_id,
-        item_id,
         food_id,
         name,
         price,
-        specs
+        specs,
+        extra
       })
     },
-    /**
-     * 初始化和shopCart变化时，重新获取购物车改变过的数据，赋值 categoryNum，totalPrice，cartFoodList，整个数据流是自上而下的形式，所有的购物车数据都交给vuex统一管理，包括购物车组件中自身的商品数量，使整个数据流更加清晰
-     */
-    initCategoryNum() {
-      let newArr = []
-      let cartFoodNum = 0
-      this.totalPrice = 0
-      this.cartFoodList = []
-      this.menu.forEach((item, index) => {
-        if (this.shopCart && this.shopCart[item.foods[0].category_id]) {
-          let num = 0
-          Object.keys(this.shopCart[item.foods[0].category_id]).forEach(
-            itemid => {
-              Object.keys(
-                this.shopCart[item.foods[0].category_id][itemid]
-              ).forEach(foodid => {
-                let foodItem = this.shopCart[item.foods[0].category_id][itemid][
-                  foodid
-                ]
-                num += foodItem.num
-                if (item.type == 1) {
-                  this.totalPrice += foodItem.num * foodItem.price
-                  if (foodItem.num > 0) {
-                    this.cartFoodList[cartFoodNum] = {}
-                    this.cartFoodList[cartFoodNum].category_id =
-                      item.foods[0].category_id
-                    this.cartFoodList[cartFoodNum].item_id = itemid
-                    this.cartFoodList[cartFoodNum].food_id = foodid
-                    this.cartFoodList[cartFoodNum].num = foodItem.num
-                    this.cartFoodList[cartFoodNum].price = foodItem.price
-                    this.cartFoodList[cartFoodNum].name = foodItem.name
-                    this.cartFoodList[cartFoodNum].specs = foodItem.specs
-                    cartFoodNum++
-                  }
-                }
-              })
-            }
-          )
-          newArr[index] = num
-        } else {
-          newArr[index] = 0
-        }
-      })
-      this.totalPrice = this.totalPrice.toFixed(2)
-      this.categoryNum = [...newArr]
-      console.log('cartFoodList', this.cartFoodList)
-    },
+
     //清除购物车
     clearCart() {
       // this.toggleCartList();
-      this.CLEAR_CART(this.shopId)
+      this.CLEAR_CART()
+    },
+    showDialog(row, column, cell, event) {
+      if (column.label == '商品') {
+        this.selectedFood = row
+
+        if (this.selectedFood.extra.length) {
+          //把已选择的extra id 放到数组里面
+          let extraId = []
+          for (const extra of this.selectedFood.extra) {
+            extraId.push(extra.id)
+          }
+
+          for (const category of this.extraMenu) {
+            for (const item of category.children) {
+              if (extraId.includes(item.id)) {
+                item.selected = true
+              } else {
+                item.selected = false
+              }
+            }
+          }
+        } else {
+          for (const category of this.extraMenu) {
+            for (const item of category.children) {
+              item.selected = false
+            }
+          }
+        }
+        this.showExtra = !this.showExtra
+      }
+    },
+    cancelExtra() {
+      this.showExtra = !this.showExtra
+    },
+    confirmExtra() {
+      const selectedExtraList = []
+      for (const category of this.extraMenu) {
+        for (const item of category.children) {
+          if (item.selected) {
+            selectedExtraList.push({
+              name: category.name + item.name,
+              id: item.id
+            })
+          }
+        }
+      }
+
+      this.selectedFood.extra = [...selectedExtraList]
+
+      this.showExtra = !this.showExtra
     }
   }
 }

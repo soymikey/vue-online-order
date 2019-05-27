@@ -24,3 +24,20 @@ cartList: function(val) {
       this.totalCount = totalCount
       this.totalMoney = totalMoney
     }
+
+
+ // let newFoodObject
+    // if (!state.cartList.length) {
+    //   newFoodObject = { num: 1, name, id: food_id, price, specs, extra: [] }
+    // } else {
+    //   for (const item of state.cartList) {
+    //     if (item.id === food_id && item.specs === specs) {
+    //       item.num += 1
+    //     } else {
+    //       newFoodObject = { num: 1, name, id: food_id, price, specs, extra: [] }
+    //     }
+    //   }
+    // }
+    // if (newFoodObject) {
+    //   state.cartList = [...state.cartList, newFoodObject]
+    // }

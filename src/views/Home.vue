@@ -39,7 +39,6 @@ export default {
   data() {
     return {
       shopId: null, //商店id值
-
       shopDetailData: null, //商铺详情
       showActivities: false, //是否显示活动详情
       menuList: [] //食品列表
@@ -63,6 +62,8 @@ export default {
       // );
       //获取商铺食品列表
       this.menuList = await foodMenu(this.shopId)
+      console.log('this.menuList', this.menuList)
+
       //获取商铺信息
       this.shopDetailData = await shopDetails(
         this.shopId,

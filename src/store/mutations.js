@@ -45,59 +45,56 @@ export default {
   // 加入购物车
   [ADD_CART] (
     state,
-    {
-      shopid,
-      category_id,
-      item_id,
-      food_id,
-      name,
-      price,
-      specs,
-      packing_fee,
-      sku_id,
-      stock
-    }
+    { shopid, food_id, name, price, specs, nameWithSpecs, extra }
   ) {
-    let cart = state.cartList
-    let shop = (cart[shopid] = cart[shopid] || {})
-    let category = (shop[category_id] = shop[category_id] || {})
-    let item = (category[item_id] = category[item_id] || {})
-    if (item[food_id]) {
-      item[food_id]['num']++
-    } else {
-      item[food_id] = {
-        num: 1,
-        id: food_id,
-        name: name,
-        price: price,
-        specs: specs,
-        packing_fee: packing_fee,
-        sku_id: sku_id,
-        stock: stock
+    let isHave = false
+    // 判断是否这个商品已经存在于订单列表
+    for (let i = 0; i < state.cartList.length; i++) {
+      if (
+        state.cartList[i].id === food_id &&
+        state.cartList[i].specs === specs
+      ) {
+        isHave = true // 存在
       }
     }
-    state.cartList = { ...cart }
+    if (isHave) {
+      // 存在就进行数量添加
+      let arr = state.cartList.filter(
+        o => o.id === food_id && o.specs === specs
+      )
+      arr[0].num++
+    } else {
+      // 不存在就推入数组
+      let newFoodObject = {
+        shopId: shopid,
+        num: 1,
+        name,
+        id: food_id,
+        price,
+        specs,
+        nameWithSpecs,
+        extra
+      }
+      state.cartList.push(newFoodObject)
+    }
+
     // 存入localStorage
     setStore('buyCart', state.cartList)
   },
   // 移出购物车
-  [REDUCE_CART] (
-    state,
-    { shopid, category_id, item_id, food_id, name, price, specs }
-  ) {
-    let cart = state.cartList
-    let shop = cart[shopid] || {}
-    let category = shop[category_id] || {}
-    let item = category[item_id] || {}
-    if (item && item[food_id]) {
-      if (item[food_id]['num'] > 0) {
-        item[food_id]['num']--
-        state.cartList = { ...cart }
-        // 存入localStorage
-        setStore('buyCart', state.cartList)
-      } else {
-        // 商品数量为0，则清空当前商品的信息
-        item[food_id] = null
+  [REDUCE_CART] (state, { shopid, food_id, name, price, specs }) {
+    // 判断是否这个商品已经存在于订单列表
+
+    for (let i = 0; i < state.cartList.length; i++) {
+      if (
+        state.cartList[i].id === food_id &&
+        state.cartList[i].specs === specs
+      ) {
+        if (state.cartList[i].num === 1) {
+          state.cartList = state.cartList.filter(o => o.id !== food_id)
+        } else {
+          state.cartList[i].num--
+        }
       }
     }
   },
@@ -109,9 +106,8 @@ export default {
     }
   },
   // 清空当前商品的购物车信息
-  [CLEAR_CART] (state, shopid) {
-    state.cartList[shopid] = null
-    state.cartList = { ...state.cartList }
+  [CLEAR_CART] (state) {
+    state.cartList = []
     setStore('buyCart', state.cartList)
   },
   // 记录用户信息

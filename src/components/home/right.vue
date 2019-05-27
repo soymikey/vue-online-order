@@ -33,7 +33,7 @@
             >
               <section
                 v-if="!item.specifications.length"
-                @click="addToCart(item.category_id, item.item_id, item.specfoods[0].food_id, item.specfoods[0].name, item.specfoods[0].price, '', item.specfoods[0].packing_fee, item.specfoods[0].sku_id, item.specfoods[0].stock)"
+                @click="addToCart(item.specfoods[0].food_id, item.specfoods[0].name, item.specfoods[0].price,'',)"
               >
                 <!-- <span class="foodImg">
                       <img
@@ -58,7 +58,7 @@
       </el-tabs>
     </div>
     <section
-      class='diaglog'
+      class='specs-dialog'
       v-if="showSpecs"
     >
       <el-dialog
@@ -86,12 +86,11 @@
           <el-button
             type="primary"
             class="specs_addto_cart"
-            @click="addSpecs(choosedFoods.category_id, choosedFoods.item_id, choosedFoods.specfoods[specsIndex].food_id, choosedFoods.specfoods[specsIndex].name, choosedFoods.specfoods[specsIndex].price, choosedFoods.specifications[0].values[specsIndex], choosedFoods.specfoods[specsIndex].packing_fee, choosedFoods.specfoods[specsIndex].sku_id, choosedFoods.specfoods[specsIndex].stock)"
+            @click="addSpecs(choosedFoods.specfoods[specsIndex].food_id, choosedFoods.specfoods[specsIndex].name, choosedFoods.specfoods[specsIndex].price, choosedFoods.specifications[0].values[specsIndex])"
           >加入购物车</el-button>
         </footer>
 
       </el-dialog>
-
     </section>
 
   </div>
@@ -99,6 +98,7 @@
 
 <script>
 import { mapMutations } from 'vuex'
+import { spread } from 'q'
 export default {
   name: 'home-right',
   props: {
@@ -118,28 +118,16 @@ export default {
   methods: {
     ...mapMutations(['ADD_CART']),
     //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-    addToCart(
-      category_id,
-      item_id,
-      food_id,
-      name,
-      price,
-      specs,
-      packing_fee,
-      sku_id,
-      stock
-    ) {
+
+    addToCart(food_id, name, price, specs) {
       this.ADD_CART({
         shopid: this.shopId,
-        category_id,
-        item_id,
         food_id,
         name,
         price,
         specs,
-        packing_fee,
-        sku_id,
-        stock
+        nameWithSpecs: name,
+        extra: []
       })
     },
 
@@ -155,37 +143,18 @@ export default {
       this.specsIndex = index
     },
     //多规格商品加入购物车
-    addSpecs(
-      category_id,
-      item_id,
-      food_id,
-      name,
-      price,
-      specs,
-      packing_fee,
-      sku_id,
-      stock
-    ) {
-      console.log(
-        'add with specs',
-        category_id,
-        item_id,
-        food_id,
-        name,
-        price,
-        specs
-      )
+    addSpecs(food_id, name, price, specs) {
+      let nameWithSpecs = specs
+        ? `${name}${specs == '默认' ? '' : '+' + specs}`
+        : name
       this.ADD_CART({
         shopid: this.shopId,
-        category_id,
-        item_id,
         food_id,
         name,
         price,
         specs,
-        packing_fee,
-        sku_id,
-        stock
+        nameWithSpecs,
+        extra: []
       })
       this.showChooseList()
     }
