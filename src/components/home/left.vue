@@ -7,6 +7,7 @@
           border
           style="width: 100%"
           @cell-dblclick="showDialog"
+          id='order-details'
         >
 
           >
@@ -50,7 +51,7 @@
               <el-button
                 type="danger"
                 size="small"
-                @click="removeOutCart(scope.row.id, scope.row.name, scope.row.price, scope.row.specs,scope.row.extra)"
+                @click="removeOutCart(scope.row)"
               >-</el-button>
             </template>
           </el-table-column>
@@ -143,7 +144,8 @@ export default {
 
       showExtra: false,
       extraMenu: extraMenu,
-      selectedFood: null
+      selectedFood: null,
+      canvasUrl: null
     }
   },
   created() {},
@@ -195,14 +197,11 @@ export default {
     },
 
     //移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-    removeOutCart(food_id, name, price, specs, extra) {
+    removeOutCart(food) {
+      let index = this.cartList.indexOf(food)
+
       this.REDUCE_CART({
-        shopid: this.shopId,
-        food_id,
-        name,
-        price,
-        specs,
-        extra
+        index
       })
     },
 
@@ -212,6 +211,8 @@ export default {
       this.CLEAR_CART()
     },
     showDialog(row, column, cell, event) {
+      console.log('show')
+
       if (column.label == '商品') {
         this.selectedFood = row
 
@@ -256,10 +257,49 @@ export default {
           }
         }
       }
+      if (this.selectedFood.num > 1) {
+        this.selectedFood.num--
+        console.log('this.selectedFood', this.selectedFood)
+        let food_id = this.selectedFood.id
+        let name = this.selectedFood.name
+        let price = this.selectedFood.price
+        let specs = this.selectedFood.specs
+        let nameWithSpecs = this.selectedFood.nameWithSpecs
+        let extra = this.selectedFood.extra
 
-      this.selectedFood.extra = [...selectedExtraList]
+        this.ADD_CART({
+          shopid: this.shopId,
+          food_id,
+          name,
+          price,
+          specs,
+          nameWithSpecs,
+          extra: [...selectedExtraList]
+        })
+      } else {
+        this.selectedFood.extra = [...selectedExtraList]
+      }
 
       this.showExtra = !this.showExtra
+    },
+    checkout() {
+      const elements = document.getElementById('order-details')
+
+      html2canvas(elements, {
+        scale: 2
+      }).then(canvas => {
+        canvas.setAttribute('id', 'canvas')
+        document.body.appendChild(canvas)
+        const canvasElement = document.getElementById('canvas')
+        this.canvasUrl = canvasElement.toDataURL()
+        const doc = new jsPDF({
+          unit: 'cm'
+        })
+        const canvasHeight = canvasElement.style.height.replace('px', '')
+        const height = canvasHeight / window.outerHeight
+        doc.addImage(this.canvasUrl, 'JPEG', 0.5, 0.5, 20, 29 * height)
+        doc.save('test' + '.pdf')
+      })
     }
   }
 }

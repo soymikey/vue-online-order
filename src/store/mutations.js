@@ -48,20 +48,26 @@ export default {
     { shopid, food_id, name, price, specs, nameWithSpecs, extra }
   ) {
     let isHave = false
+    let index = null
+    let paramsExtraString = extra.toString()
     // 判断是否这个商品已经存在于订单列表
+
     for (let i = 0; i < state.cartList.length; i++) {
+      let originalSpecs = state.cartList[i].specs
+      let originalExtra = state.cartList[i].extra.toString()
       if (
         state.cartList[i].id === food_id &&
-        state.cartList[i].specs === specs
+        originalSpecs === specs &&
+        originalExtra === paramsExtraString
       ) {
-        isHave = true // 存在
+        isHave = true
+        index = i
       }
     }
+
     if (isHave) {
       // 存在就进行数量添加
-      let arr = state.cartList.filter(
-        o => o.id === food_id && o.specs === specs
-      )
+      let arr = state.cartList.filter(o => state.cartList.indexOf(o) === index)
       arr[0].num++
     } else {
       // 不存在就推入数组
@@ -82,18 +88,16 @@ export default {
     setStore('buyCart', state.cartList)
   },
   // 移出购物车
-  [REDUCE_CART] (state, { shopid, food_id, name, price, specs }) {
+  [REDUCE_CART] (state, { index }) {
     // 判断是否这个商品已经存在于订单列表
-
     for (let i = 0; i < state.cartList.length; i++) {
-      if (
-        state.cartList[i].id === food_id &&
-        state.cartList[i].specs === specs
-      ) {
-        if (state.cartList[i].num === 1) {
-          state.cartList = state.cartList.filter(o => o.id !== food_id)
-        } else {
+      if (i === index) {
+        if (state.cartList[i].num > 1) {
           state.cartList[i].num--
+        } else {
+          state.cartList = state.cartList.filter(
+            o => state.cartList.indexOf(o) !== index
+          )
         }
       }
     }
