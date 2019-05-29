@@ -2,81 +2,93 @@
   <div class="home-left">
     <el-tabs>
       <el-tab-pane label="点餐">
-        <el-table
-          :data="cartList"
-          border
-          style="width: 100%"
-          @cell-dblclick="showDialog"
-          id='order-details'
-        >
-
+        <div id='order-details'>
+          <el-table
+            :data="cartList"
+            style="width: 100%"
+            @cell-dblclick="showDialog"
+            border
+            :height='tableHeight'
           >
-          <el-table-column
-            prop="nameWithSpecs"
-            label="商品"
-          >
-            <template slot-scope="scope">
-              {{ scope.row.nameWithSpecs }}
 
-              <div v-if="scope.row.extra">
-                <el-tag
-                  size="medium"
-                  v-for="item in scope.row.extra"
-                >{{item.name }}</el-tag>
-              </div>
+            >
+            <el-table-column
+              prop="nameWithSpecs"
+              label="商品"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.nameWithSpecs }}
 
-            </template>
+                <div v-if="scope.row.extra">
+                  <el-tag
+                    size="medium"
+                    v-for="item in scope.row.extra"
+                  >{{item.name }}</el-tag>
+                </div>
 
-          </el-table-column>
-          <el-table-column
-            prop="num"
-            label="数量"
-            width="70"
-          ></el-table-column>
-          <!-- <el-table-column
+              </template>
+
+            </el-table-column>
+            <el-table-column
+              prop="num"
+              label="数量"
+              width="70"
+            ></el-table-column>
+            <!-- <el-table-column
                   prop="price"
                   label="金额"
                   width="70"
                 ></el-table-column> -->
-          <el-table-column
-            label="操作"
-            width="110"
-          >
-            <template scope="scope">
-              <el-button
-                type="primary"
-                size="small"
-                @click="addToCart(scope.row.id, scope.row.name, scope.row.price, scope.row.specs,scope.row.extra)"
-              >+</el-button>
-              <el-button
-                type="danger"
-                size="small"
-                @click="removeOutCart(scope.row)"
-              >-</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <div class="totalDiv">
-          <small>数量：</small>
-
-          <strong>{{totalNum}}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-          <small>总计：</small>
-          <strong>{{totalPrice}}</strong> 元
-        </div>
-
-        <div class="order-btn">
-          <el-button type="warning">挂单</el-button>
-          <el-button
-            type="danger"
-            @click="clearCart()"
-          >删除</el-button>
-          <el-button
-            type="success"
-            @click="checkout()"
-          > 结账</el-button>
+            <el-table-column
+              label="操作"
+              width="110"
+            >
+              <template scope="scope">
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="addToCart(scope.row.id, scope.row.name, scope.row.price, scope.row.specs,scope.row.extra)"
+                >+</el-button>
+                <el-button
+                  type="danger"
+                  size="small"
+                  @click="removeOutCart(scope.row)"
+                >-</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
         </div>
+        <div class="summary">
+          <div class="totalDiv">
+            <small>数量：</small>
+
+            <strong>{{totalNum}}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
+            <small>总计：</small>
+            <strong>{{totalPrice}}</strong> 元
+          </div>
+          <div class="order-btn">
+            <el-button
+              type="warning"
+              class="button"
+              :disabled='totalNum===0'
+            >挂单</el-button>
+            <el-button
+              type="danger"
+              class="button"
+              @click="clearCart()"
+              :disabled='totalNum===0'
+            >删除</el-button>
+            <el-button
+              type="success"
+              class="button"
+              @click="checkout()"
+              :disabled='totalNum===0'
+            > 结账</el-button>
+
+          </div>
+        </div>
+
       </el-tab-pane>
 
       <el-tab-pane label="挂单">
@@ -107,19 +119,26 @@
             v-bind:key="category.name"
             v-for="category in extraMenu "
             :label="category.name"
+            class="tag-container"
           >
-            <el-checkbox-button
+            <div
               v-for="item in category.children"
               :label="item"
-              v-model="item.selected"
-            >{{item.name}}</el-checkbox-button>
+              class="tag"
+            >
+              <el-checkbox-button v-model="item.selected">{{item.name}}</el-checkbox-button>
+            </div>
+
           </el-tab-pane>
         </el-tabs>
-        <el-button @click="cancelExtra">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmExtra"
-        >确 定</el-button>
+        <div class="button-container">
+          <el-button @click="cancelExtra">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="confirmExtra"
+          >确 定</el-button>
+        </div>
+
         </span>
       </el-dialog>
     </section>
@@ -128,6 +147,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import PrintHTML from '../../config/PrintHTML.js'
 import extraMenu from '../../assets/extraMenu.js'
 
 export default {
@@ -141,7 +161,7 @@ export default {
       tableData: [], //订单列表的值
 
       totalMoney: 0, //订单总价格
-
+      tableHeight: window.innerHeight - 216, //table的高度
       showExtra: false,
       extraMenu: extraMenu,
       selectedFood: null,
@@ -150,15 +170,16 @@ export default {
   },
   created() {},
   mounted: function() {
-    var orderHeight = document.body.clientHeight
-    document.getElementById('order-list').style.height = orderHeight + 'px'
+    window.addEventListener(
+      'resize',
+      function(event) {
+        this.tableHeight = event.currentTarget.innerHeight - 216
+      }.bind(this)
+    )
   },
   computed: {
     ...mapState(['cartList']),
-    //当前商店购物信息
-    shopCart: function() {
-      return { ...this.cartList[this.shopId] }
-    },
+
     //购物车中总共商品的价格
     totalPrice: function() {
       let total = 0
@@ -242,6 +263,7 @@ export default {
         this.showExtra = !this.showExtra
       }
     },
+
     cancelExtra() {
       this.showExtra = !this.showExtra
     },
@@ -257,9 +279,9 @@ export default {
           }
         }
       }
+
       if (this.selectedFood.num > 1) {
         this.selectedFood.num--
-        console.log('this.selectedFood', this.selectedFood)
         let food_id = this.selectedFood.id
         let name = this.selectedFood.name
         let price = this.selectedFood.price
@@ -283,23 +305,12 @@ export default {
       this.showExtra = !this.showExtra
     },
     checkout() {
-      const elements = document.getElementById('order-details')
-
-      html2canvas(elements, {
-        scale: 2
-      }).then(canvas => {
-        canvas.setAttribute('id', 'canvas')
-        document.body.appendChild(canvas)
-        const canvasElement = document.getElementById('canvas')
-        this.canvasUrl = canvasElement.toDataURL()
-        const doc = new jsPDF({
-          unit: 'cm'
-        })
-        const canvasHeight = canvasElement.style.height.replace('px', '')
-        const height = canvasHeight / window.outerHeight
-        doc.addImage(this.canvasUrl, 'JPEG', 0.5, 0.5, 20, 29 * height)
-        doc.save('test' + '.pdf')
-      })
+      if (this.cartList.length) {
+        // printPDF()
+        PrintHTML(this.cartList, this.totalNum, this.totalPrice)
+      } else {
+        window.alert('没有需要打印的')
+      }
     }
   }
 }
@@ -307,7 +318,8 @@ export default {
 
 <style scoped  lang="scss">
 .order-btn {
-  margin-top: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   text-align: center;
 }
 
@@ -397,7 +409,18 @@ export default {
   border-bottom: 1px solid #e5e9f2;
   padding: 10px;
 }
-.red {
-  color: red;
+.button-container {
+  margin-top: 30px;
+}
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  .tag {
+    // width: 10%;
+  }
+}
+.button {
+  width: 150px;
+  height: 80px;
 }
 </style>
