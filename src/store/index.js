@@ -7,6 +7,9 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
+  adminInfo: {
+    avatar: 'default.jpg'
+  },
   latitude: '', // 当前位置纬度
   longitude: '', // 当前位置经度
   cartList: [], // 加入购物车的商品列表

@@ -1,4 +1,5 @@
 import {
+  SAVE_ADMIN_INFO,
   RECORD_ADDRESS,
   ADD_CART,
   REDUCE_CART,
@@ -33,6 +34,9 @@ import {
 import { setStore, getStore } from '../config/mUtils'
 
 export default {
+  [SAVE_ADMIN_INFO] (state, adminInfo) {
+    state.adminInfo = adminInfo
+  },
   // 记录当前经度纬度
   [RECORD_ADDRESS] (state, { latitude, longitude }) {
     state.latitude = latitude

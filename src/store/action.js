@@ -13,3 +13,20 @@
 //     commit(SAVE_ADDRESS, addres)
 //   }
 // }
+import { getAdminInfo } from '../service/getData'
+
+import { SAVE_ADMIN_INFO } from './mutation-types.js'
+export default {
+  async getAdminData ({ commit }) {
+    try {
+      const res = await getAdminInfo()
+      if (res.status === 1) {
+        commit(SAVE_ADMIN_INFO, res.data)
+      } else {
+        throw new Error(res.type)
+      }
+    } catch (err) {
+      // console.log(err.message)
+    }
+  }
+}
