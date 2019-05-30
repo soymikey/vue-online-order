@@ -532,7 +532,7 @@ export const accountLogin = (username, password, captcha_code) =>
 /**
  * 退出登录
  */
-export const signout = () => fetch('/v2/signout')
+export const accountSignout = () => fetch('/v2/signout')
 
 /**
  * 改密码

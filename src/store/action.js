@@ -1,4 +1,4 @@
-// import { getUser, getAddressList } from '../service/getData'
+// import { getUser, getAddressList } from '../service/getDataClient'
 // import { GET_USERINFO, SAVE_ADDRESS } from './mutation-types.js'
 
 // export default {
@@ -13,11 +13,11 @@
 //     commit(SAVE_ADDRESS, addres)
 //   }
 // }
-import { getAdminInfo } from '../service/getData'
+import { getAdminInfo } from '../service/getDataClient'
 
 import { SAVE_ADMIN_INFO } from './mutation-types.js'
 export default {
-  async getAdminData ({ commit }) {
+  async getAdminData({ commit }) {
     try {
       const res = await getAdminInfo()
       if (res.status === 1) {

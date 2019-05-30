@@ -1,7 +1,9 @@
 <template>
   <div class="home-right">
+
     <div class="often-goods">
       <div class="title">常用商品<div>{{specsIndex}}</div>
+
       </div>
       <div class="often-goods-list">
 
@@ -98,7 +100,6 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import { spread } from 'q'
 export default {
   name: 'home-right',
   props: {

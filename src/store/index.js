@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import mutations from './mutations'
 import actions from './action'
-import getters from './getters'
+// import getters from './getters'
 
 Vue.use(Vuex)
 
@@ -36,6 +36,10 @@ const state = {
   addAddress: '', // 新增地址
   question: null, // 问题详情
   cartPrice: null // 会员卡价格
+}
+
+const getters = {
+  state: state => state
 }
 
 export default new Vuex.Store({

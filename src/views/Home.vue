@@ -29,10 +29,10 @@
 <script>
 // @ is an alias to /src
 import { mapState, mapMutations } from 'vuex'
-import homeLeft from '@/components/home/left.vue'
-import homeRight from '@/components/home/right.vue'
-import homeNav from '@/components/home/nav.vue'
-import { shopDetails, foodMenu } from '@/service/getData'
+import homeLeft from '@/components/clientComponent/left.vue'
+import homeRight from '@/components/clientComponent/right.vue'
+import homeNav from '@/components/clientComponent/nav.vue'
+import { shopDetails, foodMenu } from '@/service/getDataClient'
 export default {
   name: 'home',
   components: { homeNav, homeLeft, homeRight },

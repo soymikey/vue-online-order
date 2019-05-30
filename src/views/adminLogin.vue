@@ -9,7 +9,7 @@
         v-show="showLogin"
       >
         <div class="manage_tip">
-          <p>米高接单系统</p>
+          <p>米高后台管理系统</p>
         </div>
         <el-form
           :model="loginForm"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { login, getAdminInfo } from '../service/getDataClient'
+import { login, getAdminInfo } from '@/service/getDataAdmin'
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -82,12 +82,19 @@ export default {
             user_name: this.loginForm.username,
             password: this.loginForm.password
           })
-          if (res.status === 2 || res.status === 1) {
+          console.log('res', res)
+
+          if (res.status === 2) {
             this.$message({
               type: 'success',
-              message: '登入成功'
+              message: '登录成功'
             })
-            this.$router.push('home')
+            this.$router.push('manage')
+          } else if (res.status === 1) {
+            this.$message({
+              type: 'error',
+              message: '普通管理员的权限不够'
+            })
           } else {
             this.$message({
               type: 'error',
@@ -107,14 +114,17 @@ export default {
   },
   watch: {
     adminInfo: function(newValue) {
-      console.log('newvalue', newValue)
-
-      if (newValue.status === 2 || newValue.status === 1) {
+      if (newValue.status === 2) {
         this.$message({
           type: 'success',
           message: '检测到您之前登录过，将自动登录'
         })
-        this.$router.push('home')
+        this.$router.push('manage')
+      } else if (newValue.status === 1) {
+        this.$message({
+          type: 'error',
+          message: '普通管理员的权限不够'
+        })
       }
     }
   }
