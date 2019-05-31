@@ -62,30 +62,20 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 export default {
+  mounted() {
+    console.log('this.adminInfo.status', this.adminInfo.status)
+
+    if (this.adminInfo.status !== 2) {
+      this.$router.push('/admin')
+    }
+  },
   computed: {
+    ...mapState(['adminInfo']),
     defaultActive: function() {
       return this.$route.path.replace('/', '')
-    },
-    ...mapState(['adminInfo'])
-  },
-  watch: {
-    adminInfo: function(newValue) {
-      if (newValue.status === 2) {
-        // this.$message({
-        //   type: "success",
-        //   message: "检测到您之前登录过，将自动登录"
-        // });
-      } else if (newValue.status === 1) {
-        this.$message({
-          type: 'error',
-          message: '普通管理员的权限不够'
-        })
-        this.$router.push('/')
-      } else {
-        this.$router.push('/')
-      }
     }
-  }
+  },
+  watch: {}
 }
 </script>
 

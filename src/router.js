@@ -50,6 +50,7 @@ const sendMessage = r =>
   require.ensure([], () => r(require('@/views/sendMessage')), 'sendMessage')
 const explain = r =>
   require.ensure([], () => r(require('@/views/explain')), 'explain')
+const notFound = r => require.ensure([], () => r(require('@/views/404')), '404')
 
 Vue.use(Router)
 
@@ -60,99 +61,108 @@ export default new Router({
     {
       path: '/',
       name: 'Login',
-      component: login
+      component: login,
+      meta: []
     },
     {
       path: '/home',
       name: 'home',
-      component: home
+      component: home,
+      meta: ['manager', 'superManager']
     },
     {
       path: '/admin',
       component: adminLogin,
-      name: ''
+      name: '',
+      meta: []
     },
     {
-      path: '/manage',
+      path: '/manage/',
       component: adminLayout,
       name: '',
       children: [
         {
           path: '',
           component: adminHome,
-          meta: []
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/addShop',
+          path: 'addShop',
           component: addShop,
-          meta: ['添加数据', '添加商铺']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/addGoods',
+          path: 'addGoods',
           component: addGoods,
-          meta: ['添加数据', '添加商品']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/userList',
+          path: 'userList',
           component: userList,
-          meta: ['数据管理', '用户列表']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/shopList',
+          path: 'shopList',
           component: shopList,
-          meta: ['数据管理', '商家列表']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/foodList',
+          path: 'foodList',
           component: foodList,
-          meta: ['数据管理', '食品列表']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/orderList',
+          path: 'orderList',
           component: orderList,
-          meta: ['数据管理', '订单列表']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/adminList',
+          path: 'adminList',
           component: adminList,
-          meta: ['数据管理', '管理员列表']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/visitor',
+          path: 'visitor',
           component: visitor,
-          meta: ['图表', '用户分布']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/newMember',
+          path: 'newMember',
           component: newMember,
-          meta: ['图表', '用户数据']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/uploadImg',
+          path: 'uploadImg',
           component: uploadImg,
-          meta: ['文本编辑', 'MarkDown']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/vueEdit',
+          path: 'vueEdit',
           component: vueEdit,
-          meta: ['编辑', '文本编辑']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/adminSet',
+          path: 'adminSet',
           component: adminSet,
-          meta: ['设置', '管理员设置']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/sendMessage',
+          path: 'sendMessage',
           component: sendMessage,
-          meta: ['设置', '发送通知']
+          meta: ['manager', 'superManager']
         },
         {
-          path: '/explain',
+          path: 'explain',
           component: explain,
-          meta: ['说明', '说明']
+          meta: ['manager', 'superManager']
         }
       ]
+    },
+    {
+      path: '/404',
+      component: notFound,
+      name: '',
+      meta: []
     }
   ]
 })

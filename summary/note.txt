@@ -1,0 +1,6 @@
+普通用户status=1
+管理员 status=2
+总台超级管理员 status=3
+
+
+

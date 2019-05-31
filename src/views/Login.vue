@@ -107,8 +107,6 @@ export default {
   },
   watch: {
     adminInfo: function(newValue) {
-      console.log('newvalue', newValue)
-
       if (newValue.status === 2 || newValue.status === 1) {
         this.$message({
           type: 'success',

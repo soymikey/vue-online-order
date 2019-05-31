@@ -82,7 +82,6 @@ export default {
             user_name: this.loginForm.username,
             password: this.loginForm.password
           })
-          console.log('res', res)
 
           if (res.status === 2) {
             this.$message({
