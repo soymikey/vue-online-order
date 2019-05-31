@@ -66,7 +66,7 @@ export default {
   mounted() {
     this.showLogin = true
 
-    if (!this.adminInfo.id) {
+    if (!this.adminInfo.status) {
       this.getAdminData()
     }
   },
@@ -110,7 +110,7 @@ export default {
       if (newValue.status === 2 || newValue.status === 1) {
         this.$message({
           type: 'success',
-          message: '检测到您之前登录过，将自动登录'
+          message: '登入成功'
         })
         this.$router.push('home')
       }

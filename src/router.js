@@ -68,7 +68,7 @@ export default new Router({
       path: '/home',
       name: 'home',
       component: home,
-      meta: ['manager', 'superManager']
+      meta: ['staff', 'manager']
     },
     {
       path: '/admin',
@@ -84,77 +84,77 @@ export default new Router({
         {
           path: '',
           component: adminHome,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'addShop',
           component: addShop,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'addGoods',
           component: addGoods,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'userList',
           component: userList,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'shopList',
           component: shopList,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'foodList',
           component: foodList,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'orderList',
           component: orderList,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'adminList',
           component: adminList,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'visitor',
           component: visitor,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'newMember',
           component: newMember,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'uploadImg',
           component: uploadImg,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'vueEdit',
           component: vueEdit,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'adminSet',
           component: adminSet,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'sendMessage',
           component: sendMessage,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         },
         {
           path: 'explain',
           component: explain,
-          meta: ['manager', 'superManager']
+          meta: ['manager']
         }
       ]
     },

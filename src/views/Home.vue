@@ -48,17 +48,10 @@ export default {
     this.shopId = '2'
   },
   mounted() {
-    console.log('this.adminInfo.status', this.adminInfo.status)
-
-    if (!(this.adminInfo.status === 1 || this.adminInfo.status === 2)) {
-      this.$router.push('/')
-    }
     this.initData()
     // this.windowHeight = window.innerHeight
   },
-  computed: {
-    ...mapState(['adminInfo'])
-  },
+  computed: {},
   methods: {
     async initData() {
       //获取商铺信息

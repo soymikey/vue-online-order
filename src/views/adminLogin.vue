@@ -116,7 +116,7 @@ export default {
       if (newValue.status === 2) {
         this.$message({
           type: 'success',
-          message: '检测到您之前登录过，将自动登录'
+          message: '登入成功'
         })
         this.$router.push('manage')
       } else if (newValue.status === 1) {

@@ -62,15 +62,8 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 export default {
-  mounted() {
-    console.log('this.adminInfo.status', this.adminInfo.status)
-
-    if (this.adminInfo.status !== 2) {
-      this.$router.push('/admin')
-    }
-  },
+  mounted() {},
   computed: {
-    ...mapState(['adminInfo']),
     defaultActive: function() {
       return this.$route.path.replace('/', '')
     }
