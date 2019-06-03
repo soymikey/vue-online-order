@@ -80,9 +80,10 @@ export default new Router({
       path: '/manage/',
       component: adminLayout,
       name: '',
+      meta: ['manager'],
       children: [
         {
-          path: '',
+          path: 'home',
           component: adminHome,
           meta: ['manager']
         },

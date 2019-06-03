@@ -46,6 +46,7 @@
 <script>
 import { login, getAdminInfo } from '@/service/getDataAdmin'
 import { mapActions, mapState } from 'vuex'
+import store from '../store/index.js'
 
 export default {
   data() {
@@ -66,8 +67,12 @@ export default {
   mounted() {
     this.showLogin = true
 
-    if (!this.adminInfo.id) {
+    if (!this.adminInfo.status) {
       this.getAdminData()
+    } else if (this.adminInfo.status === 1) {
+      this.$message.error('普通管理员的权限不够')
+    } else if (this.adminInfo.status === 2) {
+      this.$router.push('/manage/home')
     }
   },
   computed: {
@@ -88,7 +93,9 @@ export default {
               type: 'success',
               message: '登录成功'
             })
-            this.$router.push('manage')
+            store.dispatch('getAdminData').then(() => {
+              this.$router.push('/manage/home')
+            })
           } else if (res.status === 1) {
             this.$message({
               type: 'error',
@@ -118,7 +125,7 @@ export default {
           type: 'success',
           message: '登入成功'
         })
-        this.$router.push('manage')
+        this.$router.push('/manage/home')
       } else if (newValue.status === 1) {
         this.$message({
           type: 'error',

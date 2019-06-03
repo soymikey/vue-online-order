@@ -26,12 +26,12 @@
         <div>抢购</div>
       </li>
 
-      <li>
+      <li @click="goToAdminManagement">
         <i class="icon iconfont icon-tongji"></i>
         <div>统计</div>
       </li>
-      <li>
-        <div @click="exitButton"><i class="icon iconfont icon-guanbi"></i>
+      <li @click="exitButton">
+        <div><i class="icon iconfont icon-guanbi"></i>
           <div>退出</div>
         </div>
 
@@ -73,6 +73,9 @@ export default {
           }
         })
         .catch(() => {})
+    },
+    goToAdminManagement() {
+      this.$router.push('/admin')
     }
   }
 }

@@ -46,6 +46,7 @@
 <script>
 import { login, getAdminInfo } from '../service/getDataClient'
 import { mapActions, mapState } from 'vuex'
+import store from '../store/index.js'
 
 export default {
   data() {
@@ -82,12 +83,15 @@ export default {
             user_name: this.loginForm.username,
             password: this.loginForm.password
           })
+
           if (res.status === 2 || res.status === 1) {
             this.$message({
               type: 'success',
               message: '登入成功'
             })
-            this.$router.push('home')
+            store.dispatch('getAdminData').then(() => {
+              this.$router.push('home')
+            })
           } else {
             this.$message({
               type: 'error',
