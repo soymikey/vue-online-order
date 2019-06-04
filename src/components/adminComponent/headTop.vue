@@ -16,6 +16,7 @@
         :src="imgBaseUrl + adminInfo.avatar"
         class="avator"
       >
+
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="home">首页</el-dropdown-item>
         <el-dropdown-item command="signout">退出</el-dropdown-item>
