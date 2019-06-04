@@ -4,3 +4,59 @@
 
 
 
+ // 加入购物车
+  [ADD_CART](
+    state,
+    { shopid, food_id, name, price, specs, nameWithSpecs, extra }
+  ) {
+    let isHave = false
+    let index = null
+    let paramsExtraString = extra.map(item => item.name).toString()
+    // 判断是否这个商品已经存在于订单列表
+
+    for (let i = 0; i < state.cartList.length; i++) {
+      let originalSpecs = state.cartList[i].specs
+      let originalExtra = state.cartList[i].extra
+        .map(item => item.name)
+        .toString()
+      if (
+        state.cartList[i].id === food_id &&
+        originalSpecs === specs &&
+        originalExtra === paramsExtraString
+      ) {
+        console.log(
+          state.cartList[i].id,
+          food_id,
+          originalSpecs,
+          specs,
+          originalExtra,
+          paramsExtraString
+        )
+
+        isHave = true
+        index = i
+      }
+    }
+
+    if (isHave) {
+      // 存在就进行数量添加
+      let arr = state.cartList.filter(o => state.cartList.indexOf(o) === index)
+      arr[0].num++
+    } else {
+      // 不存在就推入数组
+      let newFoodObject = {
+        shopId: shopid,
+        num: 1,
+        name,
+        id: food_id,
+        price,
+        specs,
+        nameWithSpecs,
+        extra
+      }
+      state.cartList.push(newFoodObject)
+    }
+
+    // 存入localStorage
+    setStore('buyCart', state.cartList)
+  },

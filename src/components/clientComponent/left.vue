@@ -47,7 +47,7 @@
                 <el-button
                   type="primary"
                   size="small"
-                  @click="addToCart(scope.row.id, scope.row.name, scope.row.price, scope.row.specs,scope.row.extra)"
+                  @click="addToCart(scope.row.id, scope.row.name, scope.row.price, scope.row.specs,scope.row.extra,scope.row)"
                 >+</el-button>
                 <el-button
                   type="danger"
@@ -164,7 +164,8 @@ export default {
       showExtra: false,
       extraMenu: extraMenu,
       selectedFood: null,
-      canvasUrl: null
+      canvasUrl: null,
+      foodIndex: null
     }
   },
   created() {},
@@ -204,6 +205,7 @@ export default {
 
     addToCart(food_id, name, price, specs, extra) {
       // console.log('add', category_id, item_id, food_id, name, price, specs)
+
       let nameWithSpecs = specs ? `${name}+${specs}` : name
       this.ADD_CART({
         shopid: this.shopId,
@@ -232,7 +234,6 @@ export default {
     },
     showDialog(row, column, cell, event) {
       console.log('show')
-
       if (column.label == '商品') {
         this.selectedFood = row
 
@@ -278,28 +279,39 @@ export default {
           }
         }
       }
+      let food_id = this.selectedFood.id
+      let name = this.selectedFood.name
+      let price = this.selectedFood.price
+      let specs = this.selectedFood.specs
+      let nameWithSpecs = this.selectedFood.nameWithSpecs
+      let extra = selectedExtraList
+      let food = this.selectedFood
+      // if (this.selectedFood.num > 1) {
+      //   this.selectedFood.num--
 
-      if (this.selectedFood.num > 1) {
-        this.selectedFood.num--
-        let food_id = this.selectedFood.id
-        let name = this.selectedFood.name
-        let price = this.selectedFood.price
-        let specs = this.selectedFood.specs
-        let nameWithSpecs = this.selectedFood.nameWithSpecs
-        let extra = this.selectedFood.extra
-
-        this.ADD_CART({
-          shopid: this.shopId,
-          food_id,
-          name,
-          price,
-          specs,
-          nameWithSpecs,
-          extra: [...selectedExtraList]
-        })
-      } else {
-        this.selectedFood.extra = [...selectedExtraList]
-      }
+      //   this.ADD_CART({
+      //     shopid: this.shopId,
+      //     food_id,
+      //     name,
+      //     price,
+      //     specs,
+      //     nameWithSpecs,
+      //     extra,
+      //     food
+      //   })
+      // } else {
+      this.ADD_CART({
+        shopid: this.shopId,
+        food_id,
+        name,
+        price,
+        specs,
+        nameWithSpecs,
+        extra,
+        food
+      })
+      // this.selectedFood.extra = [...selectedExtraList]
+      // }
 
       this.showExtra = !this.showExtra
     },

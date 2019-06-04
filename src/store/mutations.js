@@ -2,6 +2,7 @@ import {
   SAVE_ADMIN_INFO,
   RECORD_ADDRESS,
   ADD_CART,
+  UPDATE_CART,
   REDUCE_CART,
   INIT_BUYCART,
   CLEAR_CART,
@@ -34,31 +35,33 @@ import {
 import { setStore, getStore } from '../config/mUtils'
 
 export default {
-  [SAVE_ADMIN_INFO] (state, adminInfo) {
+  [SAVE_ADMIN_INFO](state, adminInfo) {
     state.adminInfo = adminInfo
   },
   // 记录当前经度纬度
-  [RECORD_ADDRESS] (state, { latitude, longitude }) {
+  [RECORD_ADDRESS](state, { latitude, longitude }) {
     state.latitude = latitude
     state.longitude = longitude
   },
 
-  [RECORD_SHOPDETAIL] (state, detail) {
+  [RECORD_SHOPDETAIL](state, detail) {
     state.shopDetail = detail
   },
   // 加入购物车
-  [ADD_CART] (
+  [ADD_CART](
     state,
-    { shopid, food_id, name, price, specs, nameWithSpecs, extra }
+    { shopid, food_id, name, price, specs, nameWithSpecs, extra, food = '' }
   ) {
     let isHave = false
     let index = null
-    let paramsExtraString = extra.toString()
+    let paramsExtraString = extra.map(item => item.name).toString()
     // 判断是否这个商品已经存在于订单列表
 
     for (let i = 0; i < state.cartList.length; i++) {
       let originalSpecs = state.cartList[i].specs
-      let originalExtra = state.cartList[i].extra.toString()
+      let originalExtra = state.cartList[i].extra
+        .map(item => item.name)
+        .toString()
       if (
         state.cartList[i].id === food_id &&
         originalSpecs === specs &&
@@ -71,28 +74,66 @@ export default {
 
     if (isHave) {
       // 存在就进行数量添加
+      if (food) {
+        food.num--
+      }
       let arr = state.cartList.filter(o => state.cartList.indexOf(o) === index)
       arr[0].num++
     } else {
-      // 不存在就推入数组
-      let newFoodObject = {
-        shopId: shopid,
-        num: 1,
-        name,
-        id: food_id,
-        price,
-        specs,
-        nameWithSpecs,
-        extra
-      }
-      state.cartList.push(newFoodObject)
-    }
+      if (food) {
+        if (food.num === 1) {
+          food.extra = extra
+        } else {
+          let newFoodObject = {
+            shopId: shopid,
+            num: 1,
+            name,
+            id: food_id,
+            price,
+            specs,
+            nameWithSpecs,
+            extra
+          }
+          food.num--
+          state.cartList.push(newFoodObject)
+        }
+      } else {
+        // 不存在就推入数组
+        let newFoodObject = {
+          shopId: shopid,
+          num: 1,
+          name,
+          id: food_id,
+          price,
+          specs,
+          nameWithSpecs,
+          extra
+        }
 
+        state.cartList.push(newFoodObject)
+      }
+    }
+    state.cartList = state.cartList.filter(food => food.num !== 0)
     // 存入localStorage
     setStore('buyCart', state.cartList)
   },
+  // 更新购物车
+  [REDUCE_CART](state, { index }) {
+    // 判断是否这个商品已经存在于订单列表
+    for (let i = 0; i < state.cartList.length; i++) {
+      if (i === index) {
+        if (state.cartList[i].num > 1) {
+          state.cartList[i].num--
+        } else {
+          state.cartList = state.cartList.filter(
+            o => state.cartList.indexOf(o) !== index
+          )
+        }
+      }
+    }
+  },
   // 移出购物车
-  [REDUCE_CART] (state, { index }) {
+  [REDUCE_CART](state, { index }) {
     // 判断是否这个商品已经存在于订单列表
     for (let i = 0; i < state.cartList.length; i++) {
       if (i === index) {
@@ -107,25 +148,25 @@ export default {
     }
   },
   // 网页初始化时从本地缓存获取购物车数据
-  [INIT_BUYCART] (state) {
+  [INIT_BUYCART](state) {
     let initCart = getStore('buyCart')
     if (initCart) {
       state.cartList = JSON.parse(initCart)
     }
   },
   // 清空当前商品的购物车信息
-  [CLEAR_CART] (state) {
+  [CLEAR_CART](state) {
     state.cartList = []
     setStore('buyCart', state.cartList)
   },
   // 记录用户信息
-  [RECORD_USERINFO] (state, info) {
+  [RECORD_USERINFO](state, info) {
     state.userInfo = info
     state.login = true
     setStore('user_id', info.user_id)
   },
   // 获取用户信息存入vuex
-  [GET_USERINFO] (state, info) {
+  [GET_USERINFO](state, info) {
     if (state.userInfo && state.userInfo.username !== info.username) {
       return
     }
@@ -139,92 +180,92 @@ export default {
     }
   },
   // 修改用户名
-  [RETSET_NAME] (state, username) {
+  [RETSET_NAME](state, username) {
     state.userInfo = Object.assign({}, state.userInfo, { username })
   },
   // 保存商铺id
-  [SAVE_SHOPID] (state, shopid) {
+  [SAVE_SHOPID](state, shopid) {
     state.shopid = shopid
   },
   // 记录订单页面用户选择的备注, 传递给订单确认页面
-  [CONFIRM_REMARK] (state, { remarkText, inputText }) {
+  [CONFIRM_REMARK](state, { remarkText, inputText }) {
     state.remarkText = remarkText
     state.inputText = inputText
   },
   // 是否开发票
-  [CONFIRM_INVOICE] (state, invoice) {
+  [CONFIRM_INVOICE](state, invoice) {
     state.invoice = invoice
   },
   // 选择搜索的地址
-  [CHOOSE_SEARCH_ADDRESS] (state, place) {
+  [CHOOSE_SEARCH_ADDRESS](state, place) {
     state.searchAddress = place
   },
   // 保存geohash
-  [SAVE_GEOHASH] (state, geohash) {
+  [SAVE_GEOHASH](state, geohash) {
     state.geohash = geohash
   },
   // 确认订单页添加新的的地址
-  [CONFIRM_ADDRESS] (state, newAddress) {
+  [CONFIRM_ADDRESS](state, newAddress) {
     state.newAddress.push(newAddress)
   },
   // 选择的地址
-  [CHOOSE_ADDRESS] (state, { address, index }) {
+  [CHOOSE_ADDRESS](state, { address, index }) {
     state.choosedAddress = address
     state.addressIndex = index
   },
   // 保存下单需要验证的返回值
-  [NEED_VALIDATION] (state, needValidation) {
+  [NEED_VALIDATION](state, needValidation) {
     state.needValidation = needValidation
   },
   // 保存下单后购物id 和 sig
-  [SAVE_CART_ID_SIG] (state, { cart_id, sig }) {
+  [SAVE_CART_ID_SIG](state, { cart_id, sig }) {
     state.cart_id = cart_id
     state.sig = sig
   },
   // 保存下单参数，用户验证页面调用
-  [SAVE_ORDER_PARAM] (state, orderParam) {
+  [SAVE_ORDER_PARAM](state, orderParam) {
     state.orderParam = orderParam
   },
   // 修改下单参数
-  [CHANGE_ORDER_PARAM] (state, newParam) {
+  [CHANGE_ORDER_PARAM](state, newParam) {
     state.orderParam = Object.assign({}, state.orderParam, newParam)
   },
   // 下单成功，保存订单返回信息
-  [ORDER_SUCCESS] (state, order) {
+  [ORDER_SUCCESS](state, order) {
     state.cartPrice = null
     state.orderMessage = order
   },
   // 进入订单详情页前保存该订单信息
-  [SAVE_ORDER] (state, orderDetail) {
+  [SAVE_ORDER](state, orderDetail) {
     state.orderDetail = orderDetail
   },
   // 退出登录
-  [OUT_LOGIN] (state) {
+  [OUT_LOGIN](state) {
     state.userInfo = {}
     state.login = false
   },
   // 保存图片
-  [SAVE_AVANDER] (state, imgPath) {
+  [SAVE_AVANDER](state, imgPath) {
     state.imgPath = imgPath
   },
   // 删除地址列表
-  [SAVE_ADDRESS] (state, newAdress) {
+  [SAVE_ADDRESS](state, newAdress) {
     state.removeAddress = newAdress
   },
   // 添加地址name
-  [SAVE_ADDDETAIL] (state, addAddress) {
+  [SAVE_ADDDETAIL](state, addAddress) {
     state.addAddress = addAddress
   },
   // 保存所选问题标题和详情
-  [SAVE_QUESTION] (state, question) {
+  [SAVE_QUESTION](state, question) {
     state.question = { ...question }
   },
   // 增加地址
-  [ADD_ADDRESS] (state, obj) {
+  [ADD_ADDRESS](state, obj) {
     state.removeAddress = [obj, ...state.removeAddress]
   },
   // 会员卡价格纪录
-  [BUY_CART] (state, price) {
+  [BUY_CART](state, price) {
     state.cartPrice = price
   }
 }
