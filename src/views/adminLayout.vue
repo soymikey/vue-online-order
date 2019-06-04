@@ -24,7 +24,7 @@
           </el-submenu>
           <el-submenu index="3">
             <template slot="title"><i class="el-icon-plus"></i>添加数据</template>
-            <el-menu-item index="/manage/addShop">添加商铺</el-menu-item>
+
             <el-menu-item index="/manage/addGoods">添加商品</el-menu-item>
           </el-submenu>
           <el-submenu index="4">
@@ -40,6 +40,7 @@
           <el-submenu index="6">
             <template slot="title"><i class="el-icon-setting"></i>设置</template>
             <el-menu-item index="/manage/adminSet">管理员设置</el-menu-item>
+            <el-menu-item index="/manage/addShop">商铺设置</el-menu-item>
             <!-- <el-menu-item index="sendMessage">发送通知</el-menu-item> -->
           </el-submenu>
           <el-submenu index="7">
@@ -61,10 +62,20 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapState } from 'vuex'
 export default {
-  mounted() {},
+  created() {},
+  mounted() {
+    if (!this.shopDetail) {
+      this.$message({
+        type: 'error',
+        message: '还没有设置店铺资料'
+      })
+      this.$router.push('/manage/addShop')
+    }
+  },
   computed: {
+    ...mapState(['shopDetail']),
     defaultActive: function() {
       // return this.$route.path.replace('/', '')
     }

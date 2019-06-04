@@ -44,31 +44,30 @@ export default {
       menuList: [] //食品列表
     }
   },
-  created() {
-    this.shopId = '2'
-  },
+  created() {},
   mounted() {
-    this.initData()
-    // this.windowHeight = window.innerHeight
-  },
-  computed: {},
-  methods: {
-    async initData() {
-      //获取商铺信息
-      // this.shopDetailData = await shopDetails(
-      //   this.shopId,
-      //   this.latitude,
-      //   this.longitude
-      // );
-      //获取商铺食品列表
-      this.menuList = await foodMenu(this.shopId)
+    console.log('adminInfo', this.adminInfo)
 
+    this.initData()
+  },
+  computed: {
+    ...mapState(['adminInfo'])
+  },
+  methods: {
+    ...mapMutations(['RECORD_SHOPDETAIL']),
+    async initData() {
+      //获取商铺食品列表
+      this.menuList = await foodMenu(this.adminInfo.restaurantId)
       //获取商铺信息
-      this.shopDetailData = await shopDetails(
-        this.shopId,
-        this.latitude,
-        this.longitude
-      )
+      this.shopDetailData = await shopDetails(this.adminInfo.restaurantId)
+      if (this.shopDetailData.status === 1) {
+        this.RECORD_SHOPDETAIL(this.shopDetailData.data)
+      } else {
+        this.$message({
+          type: 'error',
+          message: '获取商铺信息失败'
+        })
+      }
     }
   }
 }

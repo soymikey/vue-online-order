@@ -7,6 +7,11 @@ import { getStore } from '../config/mUtils'
 
 export const login = data => fetch('/admin/login', data, 'POST')
 /**
+ * 注册
+ */
+
+export const register = data => fetch('/admin/register', data, 'POST')
+/**
  * 获取用户信息
  */
 
@@ -156,13 +161,17 @@ export const foodActivity = (latitude, longitude) =>
  * 获取shop页面商铺详情
  */
 
-export const shopDetails = (shopid, latitude, longitude) =>
-  fetch('/shopping/restaurant/' + shopid, {
-    latitude,
-    longitude:
-      longitude +
-      '&extras[]=activities&extras[]=album&extras[]=license&extras[]=identification&extras[]=statistics'
-  })
+export const shopDetails = shopId => fetch('/shopping/restaurant/' + shopId)
+
+// fetch(
+//   '/shopping/restaurant/' + shopid
+//   //  {
+//   //   latitude,
+//   //   longitude:
+//   //     longitude +
+//   //     '&extras[]=activities&extras[]=album&extras[]=license&extras[]=identification&extras[]=statistics'
+//   // }
+// )
 
 /**
  * 获取shop页面菜单列表

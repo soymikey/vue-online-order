@@ -4,10 +4,71 @@
       name="form-fade"
       mode="in-out"
     >
-      <section
-        class="form_contianer"
-        v-show="showLogin"
-      >
+      <div class="form_contianer">
+        <el-tabs type="border-card">
+
+          <el-tab-pane label="登陆">
+            <el-form
+              :model="loginForm"
+              :rules="loginRules"
+              ref="loginForm"
+            >
+              <el-form-item prop="username">
+                <el-input
+                  v-model="loginForm.username"
+                  placeholder="用户名"
+                ><span>dsfsf</span></el-input>
+              </el-form-item>
+              <el-form-item prop="password">
+                <el-input
+                  type="password"
+                  placeholder="密码"
+                  v-model="loginForm.password"
+                ></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  @click="loginButton('loginForm')"
+                  class="submit_btn"
+                >登陆</el-button>
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
+          <el-tab-pane label="注册">
+            <el-form
+              v-loading="loading"
+              :model="registerForm"
+              :rules="registerRules"
+              ref="registerForm"
+            >
+              <el-form-item prop="username">
+                <el-input
+                  v-model="registerForm.username"
+                  placeholder="用户名"
+                ><span>dsfsf</span></el-input>
+              </el-form-item>
+              <el-form-item prop="password">
+                <el-input
+                  type="password"
+                  placeholder="密码"
+                  v-model="registerForm.password"
+                ></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  @click="registerButton('registerForm')"
+                  class="submit_btn"
+                >注册</el-button>
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
+
+        </el-tabs>
+      </div>
+
+      <!-- <section class="form_contianer">
         <div class="manage_tip">
           <p>米高接单系统</p>
         </div>
@@ -32,19 +93,20 @@
           <el-form-item>
             <el-button
               type="primary"
-              @click="submitForm('loginForm')"
+              @click="loginButton('loginForm')"
               class="submit_btn"
             >登陆</el-button>
           </el-form-item>
         </el-form>
 
-      </section>
+      </section> -->
     </transition>
   </div>
 </template>
 
 <script>
-import { login, getAdminInfo } from '../service/getDataClient'
+import { login, register, getAdminInfo } from '../service/getDataClient'
+import { Loading } from 'element-ui'
 import { mapActions, mapState } from 'vuex'
 import store from '../store/index.js'
 
@@ -55,13 +117,24 @@ export default {
         username: '',
         password: ''
       },
-      rules: {
+      loginRules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
-      showLogin: false
+      registerForm: {
+        username: '',
+        password: ''
+      },
+      registerRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+      },
+      showLogin: false,
+      loading: false
     }
   },
   mounted() {
@@ -76,7 +149,7 @@ export default {
   },
   methods: {
     ...mapActions(['getAdminData']),
-    async submitForm(formName) {
+    async loginButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           const res = await login({
@@ -92,6 +165,41 @@ export default {
             store.dispatch('getAdminData').then(() => {
               this.$router.push('home')
             })
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message
+            })
+          }
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: '请输入正确的用户名密码',
+            offset: 100
+          })
+          return false
+        }
+      })
+    },
+    async registerButton(formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          const res = await register({
+            user_name: this.registerForm.username,
+            password: this.registerForm.password
+          })
+
+          if (res.status === 1) {
+            this.$message({
+              type: 'success',
+              message: res.message
+            })
+            this.loading = true
+            setTimeout(() => {
+              store.dispatch('getAdminData').then(() => {
+                this.$router.push('home')
+              })
+            }, 2000)
           } else {
             this.$message({
               type: 'error',
@@ -145,7 +253,7 @@ export default {
   padding: 25px;
   border-radius: 5px;
   text-align: center;
-  background-color: #fff;
+  // background-color: #fff;
   .submit_btn {
     width: 100%;
     font-size: 16px;
