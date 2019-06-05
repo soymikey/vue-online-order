@@ -16,7 +16,6 @@
         :src="imgBaseUrl + adminInfo.avatar"
         class="avator"
       >
-
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="home">首页</el-dropdown-item>
         <el-dropdown-item command="signout">退出</el-dropdown-item>
@@ -28,24 +27,19 @@
 <script>
 import { signout } from '@/service/getDataAdmin'
 import { imgBaseUrl } from '@/config/env'
-import { mapActions, mapState } from 'vuex'
-
+import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
       imgBaseUrl
     }
   },
-  created() {
-    if (!this.adminInfo.id) {
-      this.getAdminData()
-    }
-  },
+  created() {},
   computed: {
     ...mapState(['adminInfo'])
   },
   methods: {
-    ...mapActions(['getAdminData']),
+    ...mapMutations(['RESET_STATE']),
     async handleCommand(command) {
       if (command == 'home') {
         this.$router.push('/manage')
@@ -62,6 +56,7 @@ export default {
               message: '退出成功'
             })
             window.localStorage.clear()
+            this.RESET_STATE()
             this.$router.push('/')
           } else {
             this.$message({

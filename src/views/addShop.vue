@@ -23,13 +23,17 @@
             label="详细地址"
             prop="address"
           >
-            <el-autocomplete
+            <el-input
+              v-model.number="formData.address"
+              maxLength="60"
+            ></el-input>
+            <!-- <el-autocomplete
               v-model="formData.address"
               :fetch-suggestions="querySearchAsync"
               placeholder="请输入地址"
               style="width: 100%;"
               @select="addressSelect"
-            ></el-autocomplete>
+            ></el-autocomplete> -->
             <span>当前城市：{{city.name}}</span>
           </el-form-item>
           <el-form-item
@@ -225,13 +229,13 @@
             <div v-if="!this.shopDetail">
               <el-button
                 type="primary"
-                @click="submitForm('formData')"
+                @click="createButton('formData')"
               >立即创建</el-button>
             </div>
             <div v-else>
               <el-button
                 type="primary"
-                @click="submitForm('formData')"
+                @click="updateButton('formData')"
               >更新</el-button>
             </div>
           </el-form-item>
@@ -246,11 +250,12 @@ import headTop from '@/components/adminComponent/headTop'
 import {
   cityGuess,
   addShop,
+  updateShop,
   searchplace,
   foodCategory
 } from '@/service/getDataAdmin'
 import { baseUrl, imgBaseUrl } from '@/config/env'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -325,14 +330,14 @@ export default {
   mounted() {
     this.initData()
     if (this.shopDetail) {
+      let startTime = this.shopDetail.opening_hours[0].split('/')[0]
+      let endTime = this.shopDetail.opening_hours[0].split('/')[1]
       this.formData.name = this.shopDetail.name //店铺名称
       this.formData.address = this.shopDetail.address //地址
-
       this.formData.description = this.shopDetail.description //介绍
-      this.formData.phone = parseInt(this.shopDetail.phone.parseInt)
-
-      this.formData.startTime = this.shopDetail.startTime
-      this.formData.endTime = this.shopDetail.endTime
+      this.formData.phone = parseInt(this.shopDetail.phone)
+      this.formData.startTime = startTime
+      this.formData.endTime = endTime
     }
   },
 
@@ -340,6 +345,7 @@ export default {
     ...mapState(['adminInfo', 'shopDetail'])
   },
   methods: {
+    ...mapMutations(['RECORD_SHOPDETAIL']),
     async initData() {
       try {
         this.city = await cityGuess()
@@ -486,56 +492,130 @@ export default {
     handleDelete(index) {
       this.activities.splice(index, 1)
     },
-    submitForm(formName) {
+    createButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           Object.assign(
             this.formData,
+
             { activities: this.activities },
             {
               category: this.selectedCategory.join('/')
             },
-            { managerId: this.adminInfo.id }
+            { managerId: this.adminInfo.id },
+            { restaurantId: this.adminInfo.restaurantId }
           )
           try {
-            console.log('this.formData', this.formData)
-
             let result = await addShop(this.formData)
             if (result.status == 1) {
               this.$message({
                 type: 'success',
                 message: '添加成功'
               })
-              this.formData = {
-                name: '', //店铺名称
-                address: '', //地址
-                latitude: '',
-                longitude: '',
-                description: '', //介绍
-                phone: '',
-                promotion_info: '',
-                float_delivery_fee: 5, //运费
-                float_minimum_order_amount: 20, //起价
-                is_premium: true,
-                delivery_mode: true,
-                new: true,
-                bao: true,
-                zhun: true,
-                piao: true,
-                startTime: '',
-                endTime: '',
-                image_path: '',
-                business_license_image: '',
-                catering_service_license_image: ''
-              }
-              this.selectedCategory = ['快餐便当', '简餐']
-              this.activities = [
-                {
-                  icon_name: '减',
-                  name: '满减优惠',
-                  description: '满30减5，满60减8'
-                }
-              ]
+              this.RECORD_SHOPDETAIL(result.data)
+              // this.$router.push('/manage/home')
+              // this.formData = {
+              //   name: '', //店铺名称
+              //   address: '', //地址
+              //   latitude: '',
+              //   longitude: '',
+              //   description: '', //介绍
+              //   phone: '',
+              //   promotion_info: '',
+              //   float_delivery_fee: 5, //运费
+              //   float_minimum_order_amount: 20, //起价
+              //   is_premium: true,
+              //   delivery_mode: true,
+              //   new: true,
+              //   bao: true,
+              //   zhun: true,
+              //   piao: true,
+              //   startTime: '',
+              //   endTime: '',
+              //   image_path: '',
+              //   business_license_image: '',
+              //   catering_service_license_image: ''
+              // }
+              // this.selectedCategory = ['快餐便当', '简餐']
+              // this.activities = [
+              //   {
+              //     icon_name: '减',
+              //     name: '满减优惠',
+              //     description: '满30减5，满60减8'
+              //   }
+              // ]
+            } else {
+              this.$message({
+                type: 'error',
+                message: result.message
+              })
+            }
+            console.log(result)
+          } catch (err) {
+            console.log(err)
+          }
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: '请检查输入是否正确',
+            offset: 100
+          })
+          return false
+        }
+      })
+    },
+    updateButton(formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          Object.assign(
+            this.formData,
+
+            { activities: this.activities },
+            {
+              category: this.selectedCategory.join('/')
+            },
+            { managerId: this.adminInfo.id },
+            { restaurantId: this.adminInfo.restaurantId }
+          )
+          try {
+            let result = await updateShop(this.formData)
+            if (result.status == 1) {
+              this.$message({
+                type: 'success',
+                message: '更新成功'
+              })
+              this.RECORD_SHOPDETAIL(result.data)
+              // this.$router.push('/manage/home')
+              // this.formData = {
+              //   name: '', //店铺名称
+              //   address: '', //地址
+              //   latitude: '',
+              //   longitude: '',
+              //   description: '', //介绍
+              //   phone: '',
+              //   promotion_info: '',
+              //   float_delivery_fee: 5, //运费
+              //   float_minimum_order_amount: 20, //起价
+              //   is_premium: true,
+              //   delivery_mode: true,
+              //   new: true,
+              //   bao: true,
+              //   zhun: true,
+              //   piao: true,
+              //   startTime: '',
+              //   endTime: '',
+              //   image_path: '',
+              //   business_license_image: '',
+              //   catering_service_license_image: ''
+              // }
+              // this.selectedCategory = ['快餐便当', '简餐']
+              // this.activities = [
+              //   {
+              //     icon_name: '减',
+              //     name: '满减优惠',
+              //     description: '满30减5，满60减8'
+              //   }
+              // ]
             } else {
               this.$message({
                 type: 'error',

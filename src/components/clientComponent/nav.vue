@@ -28,7 +28,7 @@
 
       <li @click="goToAdminManagement">
         <i class="icon iconfont icon-tongji"></i>
-        <div>统计</div>
+        <div>管理</div>
       </li>
       <li @click="exitButton">
         <div><i class="icon iconfont icon-guanbi"></i>
@@ -44,12 +44,14 @@
 
 <script>
 import { signout } from '@/service/getDataAdmin'
+import { mapMutations } from 'vuex'
 export default {
   name: 'Nav',
   data() {
     return {}
   },
   methods: {
+    ...mapMutations(['RESET_STATE']),
     exitButton() {
       this.$confirm('是否退出?', '提示', {
         confirmButtonText: '确定',
@@ -64,6 +66,7 @@ export default {
               message: '退出成功'
             })
             window.localStorage.clear()
+            this.RESET_STATE()
             this.$router.push('/')
           } else {
             this.$message({
@@ -75,7 +78,7 @@ export default {
         .catch(() => {})
     },
     goToAdminManagement() {
-      this.$router.push('/admin')
+      this.$router.push('/manage/home')
     }
   }
 }

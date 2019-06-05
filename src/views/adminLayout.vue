@@ -54,7 +54,10 @@
         style="height: 100%;overflow: auto;"
       >
         <keep-alive>
-          <router-view></router-view>
+          <router-view
+            :shopDetails='shopDetail'
+            :menu='categoryForm.categoryList'
+          ></router-view>
         </keep-alive>
       </el-col>
     </el-row>
@@ -62,25 +65,76 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
+import { shopDetails } from '@/service/getDataClient'
+import { getCategory } from '@/service/getDataAdmin'
+
 export default {
-  created() {},
-  mounted() {
-    if (!this.shopDetail) {
-      this.$message({
-        type: 'error',
-        message: '还没有设置店铺资料'
-      })
-      this.$router.push('/manage/addShop')
+  data() {
+    return {
+      shopDetailData: null,
+      categoryForm: {
+        categoryList: [],
+        categorySelect: '',
+        name: '',
+        description: ''
+      }
     }
   },
+  created() {
+    if (this.adminInfo.status == 0) {
+      this.getAdminData()
+    }
+  },
+  mounted() {
+    this.initData()
+  },
   computed: {
-    ...mapState(['shopDetail']),
+    ...mapState(['adminInfo', 'shopDetail']),
     defaultActive: function() {
       // return this.$route.path.replace('/', '')
     }
   },
-  watch: {}
+  watch: {},
+  methods: {
+    ...mapActions(['getAdminData']),
+    ...mapMutations(['RECORD_SHOPDETAIL']),
+    async initData() {
+      //获取商铺信息
+      this.shopDetailData = await shopDetails(this.adminInfo.restaurantId)
+
+      if (this.shopDetailData.status === 1) {
+        this.RECORD_SHOPDETAIL(this.shopDetailData.data)
+        this.getShopCatagory()
+      } else {
+        this.$message({
+          type: 'error',
+          message: '店铺信息还未填写'
+        })
+      }
+    },
+
+    async getShopCatagory() {
+      try {
+        const result = await getCategory(this.shopDetailData.data.id)
+        if (result.status == 1) {
+          result.category_list.map((item, index) => {
+            item.value = index
+            item.label = item.name
+          })
+          this.categoryForm.categoryList = result.category_list
+          console.log(
+            'categoryForm.categoryList',
+            this.categoryForm.categoryList
+          )
+        } else {
+          console.log(result)
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
 }
 </script>
 

@@ -62,100 +62,112 @@ export default new Router({
       path: '/',
       name: 'Login',
       component: login,
-      meta: []
+
+      authorisation: []
     },
     {
       path: '/home',
       name: 'home',
       component: home,
-      meta: ['staff', 'manager']
+
+      authorisation: ['staff', 'manager']
     },
-    {
-      path: '/admin',
-      component: adminLogin,
-      name: '',
-      meta: []
-    },
+
     {
       path: '/manage/',
       component: adminLayout,
       name: '',
-      meta: ['manager'],
+      authorisation: ['manager'],
       children: [
         {
           path: 'home',
           component: adminHome,
-          meta: ['manager']
+          meta: [],
+          authorisation: ['manager']
         },
         {
           path: 'addShop',
           component: addShop,
-          meta: ['manager']
+          meta: ['添加数据', '添加商铺'],
+          authorisation: ['manager']
         },
         {
           path: 'addGoods',
           component: addGoods,
-          meta: ['manager']
+          meta: ['添加数据', '添加商品'],
+          authorisation: ['manager']
         },
         {
           path: 'userList',
           component: userList,
-          meta: ['manager']
+          meta: ['数据管理', '用户列表'],
+          authorisation: ['manager']
         },
         {
           path: 'shopList',
           component: shopList,
-          meta: ['manager']
+          meta: ['数据管理', '商家列表'],
+          authorisation: ['manager']
         },
         {
           path: 'foodList',
           component: foodList,
-          meta: ['manager']
+          meta: ['数据管理', '食品列表'],
+          authorisation: ['manager']
         },
         {
           path: 'orderList',
           component: orderList,
-          meta: ['manager']
+          meta: ['数据管理', '订单列表'],
+          authorisation: ['manager']
         },
         {
           path: 'adminList',
           component: adminList,
-          meta: ['manager']
+          meta: ['数据管理', '管理员列表'],
+          authorisation: ['manager']
         },
         {
           path: 'visitor',
           component: visitor,
-          meta: ['manager']
+          meta: ['图表', '用户分布'],
+          authorisation: ['manager']
         },
         {
           path: 'newMember',
           component: newMember,
-          meta: ['manager']
+          meta: ['图表', '用户数据'],
+          authorisation: ['manager']
         },
         {
           path: 'uploadImg',
           component: uploadImg,
-          meta: ['manager']
+          meta: ['文本编辑', 'MarkDown'],
+          authorisation: ['manager']
         },
         {
           path: 'vueEdit',
           component: vueEdit,
-          meta: ['manager']
+          meta: ['编辑', '文本编辑'],
+          authorisation: ['manager']
         },
         {
           path: 'adminSet',
           component: adminSet,
-          meta: ['manager']
+          meta: ['设置', '管理员设置'],
+          authorisation: ['manager']
         },
         {
           path: 'sendMessage',
           component: sendMessage,
-          meta: ['manager']
+          meta: ['设置', '发送通知'],
+          authorisation: ['manager']
         },
         {
           path: 'explain',
           component: explain,
-          meta: ['manager']
+          meta: ['说明', '说明'],
+          authorisation: ['manager']
         }
       ]
     },
@@ -163,7 +175,8 @@ export default new Router({
       path: '/404',
       component: notFound,
       name: '',
-      meta: []
+      meta: ['店铺管理'],
+      authorisation: []
     }
   ]
 })

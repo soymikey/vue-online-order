@@ -20,7 +20,7 @@
           <div class="data_list"><span class="data_num">{{adminCount}}</span> 新增管理员</div>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
+      <!-- <el-row :gutter="20">
         <el-col :span="4">
           <div class="data_list all_head"><span class="data_num head">总数据：</span></div>
         </el-col>
@@ -33,7 +33,7 @@
         <el-col :span="4">
           <div class="data_list"><span class="data_num">{{allAdminCount}}</span> 管理员</div>
         </el-col>
-      </el-row>
+      </el-row> -->
     </section>
     <tendency
       :sevenDate='sevenDate'

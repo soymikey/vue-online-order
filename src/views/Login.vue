@@ -139,8 +139,7 @@ export default {
   },
   mounted() {
     this.showLogin = true
-
-    if (!this.adminInfo.status) {
+    if (this.adminInfo.status == 0) {
       this.getAdminData()
     }
   },

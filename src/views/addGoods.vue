@@ -14,6 +14,7 @@
           class="form"
         >
           <el-row class="category_select">
+
             <el-form-item label="食品种类">
               <el-select
                 v-model="categoryForm.categorySelect"
@@ -85,7 +86,7 @@
           >
             <el-input v-model="foodForm.name"></el-input>
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             label="食品活动"
             prop="activity"
           >
@@ -130,7 +131,7 @@
               >
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="食品规格">
             <el-radio
               class="radio"
@@ -213,7 +214,7 @@
         </el-form>
         <el-dialog
           title="添加规格"
-          v-model="dialogFormVisible"
+          :visible.sync="dialogFormVisible"
         >
           <el-form
             :rules="specsFormrules"
@@ -271,12 +272,14 @@
 import headTop from '@/components/adminComponent/headTop'
 import { getCategory, addCategory, addFood } from '@/service/getDataAdmin'
 import { baseUrl, imgBaseUrl } from '@/config/env'
+
 export default {
+  props: ['shopDetails', 'menu'],
   data() {
     return {
       baseUrl,
       imgBaseUrl,
-      restaurant_id: 1,
+      restaurant_id: null,
       categoryForm: {
         categoryList: [],
         categorySelect: '',
@@ -327,31 +330,34 @@ export default {
     headTop
   },
   created() {
-    if (this.$route.query.restaurant_id) {
-      this.restaurant_id = this.$route.query.restaurant_id
-    } else {
-      this.restaurant_id = Math.ceil(Math.random() * 10)
-      this.$msgbox({
-        title: '提示',
-        message: '添加食品需要选择一个商铺，先去就去选择商铺吗？',
-        showCancelButton: true,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        beforeClose: (action, instance, done) => {
-          if (action === 'confirm') {
-            this.$router.push('/shopList')
-            done()
-          } else {
-            this.$message({
-              type: 'info',
-              message: '取消'
-            })
-            done()
-          }
-        }
-      })
-    }
-    this.initData()
+    this.restaurant_id = this.shopDetails.id
+    this.categoryForm.categoryList = this.menu
+    // if (this.$route.query.restaurant_id) {
+    //   this.restaurant_id = this.$route.query.restaurant_id
+    // } else {
+    //   this.restaurant_id = Math.ceil(Math.random() * 10)
+    //   this.$msgbox({
+    //     title: '提示',
+    //     message: '添加食品需要选择一个商铺，先去就去选择商铺吗？',
+    //     showCancelButton: true,
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     beforeClose: (action, instance, done) => {
+    //       if (action === 'confirm') {
+    //         this.$router.push('/shopList')
+    //         done()
+    //       } else {
+    //         this.$message({
+    //           type: 'info',
+    //           message: '取消'
+    //         })
+    //         done()
+    //       }
+    //     }
+    //   })
+    // }
+
+    // this.initData()
   },
   computed: {
     selectValue: function() {
@@ -361,22 +367,22 @@ export default {
     }
   },
   methods: {
-    async initData() {
-      try {
-        const result = await getCategory(this.restaurant_id)
-        if (result.status == 1) {
-          result.category_list.map((item, index) => {
-            item.value = index
-            item.label = item.name
-          })
-          this.categoryForm.categoryList = result.category_list
-        } else {
-          console.log(result)
-        }
-      } catch (err) {
-        console.log(err)
-      }
-    },
+    // async initData() {
+    //   try {
+    //     const result = await getCategory(this.shopDetails.id)
+    //     if (result.status == 1) {
+    //       result.category_list.map((item, index) => {
+    //         item.value = index
+    //         item.label = item.name
+    //       })
+    //       this.categoryForm.categoryList = result.category_list
+    //     } else {
+    //       console.log(result)
+    //     }
+    //   } catch (err) {
+    //     console.log(err)
+    //   }
+    // },
     addCategoryFun() {
       this.showAddCategory = !this.showAddCategory
     },
@@ -452,6 +458,13 @@ export default {
       return ''
     },
     addFood(foodForm) {
+      if (!this.selectValue.label) {
+        this.$message({
+          type: 'error',
+          message: '请填写商品分类'
+        })
+        return
+      }
       this.$refs[foodForm].validate(async valid => {
         if (valid) {
           const params = {

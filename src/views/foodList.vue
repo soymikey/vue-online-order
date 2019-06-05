@@ -91,7 +91,7 @@
       </div>
       <el-dialog
         title="修改食品信息"
-        v-model="dialogFormVisible"
+        :visible.sync="dialogFormVisible"
       >
         <el-form :model="selectTable">
           <el-form-item
@@ -201,7 +201,7 @@
 
       <el-dialog
         title="添加规格"
-        v-model="specsFormVisible"
+        :visible.sync="specsFormVisible"
       >
         <el-form
           :rules="specsFormrules"
@@ -217,7 +217,7 @@
               auto-complete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             label="包装费"
             label-width="100px"
           >
@@ -226,7 +226,7 @@
               :min="0"
               :max="100"
             ></el-input-number>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item
             label="价格"
             label-width="100px"
@@ -266,6 +266,8 @@ import {
   getMenuById
 } from '@/service/getDataAdmin'
 export default {
+  props: ['shopDetails'],
+
   data() {
     return {
       baseUrl,
@@ -295,8 +297,10 @@ export default {
     }
   },
   created() {
-    this.restaurant_id = this.$route.query.restaurant_id
-    this.initData()
+    if (this.shopDetails) {
+      this.restaurant_id = this.shopDetails.id
+      this.initData()
+    }
   },
   computed: {
     specs: function() {
@@ -315,6 +319,12 @@ export default {
   },
   components: {
     headTop
+  },
+  watch: {
+    shopDetails: function() {
+      this.restaurant_id = this.shopDetails.id
+      this.initData()
+    }
   },
   methods: {
     async initData() {
@@ -336,9 +346,10 @@ export default {
       this.menuOptions = []
       try {
         const menu = await getMenu({
-          restaurant_id: this.selectTable.restaurant_id,
+          restaurant_id: 1,
           allMenu: true
         })
+
         menu.forEach((item, index) => {
           this.menuOptions.push({
             label: item.name,
@@ -412,7 +423,8 @@ export default {
     },
     async getSelectItemData(row, type) {
       const restaurant = await getResturantDetail(row.restaurant_id)
-      const category = await getMenuById(row.category_id)
+      const category = await getMenuById(row.restaurant_id)
+
       this.selectTable = {
         ...row,
         ...{

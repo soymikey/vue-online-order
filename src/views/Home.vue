@@ -46,8 +46,6 @@ export default {
   },
   created() {},
   mounted() {
-    console.log('adminInfo', this.adminInfo)
-
     this.initData()
   },
   computed: {
@@ -60,12 +58,13 @@ export default {
       this.menuList = await foodMenu(this.adminInfo.restaurantId)
       //获取商铺信息
       this.shopDetailData = await shopDetails(this.adminInfo.restaurantId)
+
       if (this.shopDetailData.status === 1) {
         this.RECORD_SHOPDETAIL(this.shopDetailData.data)
       } else {
         this.$message({
           type: 'error',
-          message: '获取商铺信息失败'
+          message: this.shopDetailData.message
         })
       }
     }

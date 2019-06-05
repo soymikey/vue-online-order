@@ -1,5 +1,6 @@
 export const SAVE_ADMIN_INFO = 'SAVE_ADMIN_INFO'
 export const RECORD_ADDRESS = 'RECORD_ADDRESS'
+export const RESET_STATE = 'RESET_STATE'
 export const ADD_CART = 'ADD_CART'
 export const UPDATE_CART = 'UPDATE_CART'
 export const REDUCE_CART = 'REDUCE_CART'

@@ -15,15 +15,16 @@ function loginNotification(type, message) {
     message
   })
 }
+console.log('router', router)
 
 const staffRouter = []
 const managerRouter = []
 for (const router of router.options.routes) {
   if (!router.children) {
-    if (!router.meta.length) {
+    if (!router.authorisation.length) {
       staffRouter.push(router.path)
       managerRouter.push(router.path)
-    } else if (router.meta.indexOf('staff') !== -1) {
+    } else if (router.authorisation.indexOf('staff') !== -1) {
       staffRouter.push(router.path)
       managerRouter.push(router.path)
     } else {
@@ -31,10 +32,10 @@ for (const router of router.options.routes) {
     }
   } else {
     for (const childRouter of router.children) {
-      if (!childRouter.meta.length) {
+      if (!childRouter.authorisation.length) {
         staffRouter.push(childRouter.path)
         managerRouter.push(childRouter.path)
-      } else if (childRouter.meta.indexOf('staff') !== -1) {
+      } else if (childRouter.authorisation.indexOf('staff') !== -1) {
         staffRouter.push(childRouter.path)
         managerRouter.push(childRouter.path)
       } else {
@@ -44,43 +45,44 @@ for (const router of router.options.routes) {
   }
 }
 router.beforeEach((to, from, next) => {
-  //没有state的情况下
+  console.log(
+    'store.getters.state.adminInfo.status',
+    store.getters.state.adminInfo.status
+  )
+
   if (managerRouter.indexOf(to.path) !== -1) {
     if (to.path === '/') {
-      next()
-    } else if (to.path === '/admin') {
       next()
     } else if (to.path === '/404') {
       next()
     } else {
-      //如果没有status
-      if (!store.getters.state.adminInfo.status) {
+      if (store.getters.state.adminInfo.status === 0) {
         store.dispatch('getAdminData').then(() => {
-          if (store.getters.state.adminInfo.status === 2) {
-            next()
+          if (store.getters.state.adminInfo.status === 0) {
+            loginNotification('error', '请登录...')
+            next({ path: '/' })
           } else if (store.getters.state.adminInfo.status === 1) {
             if (staffRouter.indexOf(to.path) !== -1) {
               next()
             } else {
-              loginNotification('error', '普通管理员的权限不够')
-              next({ path: '/admin' })
+              loginNotification('error', '请登陆管理员账号')
             }
-          } else {
-            loginNotification('error', '请登录...')
-            next({ path: '/' })
-          }
-        })
-      } else {
-        if (store.getters.state.adminInfo.status === 2) {
-          next()
-        } else if (store.getters.state.adminInfo.status === 1) {
-          if (staffRouter.indexOf(to.path) !== -1) {
+          } else if (store.getters.state.adminInfo.status === 2) {
             next()
           } else {
-            loginNotification('error', '普通管理员的权限不够')
-            next({ path: '/admin' })
+            loginNotification('error', '路由逻辑出错')
           }
+        })
+      } else if (store.getters.state.adminInfo.status === 1) {
+        if (staffRouter.indexOf(to.path) !== -1) {
+          next()
+        } else {
+          loginNotification('error', '请登陆管理员账号')
         }
+      } else if (store.getters.state.adminInfo.status === 2) {
+        next()
+      } else {
+        loginNotification('error', '路由逻辑出错')
       }
     }
   } else {
@@ -89,25 +91,44 @@ router.beforeEach((to, from, next) => {
 })
 
 // router.beforeEach((to, from, next) => {
-//   // console.log('to.path', to.path)
-
+//   //没有state的情况下
 //   if (managerRouter.indexOf(to.path) !== -1) {
 //     if (to.path === '/') {
 //       next()
 //     } else if (to.path === '/admin') {
 //       next()
-//     } else if (store.getters.state.adminInfo.status === 2) {
-//       next()
-//     } else if (store.getters.state.adminInfo.status === 1) {
-//       if (staffRouter.indexOf(to.path) !== -1) {
-//         next()
-//       } else {
-//         loginNotification('error', '普通管理员的权限不够')
-//       }
 //     } else if (to.path === '/404') {
 //       next()
 //     } else {
-//       next({ path: '/' })
+//       //如果没有status
+//       if (!store.getters.state.adminInfo.status) {
+//         store.dispatch('getAdminData').then(() => {
+//           if (store.getters.state.adminInfo.status === 2) {
+//             next()
+//           } else if (store.getters.state.adminInfo.status === 1) {
+//             if (staffRouter.indexOf(to.path) !== -1) {
+//               next()
+//             } else {
+//               loginNotification('error', '普通管理员的权限不够')
+//               next({ path: '/admin' })
+//             }
+//           } else {
+//             loginNotification('error', '请登录...')
+//             next({ path: '/' })
+//           }
+//         })
+//       } else {
+//         if (store.getters.state.adminInfo.status === 2) {
+//           next()
+//         } else if (store.getters.state.adminInfo.status === 1) {
+//           if (staffRouter.indexOf(to.path) !== -1) {
+//             next()
+//           } else {
+//             loginNotification('error', '普通管理员的权限不够')
+//             next({ path: '/admin' })
+//           }
+//         }
+//       }
 //     }
 //   } else {
 //     next({ path: '/404' })
