@@ -439,7 +439,7 @@ export default {
       this.$nextTick(() => {
         this.expendRow.push(row.index)
       })
-      if (type == 'edit' && this.restaurant_id != row.restaurant_id) {
+      if (type == 'edit' && this.restaurant_id == row.restaurant_id) {
         this.getMenu()
       }
     },

@@ -185,6 +185,7 @@ export const foodMenu = restaurant_id =>
 /**
  * 获取商铺评价列表
  */
+//
 
 export const getRatingList = (shopid, offset, tag_name = '') =>
   fetch('/ugc/v2/restaurants/' + shopid + '/ratings', {

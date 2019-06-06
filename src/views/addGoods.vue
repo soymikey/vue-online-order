@@ -330,8 +330,12 @@ export default {
     headTop
   },
   created() {
-    this.restaurant_id = this.shopDetails.id
-    this.categoryForm.categoryList = this.menu
+    if (this.shopDetails) {
+      this.restaurant_id = this.shopDetails.id
+      this.categoryForm.categoryList = this.menu
+      this.initData()
+    }
+
     // if (this.$route.query.restaurant_id) {
     //   this.restaurant_id = this.$route.query.restaurant_id
     // } else {
@@ -356,8 +360,6 @@ export default {
     //     }
     //   })
     // }
-
-    // this.initData()
   },
   computed: {
     selectValue: function() {
@@ -366,23 +368,30 @@ export default {
       )
     }
   },
+  watch: {
+    shopDetails: function() {
+      this.restaurant_id = this.shopDetails.id
+      this.categoryForm.categoryList = this.menu
+      this.initData()
+    }
+  },
   methods: {
-    // async initData() {
-    //   try {
-    //     const result = await getCategory(this.shopDetails.id)
-    //     if (result.status == 1) {
-    //       result.category_list.map((item, index) => {
-    //         item.value = index
-    //         item.label = item.name
-    //       })
-    //       this.categoryForm.categoryList = result.category_list
-    //     } else {
-    //       console.log(result)
-    //     }
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // },
+    async initData() {
+      try {
+        const result = await getCategory(this.shopDetails.id)
+        if (result.status == 1) {
+          result.category_list.map((item, index) => {
+            item.value = index
+            item.label = item.name
+          })
+          this.categoryForm.categoryList = result.category_list
+        } else {
+          console.log(result)
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
     addCategoryFun() {
       this.showAddCategory = !this.showAddCategory
     },
