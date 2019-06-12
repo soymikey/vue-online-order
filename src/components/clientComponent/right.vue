@@ -2,7 +2,7 @@
   <div class="home-right">
 
     <div class="often-goods">
-      <div class="title">常用商品<div>{{specsIndex}}</div>
+      <div class="title">常用商品<div> </div>
 
       </div>
       <div class="often-goods-list">
@@ -104,7 +104,7 @@ export default {
   name: 'home-right',
   props: {
     menu: { type: Array },
-    shopId: { type: String }
+    shopDetail: { type: Object }
   },
   components: {},
   data() {
@@ -122,7 +122,7 @@ export default {
 
     addToCart(food_id, name, price, specs) {
       this.ADD_CART({
-        shopid: this.shopId,
+        shopid: this.shopDetail.id,
         food_id,
         name,
         price,
@@ -149,7 +149,7 @@ export default {
         ? `${name}${specs == '默认' ? '' : '+' + specs}`
         : name
       this.ADD_CART({
-        shopid: this.shopId,
+        shopid: this.shopDetail.id,
         food_id,
         name,
         price,

@@ -340,7 +340,7 @@ export const postAddAddress = (
  * 下订单
  */
 
-export const placeOrders = (
+export const placeOrdersOriginal = (
   user_id,
   cart_id,
   address_id,
@@ -360,6 +360,30 @@ export const placeOrders = (
       geohash,
       paymethod_id: 1,
       sig
+    },
+    'POST'
+  )
+export const placeOrders = (
+  user_id,
+  restaurant_id,
+  restaurant_name,
+  cart_id,
+  total_price,
+  total_quantity,
+  entities,
+  address_id
+) =>
+  fetch(
+    '/v1/users/' + user_id + '/carts/' + cart_id + '/orders',
+    {
+      user_id,
+      restaurant_id,
+      restaurant_name,
+      cart_id,
+      total_price,
+      total_quantity,
+      entities,
+      address_id
     },
     'POST'
   )

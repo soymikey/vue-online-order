@@ -93,6 +93,7 @@
         title="修改食品信息"
         :visible.sync="dialogFormVisible"
       >
+        <div>{{selectTable}}</div>
         <el-form :model="selectTable">
           <el-form-item
             label="食品名称"
@@ -113,6 +114,8 @@
             label="食品分类"
             label-width="100px"
           >
+            <div>'index'{{selectIndex}}</div>
+            <div>'selectMenu.label'{{selectMenu.label}}</div>
             <el-select
               v-model="selectIndex"
               :placeholder="selectMenu.label"
@@ -423,13 +426,13 @@ export default {
     },
     async getSelectItemData(row, type) {
       const restaurant = await getResturantDetail(row.restaurant_id)
-      const category = await getMenuById(row.restaurant_id)
+      const category = await getMenuById(row.category_id)
 
       this.selectTable = {
         ...row,
         ...{
-          restaurant_name: restaurant.name,
-          restaurant_address: restaurant.address,
+          restaurant_name: restaurant.data.name,
+          restaurant_address: restaurant.data.address,
           category_name: category.name
         }
       }
@@ -444,7 +447,7 @@ export default {
       }
     },
     handleSelect(index) {
-      this.selectIndex = index
+      this.selectIndex = null
       this.selectMenu = this.menuOptions[index]
     },
     async handleDelete(index, row) {

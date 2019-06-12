@@ -9,13 +9,13 @@
           id="order-list"
         >
           <home-Left
-            :shopId='shopId'
+            :shopDetail='shopDetail'
             :menu="menuList"
           ></home-Left>
         </el-col>
         <el-col :span="16">
           <home-Right
-            :shopId='shopId'
+            :shopDetail='shopDetail'
             :menu="menuList"
           ></home-Right>
         </el-col>
@@ -38,7 +38,6 @@ export default {
   components: { homeNav, homeLeft, homeRight },
   data() {
     return {
-      shopId: null, //商店id值
       shopDetailData: null, //商铺详情
       showActivities: false, //是否显示活动详情
       menuList: [] //食品列表
@@ -49,7 +48,7 @@ export default {
     this.initData()
   },
   computed: {
-    ...mapState(['adminInfo'])
+    ...mapState(['adminInfo', 'shopDetail'])
   },
   methods: {
     ...mapMutations(['RECORD_SHOPDETAIL']),

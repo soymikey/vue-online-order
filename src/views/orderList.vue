@@ -2,6 +2,7 @@
   <div class="fillcontain">
     <head-top></head-top>
     <div class="table_container">
+      <div>{{tableData}}</div>
       <el-table
         :data="tableData"
         @expand='expand'
@@ -9,7 +10,8 @@
         :row-key="row => row.index"
         style="width: 100%"
       >
-        <el-table-column type="expand">
+        <!-- original -->
+        <!-- <el-table-column type="expand">
           <template slot-scope="props">
             <el-form
               label-position="left"
@@ -33,6 +35,30 @@
               </el-form-item>
             </el-form>
           </template>
+        </el-table-column> -->
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form
+              label-position="left"
+              inline
+              class="demo-table-expand"
+            >
+
+              <el-form-item label="订单">
+                <div
+                  :key='index'
+                  v-for="(item,index) of props.row.basket"
+                >
+                  <span>商品:</span> <span>{{ item[0].nameWithSpecs }}</span>
+                  <span>数量:</span> <span>{{ item[0].num }}</span>
+
+                  <span>价格:</span> <span>{{ item[0].price*item[0].num }}</span>
+                </div>
+
+              </el-form-item>
+
+            </el-form>
+          </template>
         </el-table-column>
         <el-table-column
           label="订单 ID"
@@ -47,6 +73,11 @@
         <el-table-column
           label="订单状态"
           prop="status"
+        >
+        </el-table-column>
+        <el-table-column
+          label="订单日期"
+          prop="date"
         >
         </el-table-column>
       </el-table>
@@ -128,16 +159,25 @@ export default {
         limit: this.limit,
         restaurant_id: this.restaurant_id
       })
+
       this.tableData = []
       Orders.forEach((item, index) => {
+        // const tableData = {}
+        // tableData.id = item.id
+        // tableData.total_amount = item.total_amount
+        // tableData.status = item.status_bar.title
+        // tableData.user_id = item.user_id
+        // tableData.restaurant_id = item.restaurant_id
+
+        // tableData.index = index
+        // this.tableData.push(tableData)
         const tableData = {}
-        tableData.id = item.id
         tableData.total_amount = item.total_amount
         tableData.status = item.status_bar.title
-        tableData.user_id = item.user_id
-        tableData.restaurant_id = item.restaurant_id
-        tableData.address_id = item.address_id
-        tableData.index = index
+        tableData.id = item.id
+        tableData.date = item.formatted_created_at
+        tableData.basket = item.basket.group
+
         this.tableData.push(tableData)
       })
     },
@@ -183,6 +223,7 @@ export default {
 .demo-table-expand .el-form-item {
   margin-right: 0;
   margin-bottom: 0;
-  width: 50%;
+  // width: 50%;
+  width: 100%;
 }
 </style>
