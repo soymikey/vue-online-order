@@ -10,7 +10,7 @@ const state = {
   loginState: 0, //0 是没有登陆，1 员工账号，2管理员账号
   adminInfo: {
     avatar: 'default.jpg',
-    status: 0 //0 是没有登陆，1 员工账号，2管理员账号
+    auth: 0 //0 是没有登陆，1 员工账号，2管理员账号
   },
   latitude: '', // 当前位置纬度
   longitude: '', // 当前位置经度

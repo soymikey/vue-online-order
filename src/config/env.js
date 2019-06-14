@@ -4,12 +4,12 @@
 //  routerMode: 路由模式
 //  imgBaseUrl: 图片所在域名地址
 
-let baseUrl = '//localhost:8001'
+let baseUrl = '//localhost:4001'
 let routerMode = 'hash'
 let imgBaseUrl = ''
 
 if (process.env.NODE_ENV === 'development') {
-  imgBaseUrl = 'http://localhost:8001/img/'
+  imgBaseUrl = 'http://localhost:4001/img/'
 } else if (process.env.NODE_ENV === 'production') {
   baseUrl = '//elm.cangdu.org'
   imgBaseUrl = '//elm.cangdu.org/img/'

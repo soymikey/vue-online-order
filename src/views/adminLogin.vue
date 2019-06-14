@@ -69,7 +69,7 @@ export default {
     this.showLogin = true
 
     if (!this.adminInfo.status) {
-      this.getAdminData()
+      this.getUserData()
     } else if (this.adminInfo.status === 1) {
       this.$message.error('普通管理员的权限不够')
     } else if (this.adminInfo.status === 2) {
@@ -80,7 +80,7 @@ export default {
     ...mapState(['adminInfo'])
   },
   methods: {
-    ...mapActions(['getAdminData']),
+    ...mapActions(['getUserData']),
     async submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
@@ -96,7 +96,7 @@ export default {
             })
             console.log('res', res)
 
-            store.dispatch('getAdminData').then(() => {
+            store.dispatch('getUserData').then(() => {
               this.$router.push('/manage/home')
             })
           } else if (res.status === 1) {

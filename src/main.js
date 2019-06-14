@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store/index.js'
-import ElementUI, { TabPane } from 'element-ui'
+import ElementUI from 'element-ui'
+import { getStore } from './config/mUtils'
 import '../src/style/reset.scss'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -45,41 +46,41 @@ for (const router of router.options.routes) {
   }
 }
 router.beforeEach((to, from, next) => {
-  console.log(
-    'store.getters.state.adminInfo.status',
-    store.getters.state.adminInfo.status
-  )
-
   if (managerRouter.indexOf(to.path) !== -1) {
     if (to.path === '/') {
       next()
     } else if (to.path === '/404') {
       next()
     } else {
-      if (store.getters.state.adminInfo.status === 0) {
-        store.dispatch('getAdminData').then(() => {
-          if (store.getters.state.adminInfo.status === 0) {
+      if (store.getters.state.adminInfo.auth === 0) {
+        store.dispatch('getUserData').then(() => {
+          console.log(
+            'store.getters.state.adminInfo.auth',
+            store.getters.state.adminInfo.auth
+          )
+
+          if (store.getters.state.adminInfo.auth === 0) {
             loginNotification('error', '请登录...')
             next({ path: '/' })
-          } else if (store.getters.state.adminInfo.status === 1) {
+          } else if (store.getters.state.adminInfo.auth === 1) {
             if (staffRouter.indexOf(to.path) !== -1) {
               next()
             } else {
               loginNotification('error', '请登陆管理员账号')
             }
-          } else if (store.getters.state.adminInfo.status === 2) {
+          } else if (store.getters.state.adminInfo.auth === 2) {
             next()
           } else {
             loginNotification('error', '路由逻辑出错')
           }
         })
-      } else if (store.getters.state.adminInfo.status === 1) {
+      } else if (store.getters.state.adminInfo.auth === 1) {
         if (staffRouter.indexOf(to.path) !== -1) {
           next()
         } else {
           loginNotification('error', '请登陆管理员账号')
         }
-      } else if (store.getters.state.adminInfo.status === 2) {
+      } else if (store.getters.state.adminInfo.auth === 2) {
         next()
       } else {
         loginNotification('error', '路由逻辑出错')
@@ -100,12 +101,12 @@ router.beforeEach((to, from, next) => {
 //     } else if (to.path === '/404') {
 //       next()
 //     } else {
-//       //如果没有status
-//       if (!store.getters.state.adminInfo.status) {
-//         store.dispatch('getAdminData').then(() => {
-//           if (store.getters.state.adminInfo.status === 2) {
+//       //如果没有auth
+//       if (!store.getters.state.adminInfo.auth) {
+//         store.dispatch('getUserData').then(() => {
+//           if (store.getters.state.adminInfo.auth === 2) {
 //             next()
-//           } else if (store.getters.state.adminInfo.status === 1) {
+//           } else if (store.getters.state.adminInfo.auth === 1) {
 //             if (staffRouter.indexOf(to.path) !== -1) {
 //               next()
 //             } else {
@@ -118,9 +119,9 @@ router.beforeEach((to, from, next) => {
 //           }
 //         })
 //       } else {
-//         if (store.getters.state.adminInfo.status === 2) {
+//         if (store.getters.state.adminInfo.auth === 2) {
 //           next()
-//         } else if (store.getters.state.adminInfo.status === 1) {
+//         } else if (store.getters.state.adminInfo.auth === 1) {
 //           if (staffRouter.indexOf(to.path) !== -1) {
 //             next()
 //           } else {

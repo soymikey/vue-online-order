@@ -84,7 +84,7 @@ export default {
             username: this.registerForm.username,
             password: this.registerForm.password,
             restaurantId: this.adminInfo.restaurantId,
-            manangerId: this.adminInfo.id
+            managerId: this.adminInfo.id
           })
 
           if (res.status === 1) {
@@ -92,6 +92,8 @@ export default {
               type: 'success',
               message: res.message
             })
+            this.registerForm.username = ''
+            this.registerForm.password = ''
           } else {
             this.$message({
               type: 'error',

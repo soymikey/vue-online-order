@@ -105,8 +105,9 @@
 </template>
 
 <script>
-import { login, register, getAdminInfo } from '../service/getDataAdmin'
+import { login, register, getAdminInfo } from '../apiService/clientApi'
 import { Loading } from 'element-ui'
+import { setStore } from '../config/mUtils'
 import { mapActions, mapState } from 'vuex'
 import store from '../store/index.js'
 
@@ -139,20 +140,20 @@ export default {
   },
   mounted() {
     this.showLogin = true
-    if (this.adminInfo.status == 0) {
-      this.getAdminData()
+    if (this.adminInfo.auth == 0) {
+      this.getUserData()
     }
   },
   computed: {
     ...mapState(['adminInfo'])
   },
   methods: {
-    ...mapActions(['getAdminData']),
+    ...mapActions(['getUserData']),
     async loginButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           const res = await login({
-            user_name: this.loginForm.username,
+            username: this.loginForm.username,
             password: this.loginForm.password
           })
 
@@ -161,7 +162,7 @@ export default {
               type: 'success',
               message: '登入成功'
             })
-            store.dispatch('getAdminData').then(() => {
+            store.dispatch('getUserData').then(() => {
               this.$router.push('home')
             })
           } else {
@@ -183,28 +184,31 @@ export default {
     async registerButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          const res = await register({
-            user_name: this.registerForm.username,
+          register({
+            username: this.registerForm.username,
             password: this.registerForm.password
-          })
+          }).then(res => {
+            if (res.status === 1) {
+              console.log('ok', res)
+              this.$message({
+                type: 'success',
+                message: res.message
+              })
+              setStore('username', res.username)
+              setStore('token', res.token)
+              this.loading = true
 
-          if (res.status === 1) {
-            this.$message({
-              type: 'success',
-              message: res.message
-            })
-            this.loading = true
-            setTimeout(() => {
-              store.dispatch('getAdminData').then(() => {
+              store.dispatch('getUserData').then(() => {
                 this.$router.push('home')
               })
-            }, 2000)
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.message
-            })
-          }
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.message
+              })
+            }
+          })
+          // console.log('res=====================', res)
         } else {
           this.$notify.error({
             title: '错误',
@@ -218,7 +222,7 @@ export default {
   },
   watch: {
     adminInfo: function(newValue) {
-      if (newValue.status === 2 || newValue.status === 1) {
+      if (newValue.auth === 2 || newValue.auth === 1) {
         this.$message({
           type: 'success',
           message: '登入成功'

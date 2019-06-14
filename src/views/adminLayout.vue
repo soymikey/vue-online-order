@@ -85,7 +85,7 @@ export default {
   },
   created() {
     if (this.adminInfo.status == 0) {
-      this.getAdminData()
+      this.getUserData()
     }
   },
   mounted() {
@@ -99,7 +99,7 @@ export default {
   },
   watch: {},
   methods: {
-    ...mapActions(['getAdminData']),
+    ...mapActions(['getUserData']),
     ...mapMutations(['RECORD_SHOPDETAIL']),
     async initData() {
       //获取商铺信息

@@ -13,18 +13,21 @@
 //     commit(SAVE_ADDRESS, addres)
 //   }
 // }
-import { getAdminInfo } from '../service/getDataClient'
+import { getUserInfo } from '../apiService/clientApi'
 
 import { SAVE_ADMIN_INFO } from './mutation-types.js'
 export default {
-  async getAdminData({ commit }) {
+  async getUserData({ commit }) {
     try {
-      const res = await getAdminInfo()
-      if (res.status === 1) {
-        commit(SAVE_ADMIN_INFO, res.data)
-      } else {
-        throw new Error(res.type)
-      }
+      getUserInfo().then(res => {
+        console.log('res===========', res)
+
+        if (res.status === 1) {
+          commit(SAVE_ADMIN_INFO, res.data)
+        } else {
+          throw new Error(res.type)
+        }
+      })
     } catch (err) {
       // console.log(err.message)
     }

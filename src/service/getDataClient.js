@@ -6,11 +6,6 @@ import { getStore } from '../config/mUtils'
  */
 
 export const register = data => fetch('/user/register', data, 'POST')
-/**
- * 获取用户信息
- */
-
-export const getAdminInfo = () => fetch('/admin/info')
 
 /**
  * 获取首页默认地址
