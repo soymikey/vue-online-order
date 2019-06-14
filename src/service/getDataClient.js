@@ -2,15 +2,10 @@ import fetch from '../config/fetch'
 import { getStore } from '../config/mUtils'
 
 /**
- * 登陆
- */
-
-export const login = data => fetch('/admin/login', data, 'POST')
-/**
  * 注册
  */
 
-export const register = data => fetch('/admin/register', data, 'POST')
+export const register = data => fetch('/user/register', data, 'POST')
 /**
  * 获取用户信息
  */

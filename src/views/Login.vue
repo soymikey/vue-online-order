@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { login, register, getAdminInfo } from '../service/getDataClient'
+import { login, register, getAdminInfo } from '../service/getDataAdmin'
 import { Loading } from 'element-ui'
 import { mapActions, mapState } from 'vuex'
 import store from '../store/index.js'

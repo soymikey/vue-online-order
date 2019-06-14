@@ -1,0 +1,3 @@
+## print out without print preview
+## drag food to different category
+##

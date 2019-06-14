@@ -41,6 +41,7 @@
             <template slot="title"><i class="el-icon-setting"></i>设置</template>
             <el-menu-item index="/manage/adminSet">管理员设置</el-menu-item>
             <el-menu-item index="/manage/addShop">商铺设置</el-menu-item>
+            <el-menu-item index="/manage/addStaff">人员设置</el-menu-item>
             <!-- <el-menu-item index="sendMessage">发送通知</el-menu-item> -->
           </el-submenu>
           <el-submenu index="7">
@@ -57,6 +58,7 @@
           <router-view
             :shopDetails='shopDetail'
             :menu='categoryForm.categoryList'
+            :adminInfo='adminInfo'
           ></router-view>
         </keep-alive>
       </el-col>

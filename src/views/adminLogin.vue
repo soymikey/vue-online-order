@@ -94,6 +94,8 @@ export default {
               type: 'success',
               message: '登录成功'
             })
+            console.log('res', res)
+
             store.dispatch('getAdminData').then(() => {
               this.$router.push('/manage/home')
             })

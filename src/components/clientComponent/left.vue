@@ -153,7 +153,7 @@ import { placeOrders } from '../../service/getDataClient.js'
 export default {
   props: {
     menu: { type: Array },
-    shopDetail: { type: String }
+    shopDetail: { type: Object }
   },
   data() {
     return {

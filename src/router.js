@@ -46,6 +46,8 @@ const vueEdit = r =>
   require.ensure([], () => r(require('@/views/vueEdit')), 'vueEdit')
 const adminSet = r =>
   require.ensure([], () => r(require('@/views/adminSet')), 'adminSet')
+const addStaff = r =>
+  require.ensure([], () => r(require('@/views/addStaff')), 'addStaff')
 const sendMessage = r =>
   require.ensure([], () => r(require('@/views/sendMessage')), 'sendMessage')
 const explain = r =>
@@ -88,7 +90,7 @@ export default new Router({
         {
           path: 'addShop',
           component: addShop,
-          meta: ['添加数据', '添加商铺'],
+          meta: ['设置', '商铺设置'],
           authorisation: ['manager']
         },
         {
@@ -155,6 +157,12 @@ export default new Router({
           path: 'adminSet',
           component: adminSet,
           meta: ['设置', '管理员设置'],
+          authorisation: ['manager']
+        },
+        {
+          path: 'addStaff',
+          component: addStaff,
+          meta: ['设置', '员工设置'],
           authorisation: ['manager']
         },
         {
