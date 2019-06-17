@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div>{{adminInfo}}</div>
+    <div>{{userInfo}}</div>
     <div>{{shopDetail}}</div>
     <!-- <div id="nav">
       <router-link to="/"></router-link> |
@@ -25,7 +25,7 @@ export default {
       // return this.$route.path.replace('/', '')
     },
 
-    ...mapState(['adminInfo', 'shopDetail'])
+    ...mapState(['userInfo', 'shopDetail'])
   },
   watch: {}
 }

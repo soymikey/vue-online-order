@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { login, getAdminInfo } from '@/service/getDataAdmin'
+import { login, getAdminInfo } from '@/apiService/clientApi'
 import { mapActions, mapState } from 'vuex'
 import store from '../store/index.js'
 

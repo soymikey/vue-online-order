@@ -270,11 +270,11 @@
 
 <script>
 import headTop from '@/components/adminComponent/headTop'
-import { getCategory, addCategory, addFood } from '@/service/getDataAdmin'
+import { getCategories, addCategory, addFood } from '@/apiService/clientApi'
 import { baseUrl, imgBaseUrl } from '@/config/env'
 
 export default {
-  props: ['shopDetails', 'menu'],
+  props: ['restaurantInfo', 'menu'],
   data() {
     return {
       baseUrl,
@@ -329,37 +329,11 @@ export default {
   components: {
     headTop
   },
-  created() {
-    if (this.shopDetails) {
-      this.restaurant_id = this.shopDetails.id
-      this.categoryForm.categoryList = this.menu
+  created() {},
+  mounted() {
+    if (this.restaurantInfo) {
       this.initData()
     }
-
-    // if (this.$route.query.restaurant_id) {
-    //   this.restaurant_id = this.$route.query.restaurant_id
-    // } else {
-    //   this.restaurant_id = Math.ceil(Math.random() * 10)
-    //   this.$msgbox({
-    //     title: '提示',
-    //     message: '添加食品需要选择一个商铺，先去就去选择商铺吗？',
-    //     showCancelButton: true,
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     beforeClose: (action, instance, done) => {
-    //       if (action === 'confirm') {
-    //         this.$router.push('/shopList')
-    //         done()
-    //       } else {
-    //         this.$message({
-    //           type: 'info',
-    //           message: '取消'
-    //         })
-    //         done()
-    //       }
-    //     }
-    //   })
-    // }
   },
   computed: {
     selectValue: function() {
@@ -369,22 +343,25 @@ export default {
     }
   },
   watch: {
-    shopDetails: function() {
-      this.restaurant_id = this.shopDetails.id
-      this.categoryForm.categoryList = this.menu
+    restaurantInfo: function(newValue) {
+      this.restaurantId = newValue.restaurantId
+      // this.categoryForm.categoryList = this.menu
       this.initData()
     }
   },
   methods: {
     async initData() {
       try {
-        const result = await getCategory(this.shopDetails.id)
+        const result = await getCategories({
+          restaurantId: this.restaurantInfo.restaurantId
+        })
+
         if (result.status == 1) {
-          result.category_list.map((item, index) => {
+          result.data.map((item, index) => {
             item.value = index
             item.label = item.name
           })
-          this.categoryForm.categoryList = result.category_list
+          this.categoryForm.categoryList = result.data
         } else {
           console.log(result)
         }
@@ -401,7 +378,7 @@ export default {
           const params = {
             name: this.categoryForm.name,
             description: this.categoryForm.description,
-            restaurant_id: this.restaurant_id
+            restaurantId: this.restaurantInfo.restaurantId
           }
           try {
             const result = await addCategory(params)
@@ -479,7 +456,7 @@ export default {
           const params = {
             ...this.foodForm,
             category_id: this.selectValue.id,
-            restaurant_id: this.restaurant_id
+            restaurantId: this.restaurantInfo.restaurantId
           }
           try {
             const result = await addFood(params)

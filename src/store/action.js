@@ -19,17 +19,26 @@ import { SAVE_ADMIN_INFO } from './mutation-types.js'
 export default {
   async getUserData({ commit }) {
     try {
-      getUserInfo().then(res => {
-        console.log('res===========', res)
+      const res = await getUserInfo()
 
-        if (res.status === 1) {
-          commit(SAVE_ADMIN_INFO, res.data)
-        } else {
-          throw new Error(res.type)
-        }
-      })
+      commit(SAVE_ADMIN_INFO, res.data)
     } catch (err) {
       // console.log(err.message)
     }
+    // try {
+    //   getUserInfo()
+    //     // .then(res => {
+    //     //   if (res.status === 1) {
+    //     //     commit(SAVE_ADMIN_INFO, res.data)
+    //     //   } else {
+    //     //     throw new Error(res.type)
+    //     //   }
+    //     // })
+    //     // .catch(error => {
+    //     //   // console.log('error', error)
+    //     // })
+    // } catch (err) {
+    //   // console.log(err.message)
+    // }
   }
 }

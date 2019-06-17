@@ -8,7 +8,7 @@
 <script>
 	import headTop from '@/components/adminComponent/headTop'
     import visitorPie from '@/components/adminComponent/visitorPie'
-	import {getUserCity} from '@/service/getDataAdmin'
+	import {getUserCity} from '@/apiService/clientApi'
     export default {
     	data(){
     		return {

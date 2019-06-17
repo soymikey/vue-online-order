@@ -53,7 +53,7 @@ import {
   getOrderCount,
   adminDayCount,
   adminCount
-} from '@/service/getDataAdmin'
+} from '@/apiService/clientApi'
 export default {
   data() {
     return {

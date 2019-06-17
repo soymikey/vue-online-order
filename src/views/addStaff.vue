@@ -49,8 +49,8 @@
 
 <script>
 import headTop from '@/components/adminComponent/headTop'
-import { register } from '../service/getDataClient'
-import { getUserCity } from '@/service/getDataAdmin'
+import { registerStaff } from '../apiService/clientApi'
+import { getUserCity } from '@/apiService/clientApi'
 
 export default {
   props: ['adminInfo'],
@@ -80,26 +80,35 @@ export default {
     async registerButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          const res = await register({
+          registerStaff({
             username: this.registerForm.username,
             password: this.registerForm.password,
             restaurantId: this.adminInfo.restaurantId,
             managerId: this.adminInfo.id
           })
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: res.message
+              })
+              this.registerForm.username = ''
+              this.registerForm.password = ''
+            })
+            .catch(error => {})
 
-          if (res.status === 1) {
-            this.$message({
-              type: 'success',
-              message: res.message
-            })
-            this.registerForm.username = ''
-            this.registerForm.password = ''
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.message
-            })
-          }
+          // if (res.status === 1) {
+          //   this.$message({
+          //     type: 'success',
+          //     message: res.message
+          //   })
+          //   this.registerForm.username = ''
+          //   this.registerForm.password = ''
+          // } else {
+          //   this.$message({
+          //     type: 'error',
+          //     message: res.message
+          //   })
+          // }
         } else {
           this.$notify.error({
             title: '错误',

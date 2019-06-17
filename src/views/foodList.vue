@@ -267,7 +267,7 @@ import {
   deleteFood,
   getResturantDetail,
   getMenuById
-} from '@/service/getDataAdmin'
+} from '@/apiService/clientApi'
 export default {
   props: ['shopDetails'],
 

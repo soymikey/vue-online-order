@@ -107,7 +107,7 @@ import {
   getResturantDetail,
   getUserInfo,
   getAddressById
-} from '@/service/getDataAdmin'
+} from '@/apiService/clientApi'
 export default {
   data() {
     return {

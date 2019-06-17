@@ -16,7 +16,6 @@ function loginNotification(type, message) {
     message
   })
 }
-console.log('router', router)
 
 const staffRouter = []
 const managerRouter = []
@@ -52,35 +51,36 @@ router.beforeEach((to, from, next) => {
     } else if (to.path === '/404') {
       next()
     } else {
-      if (store.getters.state.adminInfo.auth === 0) {
+      if (!getStore('token')) {
+        next({ path: '/' })
+      } else if (store.getters.state.userInfo.auth === 0) {
         store.dispatch('getUserData').then(() => {
           console.log(
-            'store.getters.state.adminInfo.auth',
-            store.getters.state.adminInfo.auth
+            'store.getters.state.userInfo.auth',
+            store.getters.state.userInfo
           )
 
-          if (store.getters.state.adminInfo.auth === 0) {
-            loginNotification('error', '请登录...')
+          if (store.getters.state.userInfo.auth === 0) {
             next({ path: '/' })
-          } else if (store.getters.state.adminInfo.auth === 1) {
+          } else if (store.getters.state.userInfo.auth === 1) {
             if (staffRouter.indexOf(to.path) !== -1) {
               next()
             } else {
               loginNotification('error', '请登陆管理员账号')
             }
-          } else if (store.getters.state.adminInfo.auth === 2) {
+          } else if (store.getters.state.userInfo.auth === 2) {
             next()
           } else {
             loginNotification('error', '路由逻辑出错')
           }
         })
-      } else if (store.getters.state.adminInfo.auth === 1) {
+      } else if (store.getters.state.userInfo.auth === 1) {
         if (staffRouter.indexOf(to.path) !== -1) {
           next()
         } else {
           loginNotification('error', '请登陆管理员账号')
         }
-      } else if (store.getters.state.adminInfo.auth === 2) {
+      } else if (store.getters.state.userInfo.auth === 2) {
         next()
       } else {
         loginNotification('error', '路由逻辑出错')
@@ -102,11 +102,11 @@ router.beforeEach((to, from, next) => {
 //       next()
 //     } else {
 //       //如果没有auth
-//       if (!store.getters.state.adminInfo.auth) {
+//       if (!store.getters.state.userInfo.auth) {
 //         store.dispatch('getUserData').then(() => {
-//           if (store.getters.state.adminInfo.auth === 2) {
+//           if (store.getters.state.userInfo.auth === 2) {
 //             next()
-//           } else if (store.getters.state.adminInfo.auth === 1) {
+//           } else if (store.getters.state.userInfo.auth === 1) {
 //             if (staffRouter.indexOf(to.path) !== -1) {
 //               next()
 //             } else {
@@ -119,9 +119,9 @@ router.beforeEach((to, from, next) => {
 //           }
 //         })
 //       } else {
-//         if (store.getters.state.adminInfo.auth === 2) {
+//         if (store.getters.state.userInfo.auth === 2) {
 //           next()
-//         } else if (store.getters.state.adminInfo.auth === 1) {
+//         } else if (store.getters.state.userInfo.auth === 1) {
 //           if (staffRouter.indexOf(to.path) !== -1) {
 //             next()
 //           } else {

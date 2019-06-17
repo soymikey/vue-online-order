@@ -43,7 +43,8 @@
 </template>
 
 <script>
-import { signout } from '@/service/getDataAdmin'
+import { signout } from '@/apiService/clientApi'
+import { removeAllStore } from '@/config/mUtils'
 import { mapMutations } from 'vuex'
 export default {
   name: 'Nav',
@@ -59,21 +60,10 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          const res = await signout()
-          if (res.status == 1) {
-            this.$message({
-              type: 'success',
-              message: '退出成功'
-            })
-            window.localStorage.clear()
-            this.RESET_STATE()
-            this.$router.push('/')
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.message
-            })
-          }
+          removeAllStore()
+          this.RESET_STATE()
+          this.$router.push('/')
+          this.RESET_STATE()
         })
         .catch(() => {})
     },

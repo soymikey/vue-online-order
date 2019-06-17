@@ -56,9 +56,9 @@
       >
         <keep-alive>
           <router-view
-            :shopDetails='shopDetail'
+            :restaurantInfo='restaurantInfo'
             :menu='categoryForm.categoryList'
-            :adminInfo='adminInfo'
+            :userInfo='userInfo'
           ></router-view>
         </keep-alive>
       </el-col>
@@ -68,13 +68,12 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex'
-import { shopDetails } from '@/service/getDataClient'
-import { getCategory } from '@/service/getDataAdmin'
+import { getRestaurantInfo } from '@/apiService/clientApi'
 
 export default {
   data() {
     return {
-      shopDetailData: null,
+      restaurantInfo: null,
       categoryForm: {
         categoryList: [],
         categorySelect: '',
@@ -84,15 +83,17 @@ export default {
     }
   },
   created() {
-    if (this.adminInfo.status == 0) {
+    if (this.userInfo.auth == 0) {
       this.getUserData()
     }
   },
   mounted() {
-    this.initData()
+    if (!this.shopDetail) {
+      this.initData()
+    }
   },
   computed: {
-    ...mapState(['adminInfo', 'shopDetail']),
+    ...mapState(['userInfo', 'shopDetail']),
     defaultActive: function() {
       // return this.$route.path.replace('/', '')
     }
@@ -103,11 +104,16 @@ export default {
     ...mapMutations(['RECORD_SHOPDETAIL']),
     async initData() {
       //获取商铺信息
-      this.shopDetailData = await shopDetails(this.adminInfo.restaurantId)
 
-      if (this.shopDetailData.status === 1) {
-        this.RECORD_SHOPDETAIL(this.shopDetailData.data)
-        this.getShopCatagory()
+      const result = await getRestaurantInfo({
+        restaurantId: this.userInfo.restaurantId
+      })
+
+      if (result.status === 1) {
+        this.restaurantInfo = result.data
+
+        this.RECORD_SHOPDETAIL(result.data)
+        // this.getShopCatagory()
       } else {
         this.$message({
           type: 'error',
@@ -118,7 +124,7 @@ export default {
 
     async getShopCatagory() {
       try {
-        const result = await getCategory(this.shopDetailData.data.id)
+        const result = await getCategory(this.restaurantInfo.data.id)
         if (result.status == 1) {
           result.category_list.map((item, index) => {
             item.value = index

@@ -24,6 +24,12 @@ export const removeStore = name => {
   if (!name) return
   window.localStorage.removeItem(name)
 }
+/**
+ * 删除所有localStorage
+ */
+export const removeAllStore = () => {
+  localStorage.clear()
+}
 
 /**
  * 获取style样式

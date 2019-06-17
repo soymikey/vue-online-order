@@ -69,8 +69,8 @@ export default {
       cartPrice: null // 会员卡价格
     })
   },
-  [SAVE_ADMIN_INFO](state, adminInfo) {
-    state.adminInfo = adminInfo
+  [SAVE_ADMIN_INFO](state, userInfo) {
+    state.userInfo = userInfo
   },
   // 记录当前经度纬度
   [RECORD_ADDRESS](state, { latitude, longitude }) {

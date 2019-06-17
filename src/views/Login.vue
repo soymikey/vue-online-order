@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { login, register, getAdminInfo } from '../apiService/clientApi'
+import { login, register, getuserInfo } from '../apiService/clientApi'
 import { Loading } from 'element-ui'
 import { setStore } from '../config/mUtils'
 import { mapActions, mapState } from 'vuex'
@@ -140,37 +140,35 @@ export default {
   },
   mounted() {
     this.showLogin = true
-    if (this.adminInfo.auth == 0) {
+
+    if (window.localStorage.token && this.userInfo.auth == 0) {
       this.getUserData()
     }
   },
   computed: {
-    ...mapState(['adminInfo'])
+    ...mapState(['userInfo'])
   },
   methods: {
     ...mapActions(['getUserData']),
     async loginButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          const res = await login({
+          login({
             username: this.loginForm.username,
             password: this.loginForm.password
           })
-
-          if (res.status === 2 || res.status === 1) {
-            this.$message({
-              type: 'success',
-              message: '登入成功'
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: res.message
+              })
+              setStore('username', res.username)
+              setStore('token', res.token)
+              store.dispatch('getUserData').then(() => {
+                this.$router.push('home')
+              })
             })
-            store.dispatch('getUserData').then(() => {
-              this.$router.push('home')
-            })
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.message
-            })
-          }
+            .catch(error => {})
         } else {
           this.$notify.error({
             title: '错误',
@@ -189,7 +187,6 @@ export default {
             password: this.registerForm.password
           }).then(res => {
             if (res.status === 1) {
-              console.log('ok', res)
               this.$message({
                 type: 'success',
                 message: res.message
@@ -221,7 +218,7 @@ export default {
     }
   },
   watch: {
-    adminInfo: function(newValue) {
+    userInfo: function(newValue) {
       if (newValue.auth === 2 || newValue.auth === 1) {
         this.$message({
           type: 'success',

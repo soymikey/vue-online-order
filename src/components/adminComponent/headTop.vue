@@ -13,7 +13,7 @@
       menu-align='start'
     >
       <img
-        :src="imgBaseUrl + adminInfo.avatar"
+        :src="imgBaseUrl + userInfo.avatar"
         class="avator"
       >
       <el-dropdown-menu slot="dropdown">
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { signout } from '@/service/getDataAdmin'
+import { signout } from '@/apiService/clientApi'
 import { imgBaseUrl } from '@/config/env'
 import { mapState, mapMutations } from 'vuex'
 export default {
@@ -36,7 +36,7 @@ export default {
   },
   created() {},
   computed: {
-    ...mapState(['adminInfo'])
+    ...mapState(['userInfo'])
   },
   methods: {
     ...mapMutations(['RESET_STATE']),

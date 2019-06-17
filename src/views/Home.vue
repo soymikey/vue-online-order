@@ -32,13 +32,13 @@ import { mapState, mapMutations } from 'vuex'
 import homeLeft from '@/components/clientComponent/left.vue'
 import homeRight from '@/components/clientComponent/right.vue'
 import homeNav from '@/components/clientComponent/nav.vue'
-import { shopDetails, foodMenu } from '@/service/getDataClient'
+import { getRestaurantInfo, getMenu } from '@/apiService/clientApi'
 export default {
   name: 'home',
   components: { homeNav, homeLeft, homeRight },
   data() {
     return {
-      shopDetailData: null, //商铺详情
+      restaurantInfo: null, //商铺详情
       showActivities: false, //是否显示活动详情
       menuList: [] //食品列表
     }
@@ -48,22 +48,32 @@ export default {
     this.initData()
   },
   computed: {
-    ...mapState(['adminInfo', 'shopDetail'])
+    ...mapState(['userInfo', 'shopDetail'])
   },
   methods: {
     ...mapMutations(['RECORD_SHOPDETAIL']),
     async initData() {
-      //获取商铺食品列表
-      this.menuList = await foodMenu(this.adminInfo.restaurantId)
       //获取商铺信息
-      this.shopDetailData = await shopDetails(this.adminInfo.restaurantId)
 
-      if (this.shopDetailData.status === 1) {
-        this.RECORD_SHOPDETAIL(this.shopDetailData.data)
+      this.restaurantInfo = await getRestaurantInfo({
+        restaurantId: this.userInfo.restaurantId
+      })
+      // //获取商铺食品列表
+      const menu = await getMenu({ restaurantId: this.userInfo.restaurantId })
+      if (menu.status === 1) {
+        this.menuList = menu.data
       } else {
         this.$message({
           type: 'error',
-          message: this.shopDetailData.message
+          message: '获取菜单失败'
+        })
+      }
+      if (this.restaurantInfo.status === 1) {
+        this.RECORD_SHOPDETAIL(this.restaurantInfo.data)
+      } else {
+        this.$message({
+          type: 'error',
+          message: this.restaurantInfo.message
         })
       }
     }

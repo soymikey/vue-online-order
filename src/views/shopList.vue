@@ -186,7 +186,7 @@ import {
   updateResturant,
   searchplace,
   deleteResturant
-} from "@/service/getDataAdmin";
+} from "@/apiService/clientApi";
 export default {
   data() {
     return {
