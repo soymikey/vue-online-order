@@ -184,10 +184,10 @@
                 label="规格"
               >
               </el-table-column>
-              <el-table-column
+              <!-- <el-table-column
                 prop="packing_fee"
                 label="包装费"
-              >
+              > -->
               </el-table-column>
               <el-table-column
                 prop="price"
@@ -230,16 +230,7 @@
                 auto-complete="off"
               ></el-input>
             </el-form-item>
-            <!-- <el-form-item
-              label="包装费"
-              label-width="100px"
-            >
-              <el-input-number
-                v-model="specsForm.packing_fee"
-                :min="0"
-                :max="100"
-              ></el-input-number>
-            </el-form-item> -->
+
             <el-form-item
               label="价格"
               label-width="100px"
@@ -288,14 +279,9 @@ export default {
       },
       foodForm: {
         name: '',
-        description: '',
-        image_path: '',
-        activity: '',
-        attributes: [],
         specs: [
           {
             specs: '默认',
-            packing_fee: 0,
             price: 20
           }
         ]
@@ -318,7 +304,6 @@ export default {
       dialogFormVisible: false,
       specsForm: {
         specs: '',
-        packing_fee: 0,
         price: 20
       },
       specsFormrules: {
@@ -428,7 +413,7 @@ export default {
     addspecs() {
       this.foodForm.specs.push({ ...this.specsForm })
       this.specsForm.specs = ''
-      this.specsForm.packing_fee = 0
+      // this.specsForm.packing_fee = 0
       this.specsForm.price = 20
       this.dialogFormVisible = false
     },
@@ -455,9 +440,10 @@ export default {
         if (valid) {
           const params = {
             ...this.foodForm,
-            category_id: this.selectValue.id,
+            categoryId: this.selectValue.categoryId,
             restaurantId: this.restaurantInfo.restaurantId
           }
+
           try {
             const result = await addFood(params)
             if (result.status == 1) {
@@ -468,14 +454,9 @@ export default {
               })
               this.foodForm = {
                 name: '',
-                description: '',
-                image_path: '',
-                activity: '',
-                attributes: [],
                 specs: [
                   {
                     specs: '默认',
-                    packing_fee: 0,
                     price: 20
                   }
                 ]

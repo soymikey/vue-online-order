@@ -24,7 +24,7 @@
 
       <el-tabs stretch>
         <el-tab-pane
-          v-bind:key="category.id"
+          v-bind:key="category.categoryId"
           :label="category.name"
           v-for="category in menu"
         >
@@ -34,15 +34,10 @@
               v-for="item in category.foods"
             >
               <section
-                v-if="!item.specifications.length"
-                @click="addToCart(item.specfoods[0].food_id, item.specfoods[0].name, item.specfoods[0].price,'',)"
+                v-if="item.specfoods.length===1"
+                @click="addToCart(item.foodId, item.specfoods[0].foodName, item.specfoods[0].price,'',)"
               >
-                <!-- <span class="foodImg">
-                      <img
-                        :src="goods.image"
-                        style="height: 100%; width: 100%;"
-                      >
-                    </span> -->
+
                 <span class="foodName">{{item.name}}</span>
                 <span class="foodPrice">￥{{item.specfoods[0].price}}元</span>
 
@@ -52,6 +47,7 @@
                 @click="showChooseList(item)"
               > <span class="foodName">{{item.name}}</span>
                 <span class="foodPrice">￥{{item.specfoods[0].price}}元</span>
+
               </section>
             </li>
           </ul>
@@ -63,19 +59,20 @@
       class='specs-dialog'
       v-if="showSpecs"
     >
+
       <el-dialog
         :visible.sync="showSpecs"
         :title="choosedFoods.name"
       >
         <section class="specs_details">
-          <h5 class="specs_details_title">{{choosedFoods.specifications[0].name}}</h5>
+          <!-- <h5 class="specs_details_title">{{choosedFoods.specifications[0].name}}</h5> -->
           <div class="spec-button">
             <el-button
-              v-for="(item, itemIndex) in choosedFoods.specifications[0].values"
+              v-for="(item, itemIndex) in choosedFoods.specfoods"
               :class="{specs_activity: itemIndex == specsIndex}"
               :key="itemIndex"
               @click="chooseSpecs(itemIndex)"
-            > {{item}}</el-button>
+            > {{item.specsName}}</el-button>
 
           </div>
         </section>
@@ -88,7 +85,7 @@
           <el-button
             type="primary"
             class="specs_addto_cart"
-            @click="addSpecs(choosedFoods.specfoods[specsIndex].food_id, choosedFoods.specfoods[specsIndex].name, choosedFoods.specfoods[specsIndex].price, choosedFoods.specifications[0].values[specsIndex])"
+            @click="addSpecs(choosedFoods.foodId, choosedFoods.specfoods[specsIndex].foodName, choosedFoods.specfoods[specsIndex].price, choosedFoods.specfoods[specsIndex].specsName)"
           >加入购物车</el-button>
         </footer>
 
@@ -136,6 +133,8 @@ export default {
       if (foods) {
         this.choosedFoods = foods
       }
+      console.log('this.choosedFoods', this.choosedFoods)
+
       this.showSpecs = !this.showSpecs
       this.specsIndex = 0
     },
