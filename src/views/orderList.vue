@@ -2,12 +2,12 @@
   <div class="fillcontain">
     <head-top></head-top>
     <div class="table_container">
-      <div>{{tableData}}</div>
+
       <el-table
         :data="tableData"
         @expand='expand'
         :expand-row-keys='expendRow'
-        :row-key="row => row.index"
+        :row-key="row => row.orderId"
         style="width: 100%"
       >
         <!-- original -->
@@ -45,14 +45,34 @@
             >
 
               <el-form-item label="订单">
+                <div class='order-title-box'>
+                  <div class='order-title'>商品</div>
+                  <div class='order-title'>数量</div>
+                  <div class='order-title'>价格</div>
+                </div>
                 <div
                   :key='index'
-                  v-for="(item,index) of props.row.basket"
+                  v-for="(item,index) of props.row.basket.group"
                 >
-                  <span>商品:</span> <span>{{ item[0].nameWithSpecs }}</span>
-                  <span>数量:</span> <span>{{ item[0].num }}</span>
+                  <div class='order-item-box'>
+                    <div class="order-item">{{ item[0].nameWithSpecs }}</div>
+                    <div class="order-item">{{ item[0].num }}</div>
+                    <div class="order-item">{{ item[0].price*item[0].num }}</div>
+                  </div>
 
-                  <span>价格:</span> <span>{{ item[0].price*item[0].num }}</span>
+                </div>
+                <div class='order-summary-box'>
+
+                  <div class="order-summary"><span class="title"> 数量:</span>{{ props.row.totalQuantity }}</div>
+                  <div class="order-summary"><span class="title">总价:</span>{{ props.row.totalAmount }}</div>
+
+                </div>
+                <div class='order-summary-box'>
+
+                  <div class="order-summary">
+                    <span class="title">接单员:</span>{{ props.row.userInfo.userName }}
+                  </div>
+
                 </div>
 
               </el-form-item>
@@ -62,22 +82,22 @@
         </el-table-column>
         <el-table-column
           label="订单 ID"
-          prop="id"
+          prop="orderId"
         >
         </el-table-column>
         <el-table-column
           label="总价格"
-          prop="total_amount"
+          prop="totalAmount"
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="订单状态"
           prop="status"
-        >
+        > -->
         </el-table-column>
         <el-table-column
           label="订单日期"
-          prop="date"
+          prop="createTime"
         >
         </el-table-column>
       </el-table>
@@ -102,13 +122,15 @@
 <script>
 import headTop from '@/components/adminComponent/headTop'
 import {
-  getOrderList,
-  getOrderCount,
-  getResturantDetail,
-  getUserInfo,
-  getAddressById
+  // getOrderList,
+  // getOrderCount,
+  // getResturantDetail,
+  // getUserInfo,
+  // getAddressById
+  getOrders
 } from '@/apiService/clientApi'
 export default {
+  props: ['restaurantInfo'],
   data() {
     return {
       tableData: [],
@@ -117,33 +139,36 @@ export default {
       limit: 20,
       count: 0,
       currentPage: 1,
-      restaurant_id: null,
-      expendRow: []
+      restaurantId: null,
+      expendRow: [],
+      userId: null
     }
   },
   components: {
     headTop
   },
-  created() {
-    this.restaurant_id = this.$route.query.restaurant_id
-    this.initData()
+  created() {},
+  mounted() {
+    if (this.restaurantInfo) {
+      this.initData()
+    }
   },
-  mounted() {},
+  watch: {
+    restaurantInfo: function(newValue) {
+      this.restaurantId = newValue.restaurantId
+      this.initData()
+    }
+  },
   methods: {
     async initData() {
-      try {
-        const countData = await getOrderCount({
-          restaurant_id: this.restaurant_id
-        })
-        if (countData.status == 1) {
-          this.count = countData.count
-        } else {
-          throw new Error('获取数据失败')
-        }
-        this.getOrders()
-      } catch (err) {
-        console.log('获取数据失败', err)
-      }
+      const result = await getOrders({
+        userId: this.restaurantInfo.managerId,
+        offset: this.offset,
+        limit: this.limit
+      })
+
+      this.tableData = result.data
+      this.count = result.count
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -225,5 +250,30 @@ export default {
   margin-bottom: 0;
   // width: 50%;
   width: 100%;
+}
+.el-form-item__content {
+  width: 100%;
+}
+.order-title-box {
+  display: flex;
+  font-weight: bold;
+  .order-title {
+    width: 20%;
+  }
+}
+.order-item-box {
+  display: flex;
+  .order-item {
+    width: 20%;
+  }
+}
+.order-summary-box {
+  display: flex;
+  .order-summary {
+    width: 20%;
+    .title {
+      font-weight: bold;
+    }
+  }
 }
 </style>
