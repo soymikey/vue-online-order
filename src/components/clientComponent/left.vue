@@ -148,7 +148,7 @@
 import { mapState, mapMutations } from 'vuex'
 import PrintHTML from '../../config/PrintHTML.js'
 import extraMenu from '../../assets/extraMenu.js'
-import { placeOrders } from '../../service/getDataClient.js'
+import { placeOrder } from '../../apiService/clientApi.js'
 
 export default {
   props: {
@@ -179,7 +179,7 @@ export default {
     )
   },
   computed: {
-    ...mapState(['adminInfo', 'cartList']),
+    ...mapState(['userInfo', 'cartList']),
 
     //购物车中总共商品的价格
     totalPrice: function() {
@@ -286,20 +286,7 @@ export default {
       let nameWithSpecs = this.selectedFood.nameWithSpecs
       let extra = selectedExtraList
       let food = this.selectedFood
-      // if (this.selectedFood.num > 1) {
-      //   this.selectedFood.num--
 
-      //   this.ADD_CART({
-      //     shopid: this.shopId,
-      //     food_id,
-      //     name,
-      //     price,
-      //     specs,
-      //     nameWithSpecs,
-      //     extra,
-      //     food
-      //   })
-      // } else {
       this.ADD_CART({
         shopid: this.shopDetail.id,
         food_id,
@@ -310,39 +297,30 @@ export default {
         extra,
         food
       })
-      // this.selectedFood.extra = [...selectedExtraList]
-      // }
 
       this.showExtra = !this.showExtra
     },
     async checkout() {
       if (this.cartList.length) {
         // PrintHTML(this.cartList, this.totalNum, this.totalPrice)
-        const user_id = this.adminInfo.id
-        const restaurant_id = this.shopDetail.id
-        const restaurant_name = this.shopDetail.name
-        const cart_id = new Date().valueOf()
-        const total_price = this.totalPrice
-        const total_quantity = this.totalNum
-        const entities = this.cartList
-        const address_id = 123
-        // const address_id=123
-        const description = '测试订单'
-        // const entities=
-        // const geohash=
-        // const sig=
-        console.log('cartId', cart_id)
+        const param = {
+          userName: this.userInfo.username,
+          userId: this.userInfo.userId,
+          restaurantId: this.shopDetail.id,
+          restaurantName: this.shopDetail.name,
+          cartId: new Date().valueOf(),
+          totalPrice: this.totalPrice,
+          totalQuantity: this.totalNum,
+          entities: this.cartList,
+          address: 123,
+          description: '测试订单'
+        }
 
-        await placeOrders(
-          user_id,
-          restaurant_id,
-          restaurant_name,
-          cart_id,
-          total_price,
-          total_quantity,
-          entities,
-          address_id
-        )
+        const result = await placeOrder(param)
+        this.$message({
+          type: 'success',
+          message: result.message
+        })
       } else {
         window.alert('没有需要打印的')
       }
