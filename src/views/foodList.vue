@@ -2,13 +2,15 @@
   <div class="fillcontain">
     <head-top></head-top>
     <div class="table_container">
+      <span>{{tableData}}</span>
       <el-table
         :data="tableData"
         @expand='expand'
         :expand-row-keys='expendRow'
-        :row-key="row => row.index"
+        :row-key="row => row.foodId"
         style="width: 100%"
       >
+
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form
@@ -20,29 +22,25 @@
                 <span>{{ props.row.name }}</span>
               </el-form-item>
               <el-form-item label="餐馆名称">
-                <span>{{ props.row.restaurant_name }}</span>
+                <span>{{ restaurantInfo.name }}</span>
               </el-form-item>
               <el-form-item label="食品 ID">
-                <span>{{ props.row.item_id }}</span>
+                <span>{{ props.row.foodId }}</span>
               </el-form-item>
               <el-form-item label="餐馆 ID">
-                <span>{{ props.row.restaurant_id }}</span>
+                <span>{{ restaurantInfo.restaurantId }}</span>
               </el-form-item>
               <el-form-item label="食品介绍">
                 <span>{{ props.row.description }}</span>
               </el-form-item>
               <el-form-item label="餐馆地址">
-                <span>{{ props.row.restaurant_address }}</span>
+                <span>{{ restaurantInfo.address }}</span>
               </el-form-item>
-              <el-form-item label="食品评分">
-                <span>{{ props.row.rating }}</span>
-              </el-form-item>
+
               <el-form-item label="食品分类">
-                <span>{{ props.row.category_name }}</span>
+                <span>{{ props.row.categoryName }}</span>
               </el-form-item>
-              <el-form-item label="月销量">
-                <span>{{ props.row.month_sales }}</span>
-              </el-form-item>
+
             </el-form>
           </template>
         </el-table-column>
@@ -114,8 +112,8 @@
             label="食品分类"
             label-width="100px"
           >
-            <div>'index'{{selectIndex}}</div>
-            <div>'selectMenu.label'{{selectMenu.label}}</div>
+            <!-- <div>'index'{{selectIndex}}</div>
+            <div>'selectMenu.label'{{selectMenu.label}}</div> -->
             <el-select
               v-model="selectIndex"
               :placeholder="selectMenu.label"
@@ -130,7 +128,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             label="食品图片"
             label-width="100px"
           >
@@ -151,9 +149,10 @@
                 class="el-icon-plus avatar-uploader-icon"
               ></i>
             </el-upload>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <el-row style="overflow: auto; text-align: center;">
+
           <el-table
             :data="specs"
             style="margin-bottom: 20px;"
@@ -164,10 +163,7 @@
               label="规格"
             >
             </el-table-column>
-            <el-table-column
-              prop="packing_fee"
-              label="包装费"
-            >
+
             </el-table-column>
             <el-table-column
               prop="price"
@@ -269,8 +265,7 @@ import {
   getMenuById
 } from '@/apiService/clientApi'
 export default {
-  props: ['shopDetails'],
-
+  props: ['restaurantInfo'],
   data() {
     return {
       baseUrl,
@@ -289,7 +284,7 @@ export default {
       selectIndex: null,
       specsForm: {
         specs: '',
-        packing_fee: 0,
+
         price: 20
       },
       specsFormrules: {
@@ -299,9 +294,9 @@ export default {
       expendRow: []
     }
   },
-  created() {
-    if (this.shopDetails) {
-      this.restaurant_id = this.shopDetails.id
+  created() {},
+  mounted() {
+    if (this.restaurantInfo) {
       this.initData()
     }
   },
@@ -311,8 +306,8 @@ export default {
       if (this.selectTable.specfoods) {
         this.selectTable.specfoods.forEach(item => {
           specs.push({
-            specs: item.specs_name,
-            packing_fee: item.packing_fee,
+            specs: item.specsName,
+
             price: item.price
           })
         })
@@ -324,23 +319,27 @@ export default {
     headTop
   },
   watch: {
-    shopDetails: function() {
-      this.restaurant_id = this.shopDetails.id
+    restaurantInfo: function(newValue) {
+      this.restaurantId = newValue.restaurantId
       this.initData()
     }
   },
   methods: {
     async initData() {
       try {
-        const countData = await getFoodsCount({
-          restaurant_id: this.restaurant_id
+        const menu = await getMenu({
+          restaurantId: this.restaurantInfo.restaurantId
         })
-        if (countData.status == 1) {
-          this.count = countData.count
-        } else {
-          throw new Error('获取数据失败')
+        let foods = []
+        for (const category of menu.data) {
+          for (const food of category.foods) {
+            food.categoryName = category.name
+            foods.push(food)
+          }
         }
-        this.getFoods()
+
+        this.count = menu.count
+        this.tableData = foods
       } catch (err) {
         console.log('获取数据失败', err)
       }
@@ -349,42 +348,41 @@ export default {
       this.menuOptions = []
       try {
         const menu = await getMenu({
-          restaurant_id: 1,
-          allMenu: true
+          restaurantId: this.restaurantInfo.restaurantId
         })
 
-        menu.forEach((item, index) => {
+        menu.data.forEach((item, index) => {
           this.menuOptions.push({
             label: item.name,
-            value: item.id,
+            value: item.categoryId,
             index
           })
         })
+        console.log('this.this.menuOptions', this.menuOptions)
       } catch (err) {
         console.log('获取食品种类失败', err)
       }
     },
     async getFoods() {
-      const Foods = await getFoods({
-        offset: this.offset,
-        limit: this.limit,
-        restaurant_id: this.restaurant_id
-      })
-      this.tableData = []
-      Foods.forEach((item, index) => {
-        const tableData = {}
-        tableData.name = item.name
-        tableData.item_id = item.item_id
-        tableData.description = item.description
-        tableData.rating = item.rating
-        tableData.month_sales = item.month_sales
-        tableData.restaurant_id = item.restaurant_id
-        tableData.category_id = item.category_id
-        tableData.image_path = item.image_path
-        tableData.specfoods = item.specfoods
-        tableData.index = index
-        this.tableData.push(tableData)
-      })
+      try {
+        const menu = await getMenu({
+          offset: this.offset,
+          limit: this.limit,
+          restaurantId: this.restaurantInfo.restaurantId
+        })
+        let foods = []
+        for (const category of menu.data) {
+          for (const food of category.foods) {
+            food.categoryName = category.name
+            foods.push(food)
+          }
+        }
+
+        this.count = menu.count
+        this.tableData = foods
+      } catch (err) {
+        console.log('获取食品种类失败', err)
+      }
     },
     tableRowClassName(row, index) {
       if (index === 1) {
@@ -397,7 +395,6 @@ export default {
     addspecs() {
       this.specs.push({ ...this.specsForm })
       this.specsForm.specs = ''
-      this.specsForm.packing_fee = 0
       this.specsForm.price = 20
       this.specsFormVisible = false
     },
@@ -421,30 +418,30 @@ export default {
       }
     },
     handleEdit(row) {
+      console.log('row', row)
+
       this.getSelectItemData(row, 'edit')
       this.dialogFormVisible = true
     },
     async getSelectItemData(row, type) {
-      const restaurant = await getResturantDetail(row.restaurant_id)
-      const category = await getMenuById(row.category_id)
-
       this.selectTable = {
         ...row,
         ...{
-          restaurant_name: restaurant.data.name,
-          restaurant_address: restaurant.data.address,
-          category_name: category.name
+          restaurantName: this.restaurantInfo.name,
+          restaurantAddress: this.restaurantInfo.address,
+          categoryName: row.categoryName
         }
       }
 
-      this.selectMenu = { label: category.name, value: row.category_id }
-      this.tableData.splice(row.index, 1, { ...this.selectTable })
-      this.$nextTick(() => {
-        this.expendRow.push(row.index)
-      })
-      if (type == 'edit' && this.restaurant_id == row.restaurant_id) {
-        this.getMenu()
-      }
+      this.selectMenu = { label: row.categoryName, value: row.categoryId }
+      this.getMenu()
+      // this.tableData.splice(row.index, 1, { ...this.selectTable })
+      // this.$nextTick(() => {
+      //   this.expendRow.push(row.index)
+      // })
+      // if (type == 'edit' && this.restaurant_id == row.restaurant_id) {
+      //   this.getMenu()
+      // }
     },
     handleSelect(index) {
       this.selectIndex = null
@@ -494,23 +491,18 @@ export default {
       this.dialogFormVisible = false
       try {
         const subData = {
-          new_category_id: this.selectMenu.value,
+          newCategoryId: this.selectMenu.value,
           specs: this.specs
         }
+
         const postData = { ...this.selectTable, ...subData }
-        const res = await updateFood(postData)
-        if (res.status == 1) {
-          this.$message({
-            type: 'success',
-            message: '更新食品信息成功'
-          })
-          this.getFoods()
-        } else {
-          this.$message({
-            type: 'error',
-            message: res.message
-          })
-        }
+        const result = await updateFood(postData)
+
+        this.$message({
+          type: 'success',
+          message: result.message
+        })
+        this.getFoods()
       } catch (err) {
         console.log('更新餐馆信息失败', err)
       }
