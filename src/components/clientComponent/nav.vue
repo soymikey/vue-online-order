@@ -108,15 +108,15 @@
           <el-menu-item
             index="7-1"
             @click="changeLanguageZh"
-          >{{$t("sidebar.languageZh")}}</el-menu-item>
+          >{{$t("sidebar.chinese")}}</el-menu-item>
           <el-menu-item
             index="7-2"
             @click="changeLanguageEn"
-          >{{$t("sidebar.languageEn")}}</el-menu-item>
+          >{{$t("sidebar.english")}}</el-menu-item>
           <el-menu-item
             index="7-3"
             @click="changeLanguageEs"
-          >{{$t("sidebar.languageEs")}}</el-menu-item>
+          >{{$t("sidebar.spanish")}}</el-menu-item>
         </el-menu-item-group>
 
       </el-submenu>

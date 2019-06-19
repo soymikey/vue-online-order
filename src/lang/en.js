@@ -184,9 +184,9 @@ export default {
     promotion: 'Promotion',
     management: 'Management',
     language: 'Language',
-    languageZh: 'Chinese',
-    languageEn: 'English',
-    languageEs: 'Spanish',
+    chinese: 'Chinese',
+    english: 'English',
+    spanish: 'Spanish',
     exit: 'exit'
   }
 }

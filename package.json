@@ -12,6 +12,7 @@
     "core-js": "^2.6.5",
     "echarts": "^3.5.4",
     "element-ui": "^2.8.2",
+    "sortablejs": "^1.10.0-rc2",
     "time-formater": "^1.0.1",
     "vue": "^2.6.10",
     "vue-draggable": "^2.0.2",

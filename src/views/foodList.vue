@@ -2,7 +2,7 @@
   <div class="fillcontain">
     <head-top></head-top>
     <div class="table_container">
-      <span>{{tableData}}</span>
+
       <el-table
         :data="tableData"
         @expand='expand'
@@ -284,7 +284,6 @@ export default {
       selectIndex: null,
       specsForm: {
         specs: '',
-
         price: 20
       },
       specsFormrules: {

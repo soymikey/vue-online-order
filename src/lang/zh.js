@@ -180,9 +180,9 @@ export default {
     promotion: '抢购',
     management: '管理',
     language: '语言',
-    languageZh: '中文',
-    languageEn: '英语',
-    languageEs: '西班牙语',
+    chinese: '中文',
+    english: '英语',
+    spanish: '西班牙语',
 
     exit: '退出'
   }
