@@ -3,12 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store/index.js'
 import ElementUI from 'element-ui'
+import i18n from './lang' // Internationalization
 import { getStore } from './config/mUtils'
 import '../src/style/reset.scss'
 import 'element-ui/lib/theme-chalk/index.css'
+import VueDraggable from 'vue-draggable'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.use(VueDraggable)
 
 function loginNotification(type, message) {
   ElementUI.Message({
@@ -44,52 +47,56 @@ for (const router of router.options.routes) {
     }
   }
 }
-router.beforeEach((to, from, next) => {
-  if (managerRouter.indexOf(to.path) !== -1) {
-    if (to.path === '/') {
-      next()
-    } else if (to.path === '/404') {
-      next()
-    } else {
-      if (!getStore('token')) {
-        next({ path: '/' })
-      } else if (store.getters.state.userInfo.auth === 0) {
-        store.dispatch('getUserData').then(() => {
-          console.log(
-            'store.getters.state.userInfo.auth',
-            store.getters.state.userInfo
-          )
+// router.beforeEach((to, from, next) => {
+//   console.log('to.path', to.path)
 
-          if (store.getters.state.userInfo.auth === 0) {
-            next({ path: '/' })
-          } else if (store.getters.state.userInfo.auth === 1) {
-            if (staffRouter.indexOf(to.path) !== -1) {
-              next()
-            } else {
-              loginNotification('error', '请登陆管理员账号')
-            }
-          } else if (store.getters.state.userInfo.auth === 2) {
-            next()
-          } else {
-            loginNotification('error', '路由逻辑出错')
-          }
-        })
-      } else if (store.getters.state.userInfo.auth === 1) {
-        if (staffRouter.indexOf(to.path) !== -1) {
-          next()
-        } else {
-          loginNotification('error', '请登陆管理员账号')
-        }
-      } else if (store.getters.state.userInfo.auth === 2) {
-        next()
-      } else {
-        loginNotification('error', '路由逻辑出错')
-      }
-    }
-  } else {
-    next({ path: '/404' })
-  }
-})
+//   if (managerRouter.indexOf(to.path) !== -1) {
+//     if (to.path === '/') {
+//       next()
+//     } else if (to.path === '/404') {
+//       next()
+//     } else if (to.path === '/draggable') {
+//       next()
+//     } else {
+//       if (!getStore('token')) {
+//         next({ path: '/' })
+//       } else if (store.getters.state.userInfo.auth === 0) {
+//         store.dispatch('getUserData').then(() => {
+//           console.log(
+//             'store.getters.state.userInfo.auth',
+//             store.getters.state.userInfo
+//           )
+
+//           if (store.getters.state.userInfo.auth === 0) {
+//             next({ path: '/' })
+//           } else if (store.getters.state.userInfo.auth === 1) {
+//             if (staffRouter.indexOf(to.path) !== -1) {
+//               next()
+//             } else {
+//               loginNotification('error', '请登陆管理员账号')
+//             }
+//           } else if (store.getters.state.userInfo.auth === 2) {
+//             next()
+//           } else {
+//             loginNotification('error', '路由逻辑出错')
+//           }
+//         })
+//       } else if (store.getters.state.userInfo.auth === 1) {
+//         if (staffRouter.indexOf(to.path) !== -1) {
+//           next()
+//         } else {
+//           loginNotification('error', '请登陆管理员账号')
+//         }
+//       } else if (store.getters.state.userInfo.auth === 2) {
+//         next()
+//       } else {
+//         loginNotification('error', '路由逻辑出错')
+//       }
+//     }
+//   } else {
+//     next({ path: '/404' })
+//   }
+// })
 
 // router.beforeEach((to, from, next) => {
 //   //没有state的情况下
@@ -139,5 +146,6 @@ router.beforeEach((to, from, next) => {
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')

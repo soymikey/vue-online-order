@@ -8418,6 +8418,11 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-draggable@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npm.taobao.org/vue-draggable/download/vue-draggable-2.0.2.tgz#301aa1707698fb764044ae22d7c6bcbb878a523f"
+  integrity sha1-MBqhcHaY+3ZARK4i18a8u4eKUj8=
+
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "https://registry.npm.taobao.org/vue-eslint-parser/download/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"
@@ -8446,6 +8451,11 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.3"
   resolved "https://registry.npm.taobao.org/vue-hot-reload-api/download/vue-hot-reload-api-2.3.3.tgz#2756f46cb3258054c5f4723de8ae7e87302a1ccf"
   integrity sha1-J1b0bLMlgFTF9HI96K5+hzAqHM8=
+
+vue-i18n@^8.11.2:
+  version "8.11.2"
+  resolved "https://registry.npm.taobao.org/vue-i18n/download/vue-i18n-8.11.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-i18n%2Fdownload%2Fvue-i18n-8.11.2.tgz#92827fc42449f4602d2a0ddb437dfc4e3370d9d7"
+  integrity sha1-koJ/xCRJ9GAtKg3bQ338TjNw2dc=
 
 vue-loader@^15.7.0:
   version "15.7.0"

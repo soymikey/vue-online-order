@@ -1,14 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import home from './views/home.vue'
-// import login from './views/login.vue'
-// import adminLogin from './views/adminLogin.vue'
-// import helloWorld from './views/helloWorld.vue'
-// import adminLayout from './views/adminLayout.vue'
-// import adminHome from './views/adminHome.vue'
-// import foodList from './views/foodList.vue'
-// import orderList from './views/orderList.vue'
-// import adminList from './views/adminList.vue'
 
 const login = r =>
   require.ensure([], () => r(require('@/views/login')), 'login') //client 登入页面
@@ -53,6 +44,8 @@ const sendMessage = r =>
 const explain = r =>
   require.ensure([], () => r(require('@/views/explain')), 'explain')
 const notFound = r => require.ensure([], () => r(require('@/views/404')), '404')
+const draggble = r =>
+  require.ensure([], () => r(require('@/views/draggble')), 'draggble')
 
 Vue.use(Router)
 
@@ -67,6 +60,14 @@ export default new Router({
 
       authorisation: []
     },
+    {
+      path: '/draggable',
+      name: 'draggable',
+      component: draggble,
+
+      authorisation: ['staff', 'manager']
+    },
+
     {
       path: '/home',
       name: 'home',

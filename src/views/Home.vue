@@ -1,6 +1,9 @@
 <template>
   <div class="home">
-    <homeNav></homeNav>
+    <div class="nav">
+      <homeNav></homeNav>
+    </div>
+
     <div class="main">
       <el-row>
         <el-col
@@ -85,10 +88,16 @@ export default {
   height: 100%;
   font-size: 12px;
   text-align: center;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+.nav {
+  flex: 0;
 }
 .main {
-  float: left;
-  width: 95%;
+  flex: 20;
+  // width: 95%;
   background-color: #eff2f7;
   height: 100%;
   overflow: auto;
