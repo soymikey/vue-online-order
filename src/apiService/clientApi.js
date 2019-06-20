@@ -47,3 +47,4 @@ export const deleteFood = async data => await axios.post('/food/delete', data)
 export const placeOrder = async data =>
   await axios.post('/order/placeOrder', data)
 export const getOrders = async data => await axios.post('/order/get', data)
+export const deleteOrder = async data => await axios.post('/order/delete', data)

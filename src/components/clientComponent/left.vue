@@ -22,7 +22,8 @@
                 <div v-if="scope.row.extra">
                   <el-tag
                     size="medium"
-                    v-for="item in scope.row.extra"
+                    :key="index"
+                    v-for="{item,index} in scope.row.extra"
                   >{{item.name }}</el-tag>
                 </div>
 

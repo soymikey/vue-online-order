@@ -5,81 +5,10 @@
 
       <el-table
         :data="tableData"
-        @expand='expand'
-        :expand-row-keys='expendRow'
         :row-key="row => row.orderId"
         style="width: 100%"
       >
-        <!-- original -->
-        <!-- <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form
-              label-position="left"
-              inline
-              class="demo-table-expand"
-            >
-              <el-form-item label="用户名">
-                <span>{{ props.row.user_name }}</span>
-              </el-form-item>
-              <el-form-item label="店铺名称">
-                <span>{{ props.row.restaurant_name }}</span>
-              </el-form-item>
-              <el-form-item label="收货地址">
-                <span>{{ props.row.address }}</span>
-              </el-form-item>
-              <el-form-item label="店铺 ID">
-                <span>{{ props.row.restaurant_id }}</span>
-              </el-form-item>
-              <el-form-item label="店铺地址">
-                <span>{{ props.row.restaurant_address }}</span>
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column> -->
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form
-              label-position="left"
-              inline
-              class="demo-table-expand"
-            >
 
-              <el-form-item label="订单">
-                <div class='order-title-box'>
-                  <div class='order-title'>商品</div>
-                  <div class='order-title'>数量</div>
-                  <div class='order-title'>价格</div>
-                </div>
-                <div
-                  :key='index'
-                  v-for="(item,index) of props.row.basket.group"
-                >
-                  <div class='order-item-box'>
-                    <div class="order-item">{{ item[0].nameWithSpecs }}</div>
-                    <div class="order-item">{{ item[0].num }}</div>
-                    <div class="order-item">{{ item[0].price*item[0].num }}</div>
-                  </div>
-
-                </div>
-                <div class='order-summary-box'>
-
-                  <div class="order-summary"><span class="title"> 数量:</span>{{ props.row.totalQuantity }}</div>
-                  <div class="order-summary"><span class="title">总价:</span>{{ props.row.totalAmount }}</div>
-
-                </div>
-                <div class='order-summary-box'>
-
-                  <div class="order-summary">
-                    <span class="title">接单员:</span>{{ props.row.userInfo.userName }}
-                  </div>
-
-                </div>
-
-              </el-form-item>
-
-            </el-form>
-          </template>
-        </el-table-column>
         <el-table-column
           label="订单 ID"
           prop="orderId"
@@ -97,8 +26,24 @@
         </el-table-column>
         <el-table-column
           label="订单日期"
-          prop="createTime"
+          prop="createdDate"
         >
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          width="160"
+        >
+          <template slot-scope="scope">
+            <el-button
+              size="small"
+              @click="handleView(scope.row)"
+            >查看</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <div
@@ -115,20 +60,99 @@
         >
         </el-pagination>
       </div>
+
+      <el-dialog
+        title="订单详情"
+        v-if="dialogFormVisible"
+        :visible.sync="dialogFormVisible"
+        width='30%'
+      >
+        <el-form>
+
+          <el-form-item label="">
+            <div class='order-title-box'>
+
+              <div class='order-title-name'>商品</div>
+              <div class='order-title'>数量</div>
+              <div class='order-title'>价格</div>
+            </div>
+            <div
+              :key='index'
+              v-for="(item,index) of currentRow.basket.group"
+            >
+
+              <div class='order-item-box'>
+
+                <div class="order-item-title">{{ item[0].nameWithSpecs }}
+
+                  <div
+                    class="order-item-tags"
+                    v-if="item[0].extra.length"
+                  >
+
+                    <el-tag
+                      size="medium"
+                      :key='index'
+                      v-for="(eachExtra,index) of item[0].extra"
+                    >{{eachExtra.name }}</el-tag>
+
+                  </div>
+
+                </div>
+
+                <div class="order-item">{{ item[0].num }}</div>
+
+                <div class="order-item">{{ item[0].price*item[0].num }}</div>
+              </div>
+
+            </div>
+            <div class='order-summary-box'>
+              <div class="order-summary"><span class="title">接单员:</span>{{currentRow.userInfo.userName }}</div>
+              <div class="order-summary-quantity"><span class="title"> 数量:</span>{{ currentRow.totalQuantity }}</div>
+              <div class="order-summary-price"><span class="title">总价:</span>{{currentRow.totalAmount }}</div>
+
+            </div>
+
+            <div class="button-container">
+              <el-button
+                size="medium "
+                type="primary"
+                @click="print(scope.row)"
+              >打印</el-button>
+            </div>
+
+          </el-form-item>
+
+        </el-form>
+
+      </el-dialog>
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogDeleteVisible"
+        width="30%"
+        center
+      >
+        <span>确定要删除{{currentRow.orderId}}订单吗?</span>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialogDeleteVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="confirmDeleteButton"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
+// @click="handleDelete(scope.$index,scope.row)"
 import headTop from '@/components/adminComponent/headTop'
-import {
-  // getOrderList,
-  // getOrderCount,
-  // getResturantDetail,
-  // getUserInfo,
-  // getAddressById
-  getOrders
-} from '@/apiService/clientApi'
+import PrintHTML from '../config/PrintHTML.js'
+import { getOrders, deleteOrder } from '@/apiService/clientApi'
 export default {
   props: ['restaurantInfo'],
   data() {
@@ -140,8 +164,10 @@ export default {
       count: 0,
       currentPage: 1,
       restaurantId: null,
-      expendRow: [],
-      userId: null
+      userId: null,
+      dialogFormVisible: false,
+      dialogDeleteVisible: false,
+      currentRow: {}
     }
   },
   components: {
@@ -187,15 +213,6 @@ export default {
 
       this.tableData = []
       Orders.forEach((item, index) => {
-        // const tableData = {}
-        // tableData.id = item.id
-        // tableData.total_amount = item.total_amount
-        // tableData.status = item.status_bar.title
-        // tableData.user_id = item.user_id
-        // tableData.restaurant_id = item.restaurant_id
-
-        // tableData.index = index
-        // this.tableData.push(tableData)
         const tableData = {}
         tableData.total_amount = item.total_amount
         tableData.status = item.status_bar.title
@@ -206,28 +223,37 @@ export default {
         this.tableData.push(tableData)
       })
     },
-    async expand(row, status) {
-      if (status) {
-        const restaurant = await getResturantDetail(row.restaurant_id)
-        const userInfo = await getUserInfo(row.user_id)
-        const addressInfo = await getAddressById(row.address_id)
+    handleView(row) {
+      this.currentRow = row
+      // this.getSelectItemData(row, 'edit')
+      this.dialogFormVisible = true
+    },
+    handleDelete(row) {
+      this.currentRow = row
+      this.dialogDeleteVisible = true
+    },
+    async confirmDeleteButton() {
+      try {
+        const result = await deleteOrder({ orderId: this.currentRow.orderId })
 
-        this.tableData.splice(row.index, 1, {
-          ...row,
-          ...{
-            restaurant_name: restaurant.name,
-            restaurant_address: restaurant.address,
-            address: addressInfo.address,
-            user_name: userInfo.username
-          }
+        this.$message({
+          type: 'success',
+          message: result.message
         })
-        this.$nextTick(() => {
-          this.expendRow.push(row.index)
+        this.dialogDeleteVisible = false
+        this.tableData = this.tableData.filter(
+          row => row.orderId !== this.currentRow.orderId
+        )
+      } catch (err) {
+        this.$message({
+          type: 'error',
+          message: err.message
         })
-      } else {
-        const index = this.expendRow.indexOf(row.index)
-        this.expendRow.splice(index, 1)
       }
+    },
+
+    print() {
+      console.log('print')
     }
   }
 }
@@ -238,42 +264,53 @@ export default {
 .table_container {
   padding: 20px;
 }
-.demo-table-expand {
-  font-size: 0;
-}
-.demo-table-expand label {
-  width: 90px;
-  color: #99a9bf;
-}
-.demo-table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  // width: 50%;
-  width: 100%;
-}
+
 .el-form-item__content {
   width: 100%;
+  font-size: 17px;
 }
+
 .order-title-box {
   display: flex;
   font-weight: bold;
+  .order-title-name {
+    width: 50%;
+  }
   .order-title {
     width: 20%;
   }
 }
 .order-item-box {
   display: flex;
+  .order-item-title {
+    width: 50%;
+  }
+  .order-item-tags {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
   .order-item {
     width: 20%;
   }
 }
 .order-summary-box {
   display: flex;
-  .order-summary {
-    width: 20%;
-    .title {
-      font-weight: bold;
-    }
+  .title {
+    font-weight: bold;
   }
+  .order-summary {
+    flex: 5;
+  }
+  .order-summary-quantity {
+    flex: 2;
+  }
+  .order-summary-price {
+    flex: 3;
+  }
+}
+.button-container {
+  display: flex;
+  justify-content: center;
 }
 </style>

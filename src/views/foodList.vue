@@ -60,7 +60,7 @@
             <el-button
               size="small"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
+              @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -196,6 +196,24 @@
           >确 定</el-button>
         </div>
       </el-dialog>
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogDeleteVisible"
+        width="30%"
+        center
+      >
+        <span>确定要删除"{{currentRow.name}}"吗?</span>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialogDeleteVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="confirmDeleteButton"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -242,7 +260,9 @@ export default {
       specsFormVisible: false,
       expendRow: [],
       listLoading: true,
-      sortable: null
+      sortable: null,
+      dialogDeleteVisible: false,
+      currentRow: {}
     }
   },
   created() {},
@@ -407,15 +427,23 @@ export default {
       this.selectIndex = null
       this.selectMenu = this.menuOptions[index]
     },
-    async handleDelete(index, row) {
+    handleDelete(row) {
+      this.currentRow = row
+
+      this.dialogDeleteVisible = true
+    },
+    async confirmDeleteButton() {
       try {
-        const result = await deleteFood({ foodId: row.foodId })
+        const result = await deleteFood({ foodId: this.currentRow.foodId })
 
         this.$message({
           type: 'success',
           message: result.message
         })
-        this.tableData.splice(index, 1)
+        this.dialogDeleteVisible = false
+        this.tableData = this.tableData.filter(
+          row => row.foodId !== this.currentRow.foodId
+        )
       } catch (err) {
         this.$message({
           type: 'error',
@@ -423,6 +451,23 @@ export default {
         })
       }
     },
+
+    // async handleDelete(index, row) {
+    //   try {
+    //     const result = await deleteFood({ foodId: row.foodId })
+
+    //     this.$message({
+    //       type: 'success',
+    //       message: result.message
+    //     })
+    //     this.tableData.splice(index, 1)
+    //   } catch (err) {
+    //     this.$message({
+    //       type: 'error',
+    //       message: err.message
+    //     })
+    //   }
+    // },
 
     async updateFood() {
       this.dialogFormVisible = false
