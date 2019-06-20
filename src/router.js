@@ -44,8 +44,6 @@ const sendMessage = r =>
 const explain = r =>
   require.ensure([], () => r(require('@/views/explain')), 'explain')
 const notFound = r => require.ensure([], () => r(require('@/views/404')), '404')
-const draggble = r =>
-  require.ensure([], () => r(require('@/views/draggble')), 'draggble')
 
 Vue.use(Router)
 
@@ -59,13 +57,6 @@ export default new Router({
       component: login,
 
       authorisation: []
-    },
-    {
-      path: '/draggable',
-      name: 'draggable',
-      component: draggble,
-
-      authorisation: ['staff', 'manager']
     },
 
     {
@@ -88,6 +79,7 @@ export default new Router({
           meta: [],
           authorisation: ['manager']
         },
+
         {
           path: 'addShop',
           component: addShop,

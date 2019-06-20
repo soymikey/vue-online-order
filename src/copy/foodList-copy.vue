@@ -4,49 +4,60 @@
     <div class="table_container">
 
       <el-table
-        ref="dragTable"
-        v-loading="listLoading"
         :data="tableData"
-        row-key="foodId"
-        fit
-        highlight-current-row
+        @expand='expand'
+        :expand-row-keys='expendRow'
+        :row-key="row => row.foodId"
         style="width: 100%"
       >
 
-        <el-table-column
-          align="center"
-          label="食品Id"
-          width="150"
-        >
-          <template slot-scope="scope">
-            <span>{{ scope.row.foodId }}</span>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form
+              label-position="left"
+              inline
+              class="demo-table-expand"
+            >
+              <el-form-item label="食品名称">
+                <span>{{ props.row.name }}</span>
+              </el-form-item>
+              <el-form-item label="餐馆名称">
+                <span>{{ restaurantInfo.name }}</span>
+              </el-form-item>
+              <el-form-item label="食品 ID">
+                <span>{{ props.row.foodId }}</span>
+              </el-form-item>
+              <el-form-item label="餐馆 ID">
+                <span>{{ restaurantInfo.restaurantId }}</span>
+              </el-form-item>
+              <el-form-item label="食品介绍">
+                <span>{{ props.row.description }}</span>
+              </el-form-item>
+              <el-form-item label="餐馆地址">
+                <span>{{ restaurantInfo.address }}</span>
+              </el-form-item>
+
+              <el-form-item label="食品分类">
+                <span>{{ props.row.categoryName }}</span>
+              </el-form-item>
+
+            </el-form>
           </template>
         </el-table-column>
         <el-table-column
-          align="center"
           label="食品名称"
-          width="150"
+          prop="name"
         >
-          <template slot-scope="scope">
-            <span>{{ scope.row.name }}</span>
-          </template>
         </el-table-column>
         <el-table-column
-          align="center"
           label="食品介绍"
+          prop="description"
         >
-          <template slot-scope="scope">
-            <span>{{ scope.row.description }}</span>
-          </template>
         </el-table-column>
         <el-table-column
-          align="center"
-          label="食品分类"
-          width="150"
+          label="评分"
+          prop="rating"
         >
-          <template slot-scope="scope">
-            <span>{{scope.row.categoryName}}</span>
-          </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -80,7 +91,7 @@
         title="修改食品信息"
         :visible.sync="dialogFormVisible"
       >
-
+        <div>{{selectTable}}</div>
         <el-form :model="selectTable">
           <el-form-item
             label="食品名称"
@@ -97,7 +108,48 @@
           >
             <el-input v-model="selectTable.description"></el-input>
           </el-form-item>
-
+          <el-form-item
+            label="食品分类"
+            label-width="100px"
+          >
+            <!-- <div>'index'{{selectIndex}}</div>
+            <div>'selectMenu.label'{{selectMenu.label}}</div> -->
+            <el-select
+              v-model="selectIndex"
+              :placeholder="selectMenu.label"
+              @change="handleSelect"
+            >
+              <el-option
+                v-for="item in menuOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.index"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item
+            label="食品图片"
+            label-width="100px"
+          >
+            <el-upload
+              class="avatar-uploader"
+              :action="baseUrl + '/v1/addimg/food'"
+              :show-file-list="false"
+              :on-success="handleServiceAvatarScucess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img
+                v-if="selectTable.image_path"
+                :src="imgBaseUrl + selectTable.image_path"
+                class="avatar"
+              >
+              <i
+                v-else
+                class="el-icon-plus avatar-uploader-icon"
+              ></i>
+            </el-upload>
+          </el-form-item> -->
         </el-form>
         <el-row style="overflow: auto; text-align: center;">
 
@@ -203,7 +255,6 @@
 <script>
 import headTop from '@/components/adminComponent/headTop'
 import { baseUrl, imgBaseUrl } from '@/config/env'
-import Sortable from 'sortablejs'
 import {
   getFoods,
   getFoodsCount,
@@ -211,7 +262,6 @@ import {
   updateFood,
   deleteFood,
   getResturantDetail,
-  updateFoodPosition,
   getMenuById
 } from '@/apiService/clientApi'
 export default {
@@ -240,9 +290,7 @@ export default {
         specs: [{ required: true, message: '请输入规格', trigger: 'blur' }]
       },
       specsFormVisible: false,
-      expendRow: [],
-      listLoading: true,
-      sortable: null
+      expendRow: []
     }
   },
   created() {},
@@ -284,22 +332,13 @@ export default {
         let foods = []
         for (const category of menu.data) {
           for (const food of category.foods) {
-            let specs = []
-            for (const spec of food.specfoods) {
-              specs.push({ specs: spec.specsName, price: spec.price })
-            }
             food.categoryName = category.name
-            food.specs = specs
             foods.push(food)
           }
         }
 
         this.count = menu.count
         this.tableData = foods
-        this.listLoading = false
-        this.$nextTick(() => {
-          this.setSort()
-        })
       } catch (err) {
         console.log('获取数据失败', err)
       }
@@ -409,21 +448,44 @@ export default {
     },
     async handleDelete(index, row) {
       try {
-        const result = await deleteFood({ foodId: row.foodId })
-
-        this.$message({
-          type: 'success',
-          message: result.message
-        })
-        this.tableData.splice(index, 1)
+        const res = await deleteFood(row.item_id)
+        if (res.status == 1) {
+          this.$message({
+            type: 'success',
+            message: '删除食品成功'
+          })
+          this.tableData.splice(index, 1)
+        } else {
+          throw new Error(res.message)
+        }
       } catch (err) {
         this.$message({
           type: 'error',
           message: err.message
         })
+        console.log('删除食品失败')
       }
     },
+    handleServiceAvatarScucess(res, file) {
+      if (res.status == 1) {
+        this.selectTable.image_path = res.image_path
+      } else {
+        this.$message.error('上传图片失败！')
+      }
+    },
+    beforeAvatarUpload(file) {
+      const isRightType =
+        file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
+      if (!isRightType) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isRightType && isLt2M
+    },
     async updateFood() {
       this.dialogFormVisible = false
       try {
@@ -439,55 +501,14 @@ export default {
           type: 'success',
           message: result.message
         })
-        this.initData()
+        this.getFoods()
       } catch (err) {
         console.log('更新餐馆信息失败', err)
       }
-    },
-    setSort() {
-      const el = this.$refs.dragTable.$el.querySelectorAll(
-        '.el-table__body-wrapper > table > tbody'
-      )[0]
-      this.sortable = Sortable.create(el, {
-        ghostClass: 'sortable-ghost', // Class name for the drop placeholder,
-        setData: function(dataTransfer) {
-          dataTransfer.setData('Text', '')
-          // to avoid Firefox bug
-          // Detail see : https://github.com/RubaXa/Sortable/issues/1012
-        },
-        onEnd: async evt => {
-          const startRow = this.tableData[evt.oldIndex]
-          const endRow = this.tableData[evt.newIndex]
-
-          const targetRow = this.tableData.splice(evt.oldIndex, 1)[0]
-
-          this.tableData.splice(evt.newIndex, 0, targetRow)
-
-          if (evt.newIndex !== evt.oldIndex) {
-            let result = await updateFoodPosition({
-              ...startRow,
-              newCategoryId: endRow.categoryId,
-              newFoodId: endRow.foodId
-            })
-            this.$message({
-              type: 'success',
-              message: result.message
-            })
-            await this.initData()
-          }
-        }
-      })
     }
   }
 }
 </script>
-<style>
-.sortable-ghost {
-  opacity: 0.8;
-  color: #fff !important;
-  background: #42b983 !important;
-}
-</style>
 
 <style lang="scss">
 @import '../style/mixin';
@@ -533,16 +554,5 @@ export default {
   width: 120px;
   height: 120px;
   display: block;
-}
-.icon-star {
-  margin-right: 2px;
-}
-.drag-handler {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-.show-d {
-  margin-top: 15px;
 }
 </style>

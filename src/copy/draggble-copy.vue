@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { getMenu, updateFood } from '@/apiService/clientApi'
+import { getMenu, updateFood, updateFoodPosition } from '@/apiService/clientApi'
 import Sortable from 'sortablejs'
 
 export default {
@@ -127,7 +127,6 @@ export default {
           foods.push(food)
         }
       }
-      console.log('foods', foods)
 
       this.list = foods
       this.total = menu.count
@@ -169,9 +168,10 @@ export default {
           console.log('categoryid', endRow.categoryId)
 
           if (evt.newIndex !== evt.oldIndex) {
-            let result = await updateFood({
+            let result = await updateFoodPosition({
               ...startRow,
-              newCategoryId: endRow.categoryId
+              newCategoryId: endRow.categoryId,
+              newFoodId: endRow.foodId
             })
             this.$message({
               type: 'success',

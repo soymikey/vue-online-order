@@ -36,8 +36,8 @@ export const deleteCategory = async data =>
 export const getFoods = async data => await axios.post('/food/get', data)
 export const addFood = async data => await axios.post('/food/add', data)
 export const updateFood = async data => await axios.post('/food/update', data)
-export const updateFoodCategory = async data =>
-  await axios.post('/food/updateCategory', data)
+export const updateFoodPosition = async data =>
+  await axios.post('/food/updateposition', data)
 export const deleteFood = async data => await axios.post('/food/delete', data)
 
 /**

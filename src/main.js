@@ -55,8 +55,6 @@ router.beforeEach((to, from, next) => {
       next()
     } else if (to.path === '/404') {
       next()
-    } else if (to.path === '/draggable') {
-      next()
     } else {
       if (!getStore('token')) {
         next({ path: '/' })
