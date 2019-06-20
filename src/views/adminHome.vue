@@ -46,14 +46,13 @@
 import headTop from '@/components/adminComponent/headTop'
 import tendency from '@/components/adminComponent/tendency'
 import dtime from 'time-formater'
-import {
-  userCount,
-  orderCount,
-  getUserCount,
-  getOrderCount,
-  adminDayCount,
-  adminCount
-} from '@/apiService/clientApi'
+import // userCount,
+// orderCount,
+// getUserCount,
+// getOrderCount,
+// adminDayCount,
+// adminCount
+'@/apiService/clientApi'
 export default {
   data() {
     return {

@@ -44,7 +44,7 @@
               label="操作"
               width="110"
             >
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button
                   type="primary"
                   size="small"
@@ -307,7 +307,7 @@ export default {
         const param = {
           userName: this.userInfo.username,
           userId: this.userInfo.userId,
-          restaurantId: this.shopDetail.id,
+          restaurantId: this.shopDetail.restaurantId,
           restaurantName: this.shopDetail.name,
           cartId: new Date().valueOf(),
           totalPrice: this.totalPrice,

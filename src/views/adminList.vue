@@ -7,25 +7,25 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="user_name"
+          prop="username"
           label="姓名"
           width="180"
         >
         </el-table-column>
         <el-table-column
-          prop="create_time"
+          prop="createdDate"
           label="注册日期"
           width="220"
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="city"
           label="地址"
           width="180"
-        >
+        > -->
         </el-table-column>
         <el-table-column
-          prop="auth"
+          prop="authName"
           label="权限"
         >
         </el-table-column>
@@ -50,8 +50,9 @@
 
 <script>
 import headTop from '@/components/adminComponent/headTop'
-import { adminList, adminCount } from '@/apiService/clientApi'
+import { getStaffs } from '@/apiService/clientApi'
 export default {
+  props: ['restaurantInfo'],
   data() {
     return {
       tableData: [],
@@ -65,19 +66,33 @@ export default {
   components: {
     headTop
   },
-  created() {
-    this.initData()
+  created() {},
+  mounted() {
+    if (this.restaurantInfo) {
+      this.initData()
+    }
+  },
+  watch: {
+    restaurantInfo: function(newValue) {
+      this.restaurantId = newValue.restaurantId
+      // this.categoryForm.categoryList = this.menu
+      this.initData()
+    }
   },
   methods: {
     async initData() {
       try {
-        const countData = await adminCount()
-        if (countData.status == 1) {
-          this.count = countData.count
-        } else {
-          throw new Error('获取数据失败')
-        }
-        this.getAdmin()
+        const result = await getStaffs({
+          restaurantId: this.restaurantInfo.restaurantId
+        })
+        this.tableData = result.data.map(user => {
+          user.authName = user.auth == 1 ? '员工' : '管理员'
+          return user
+        })
+        this.$message({
+          type: 'success',
+          message: result.message
+        })
       } catch (err) {
         console.log('获取数据失败', err)
       }

@@ -188,7 +188,7 @@ export default {
   methods: {
     async initData() {
       const result = await getOrders({
-        userId: this.restaurantInfo.managerId,
+        restaurantId: this.restaurantInfo.restaurantId,
         offset: this.offset,
         limit: this.limit
       })
@@ -208,7 +208,7 @@ export default {
       const Orders = await getOrderList({
         offset: this.offset,
         limit: this.limit,
-        restaurant_id: this.restaurant_id
+        restaurant_id: this.restaurantInfo.restaurantId
       })
 
       this.tableData = []

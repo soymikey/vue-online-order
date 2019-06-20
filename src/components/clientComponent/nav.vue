@@ -48,24 +48,6 @@
       @close="handleClose"
       :collapse="isCollapse"
     >
-      <!-- <el-submenu index="1">
-        <template slot="title">
-          <i class="icon iconfont icon-wodezichan"></i>
-          <span slot="title">收银</span>
-        </template>
-        <el-menu-item-group>
-          <span slot="title">分组一</span>
-          <el-menu-item index="1-1">选项1</el-menu-item>
-          <el-menu-item index="1-2">选项2</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="1-3">选项3</el-menu-item>
-        </el-menu-item-group>
-        <el-submenu index="1-4">
-          <span slot="title">选项4</span>
-          <el-menu-item index="1-4-1">选项1</el-menu-item>
-        </el-submenu>
-      </el-submenu> -->
 
       <el-menu-item index="1">
         <i class="icon iconfont icon-wodezichan"></i>
@@ -87,17 +69,14 @@
         <i class="icon iconfont icon-shijian"></i>
         <span slot='title'>{{$t("sidebar.promotion")}}</span>
       </el-menu-item>
-      <el-menu-item index="6">
+      <el-menu-item
+        index="6"
+        @click="goToAdminManagement"
+      >
         <i class="icon iconfont icon-tongji"></i>
         <span slot='title'>{{$t("sidebar.management")}}</span>
       </el-menu-item>
-      <!-- <el-menu-item index="7">
-        <i class="icon iconfont icon-guanbi"></i>
-        <span
-          slot='title'
 
-        >{{$t("sidebar.language")}}</span>
-      </el-menu-item> -->
       <el-submenu index="7">
         <template slot="title">
           <i class="icon iconfont icon-tongji"></i>
@@ -120,8 +99,11 @@
         </el-menu-item-group>
 
       </el-submenu>
-      <el-menu-item index="8">
-        <i class="icon iconfont icon-guanbi"></i>
+      <el-menu-item
+        index="8"
+        @click="exitButton"
+      >
+        <i class="icon iconfont icon-guanbi"> </i>
         <span slot='title'>{{$t("sidebar.exit")}}</span>
       </el-menu-item>
 
@@ -137,34 +119,14 @@
 </template>
 
 <script>
-import { signout } from '@/apiService/clientApi'
 import { removeAllStore } from '@/config/mUtils'
 import { mapMutations } from 'vuex'
 export default {
-  // name: 'Nav',
-  // data() {
-  //   return {}
-  // },
-  // methods: {
-  //   ...mapMutations(['RESET_STATE']),
-  //   exitButton() {
-  //     this.$confirm('是否退出?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     })
-  //       .then(async () => {
-  //         removeAllStore()
-  //         this.RESET_STATE()
-  //         this.$router.push('/')
-  //         this.RESET_STATE()
-  //       })
-  //       .catch(() => {})
-  //   },
-  //   goToAdminManagement() {
-  //     this.$router.push('/manage/home')
-  //   }
-  // }
+  name: 'Nav',
+  data() {
+    return {}
+  },
+
   data() {
     return {
       isCollapse: true
@@ -172,6 +134,23 @@ export default {
   },
   created() {},
   methods: {
+    ...mapMutations(['RESET_STATE']),
+    exitButton() {
+      this.$confirm('是否退出?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          this.RESET_STATE()
+          window.localStorage.clear()
+          this.$router.push('/')
+        })
+        .catch(() => {})
+    },
+    goToAdminManagement() {
+      this.$router.push('/manage/home')
+    },
     handleOpen(key, keyPath) {
       console.log(key, keyPath)
     },

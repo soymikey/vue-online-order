@@ -50,10 +50,9 @@
 <script>
 import headTop from '@/components/adminComponent/headTop'
 import { registerStaff } from '../apiService/clientApi'
-import { getUserCity } from '@/apiService/clientApi'
 
 export default {
-  props: ['adminInfo'],
+  props: ['restaurantInfo'],
   data() {
     return {
       registerForm: {
@@ -73,42 +72,32 @@ export default {
   components: {
     headTop
   },
-  mounted() {
-    console.log('adminInfo', this.adminInfo)
+  mounted() {},
+  watch: {
+    restaurantInfo: function(newValue) {
+      this.restaurantInfo = newValue
+      // this.categoryForm.categoryList = this.menu
+    }
   },
   methods: {
     async registerButton(formName) {
+      console.log('this.restaurantInfo', this.restaurantInfo)
+
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          registerStaff({
+          const result = await registerStaff({
             username: this.registerForm.username,
             password: this.registerForm.password,
-            restaurantId: this.adminInfo.restaurantId,
-            managerId: this.adminInfo.id
+            restaurantId: this.restaurantInfo.restaurantId,
+            managerId: this.restaurantInfo.managerId
           })
-            .then(res => {
-              this.$message({
-                type: 'success',
-                message: res.message
-              })
-              this.registerForm.username = ''
-              this.registerForm.password = ''
-            })
-            .catch(error => {})
 
-          // if (res.status === 1) {
-          //   this.$message({
-          //     type: 'success',
-          //     message: res.message
-          //   })
-          //   this.registerForm.username = ''
-          //   this.registerForm.password = ''
-          // } else {
-          //   this.$message({
-          //     type: 'error',
-          //     message: res.message
-          //   })
-          // }
+          this.$message({
+            type: 'success',
+            message: result.message
+          })
+          this.registerForm.username = ''
+          this.registerForm.password = ''
         } else {
           this.$notify.error({
             title: '错误',

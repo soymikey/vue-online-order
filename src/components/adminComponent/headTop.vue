@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import { signout } from '@/apiService/clientApi'
 import { imgBaseUrl } from '@/config/env'
 import { mapState, mapMutations } from 'vuex'
 export default {
@@ -40,7 +39,7 @@ export default {
   },
   methods: {
     ...mapMutations(['RESET_STATE']),
-    async handleCommand(command) {
+    handleCommand(command) {
       if (command == 'home') {
         this.$router.push('/manage')
       } else if (command == 'signout') {
@@ -48,9 +47,8 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(async () => {
-          const res = await signout()
-          if (res.status == 1) {
+        })
+          .then(() => {
             this.$message({
               type: 'success',
               message: '退出成功'
@@ -58,13 +56,8 @@ export default {
             window.localStorage.clear()
             this.RESET_STATE()
             this.$router.push('/')
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.message
-            })
-          }
-        })
+          })
+          .catch(error => {})
       }
     }
   }

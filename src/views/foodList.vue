@@ -227,10 +227,10 @@ import {
   getFoodsCount,
   getMenu,
   updateFood,
-  deleteFood,
-  getResturantDetail,
-  updateFoodPosition,
-  getMenuById
+  deleteFood
+  // getResturantDetail,
+  // updateFoodPosition,
+  // getMenuById
 } from '@/apiService/clientApi'
 export default {
   props: ['restaurantInfo'],

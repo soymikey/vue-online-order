@@ -9,6 +9,7 @@ export const register = data => axios.post('/user/register', data)
 export const registerStaff = data => axios.post('/user/registerstaff', data)
 export const login = data => axios.post('/user/login', data)
 export const getUserInfo = async () => await axios.get('/user/info')
+export const getStaffs = async data => await axios.post('/user/getstaffs', data)
 
 /**
  * restaurant

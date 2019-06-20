@@ -255,15 +255,14 @@
 <script>
 import headTop from '@/components/adminComponent/headTop'
 import { baseUrl, imgBaseUrl } from '@/config/env'
-import {
-  getFoods,
-  getFoodsCount,
-  getMenu,
-  updateFood,
-  deleteFood,
-  getResturantDetail,
-  getMenuById
-} from '@/apiService/clientApi'
+import // getFoods,
+// getFoodsCount,
+// getMenu,
+// updateFood,
+// deleteFood,
+// getResturantDetail,
+// getMenuById
+'@/apiService/clientApi'
 export default {
   props: ['restaurantInfo'],
   data() {

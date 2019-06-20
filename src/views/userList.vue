@@ -50,7 +50,7 @@
 
 <script>
 import headTop from '@/components/adminComponent/headTop'
-import { getUserList, getUserCount } from '@/apiService/clientApi'
+// import { getUserList, getUserCount } from '@/apiService/clientApi'
 export default {
   data() {
     return {
