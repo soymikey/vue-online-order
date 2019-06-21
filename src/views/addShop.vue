@@ -34,7 +34,7 @@
               style="width: 100%;"
               @select="addressSelect"
             ></el-autocomplete> -->
-            <span>当前城市：{{city.name}}</span>
+            <!-- <span>当前城市：{{city.name}}</span> -->
           </el-form-item>
           <el-form-item
             label="联系电话"
@@ -124,7 +124,6 @@ import { baseUrl, imgBaseUrl } from '@/config/env'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
-  props: ['restaurantInfo'],
   data() {
     return {
       city: {},
@@ -156,7 +155,7 @@ export default {
   mounted() {},
 
   computed: {
-    ...mapState(['userInfo'])
+    ...mapState(['userInfo', 'restaurantInfo'])
   },
   watch: {
     restaurantInfo: function(newValue) {

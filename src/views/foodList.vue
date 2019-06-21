@@ -219,6 +219,8 @@
 
 <script>
 import headTop from '@/components/adminComponent/headTop'
+import { mapState } from 'vuex'
+
 import { baseUrl, imgBaseUrl } from '@/config/env'
 import Sortable from 'sortablejs'
 import {
@@ -226,13 +228,12 @@ import {
   getFoodsCount,
   getMenu,
   updateFood,
-  deleteFood
+  deleteFood,
   // getResturantDetail,
-  // updateFoodPosition,
+  updateFoodPosition
   // getMenuById
 } from '@/apiService/clientApi'
 export default {
-  props: ['restaurantInfo'],
   data() {
     return {
       baseUrl,
@@ -266,13 +267,11 @@ export default {
   },
   created() {},
   mounted() {
-    console.log('this.restaurantInfo', this.restaurantInfo)
-
-    if (this.restaurantInfo) {
-      this.initData()
-    }
+    this.initData()
   },
   computed: {
+    ...mapState(['userInfo', 'restaurantInfo']),
+
     specs: function() {
       let specs = []
       if (this.selectTable.specfoods) {
@@ -290,18 +289,12 @@ export default {
   components: {
     headTop
   },
-  watch: {
-    restaurantInfo: function(newValue) {
-      this.restaurantId = newValue.restaurantId
-      this.initData()
-    }
-  },
+
   methods: {
     async initData() {
-      console.log('restaurantInfo', this.restaurantInfo)
       try {
         const menu = await getMenu({
-          restaurantId: this.restaurantInfo.restaurantId
+          restaurantId: this.userInfo.restaurantId
         })
         let foods = []
         for (const category of menu.data) {
@@ -315,10 +308,10 @@ export default {
             foods.push(food)
           }
         }
-        this.$message({
-          type: 'success',
-          message: menu.message
-        })
+        // this.$message({
+        //   type: 'success',
+        //   message: menu.message
+        // })
 
         this.count = menu.count
         this.tableData = foods
@@ -330,46 +323,45 @@ export default {
         console.log('获取数据失败', err)
       }
     },
-    async getMenu() {
-      this.menuOptions = []
-      try {
-        const menu = await getMenu({
-          restaurantId: this.restaurantInfo.restaurantId
-        })
+    // async getMenu() {
+    //   this.menuOptions = []
+    //   try {
+    //     const menu = await getMenu({
+    //       restaurantId: this.userInfo.restaurantId
+    //     })
 
-        menu.data.forEach((item, index) => {
-          this.menuOptions.push({
-            label: item.name,
-            value: item.categoryId,
-            index
-          })
-        })
-        console.log('this.this.menuOptions', this.menuOptions)
-      } catch (err) {
-        console.log('获取食品种类失败', err)
-      }
-    },
-    async getFoods() {
-      try {
-        const menu = await getMenu({
-          offset: this.offset,
-          limit: this.limit,
-          restaurantId: this.restaurantInfo.restaurantId
-        })
-        let foods = []
-        for (const category of menu.data) {
-          for (const food of category.foods) {
-            food.categoryName = category.name
-            foods.push(food)
-          }
-        }
+    //     menu.data.forEach((item, index) => {
+    //       this.menuOptions.push({
+    //         label: item.name,
+    //         value: item.categoryId,
+    //         index
+    //       })
+    //     })
+    //   } catch (err) {
+    //     console.log('获取食品种类失败', err)
+    //   }
+    // },
+    // async getFoods() {
+    //   try {
+    //     const menu = await getMenu({
+    //       offset: this.offset,
+    //       limit: this.limit,
+    //       restaurantId: this.restaurantInfo.restaurantId
+    //     })
+    //     let foods = []
+    //     for (const category of menu.data) {
+    //       for (const food of category.foods) {
+    //         food.categoryName = category.name
+    //         foods.push(food)
+    //       }
+    //     }
 
-        this.count = menu.count
-        this.tableData = foods
-      } catch (err) {
-        console.log('获取食品种类失败', err)
-      }
-    },
+    //     this.count = menu.count
+    //     this.tableData = foods
+    //   } catch (err) {
+    //     console.log('获取食品种类失败', err)
+    //   }
+    // },
     tableRowClassName(row, index) {
       if (index === 1) {
         return 'info-row'
@@ -393,19 +385,10 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       this.offset = (val - 1) * this.limit
-      this.getFoods()
+      this.getMenu()
     },
-    expand(row, status) {
-      if (status) {
-        this.getSelectItemData(row)
-      } else {
-        const index = this.expendRow.indexOf(row.index)
-        this.expendRow.splice(index, 1)
-      }
-    },
-    handleEdit(row) {
-      console.log('row', row)
 
+    handleEdit(row) {
       this.getSelectItemData(row, 'edit')
       this.dialogFormVisible = true
     },
@@ -420,14 +403,8 @@ export default {
       }
 
       this.selectMenu = { label: row.categoryName, value: row.categoryId }
-      this.getMenu()
-      // this.tableData.splice(row.index, 1, { ...this.selectTable })
-      // this.$nextTick(() => {
-      //   this.expendRow.push(row.index)
-      // })
-      // if (type == 'edit' && this.restaurant_id == row.restaurant_id) {
-      //   this.getMenu()
-      // }
+      this.initData()
+      // this.getMenu()
     },
     handleSelect(index) {
       this.selectIndex = null
@@ -457,23 +434,6 @@ export default {
         })
       }
     },
-
-    // async handleDelete(index, row) {
-    //   try {
-    //     const result = await deleteFood({ foodId: row.foodId })
-
-    //     this.$message({
-    //       type: 'success',
-    //       message: result.message
-    //     })
-    //     this.tableData.splice(index, 1)
-    //   } catch (err) {
-    //     this.$message({
-    //       type: 'error',
-    //       message: err.message
-    //     })
-    //   }
-    // },
 
     async updateFood() {
       this.dialogFormVisible = false

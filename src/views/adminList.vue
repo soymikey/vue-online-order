@@ -50,9 +50,10 @@
 
 <script>
 import headTop from '@/components/adminComponent/headTop'
+import { mapState } from 'vuex'
+
 import { getStaffs } from '@/apiService/clientApi'
 export default {
-  props: ['restaurantInfo'],
   data() {
     return {
       tableData: [],
@@ -68,25 +69,20 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.restaurantInfo) {
-      this.initData()
-    }
+    this.initData()
   },
-  watch: {
-    restaurantInfo: function(newValue) {
-      this.restaurantId = newValue.restaurantId
-      // this.categoryForm.categoryList = this.menu
-      this.initData()
-    }
+  computed: {
+    ...mapState(['userInfo', 'restaurantInfo'])
   },
+
   methods: {
     async initData() {
       try {
         const result = await getStaffs({
-          restaurantId: this.restaurantInfo.restaurantId
+          restaurantId: this.userInfo.restaurantId
         })
         this.tableData = result.data.map(user => {
-          user.authName = user.auth == 1 ? '员工' : '管理员'
+          user.authName = user.auth == 1 ? '普通' : '管理员'
           return user
         })
         this.$message({

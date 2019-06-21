@@ -151,10 +151,11 @@
 <script>
 // @click="handleDelete(scope.$index,scope.row)"
 import headTop from '@/components/adminComponent/headTop'
+import { mapState } from 'vuex'
+
 import PrintHTML from '../config/PrintHTML.js'
 import { getOrders, deleteOrder } from '@/apiService/clientApi'
 export default {
-  props: ['restaurantInfo'],
   data() {
     return {
       tableData: [],
@@ -175,20 +176,16 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.restaurantInfo) {
-      this.initData()
-    }
+    this.initData()
   },
-  watch: {
-    restaurantInfo: function(newValue) {
-      this.restaurantId = newValue.restaurantId
-      this.initData()
-    }
+  computed: {
+    ...mapState(['userInfo', 'restaurantInfo'])
   },
+
   methods: {
     async initData() {
       const result = await getOrders({
-        restaurantId: this.restaurantInfo.restaurantId,
+        restaurantId: this.userInfo.restaurantId,
         offset: this.offset,
         limit: this.limit
       })
@@ -208,7 +205,7 @@ export default {
       const Orders = await getOrderList({
         offset: this.offset,
         limit: this.limit,
-        restaurant_id: this.restaurantInfo.restaurantId
+        restaurant_id: this.userInfo.restaurantId
       })
 
       this.tableData = []

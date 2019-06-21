@@ -12,7 +12,6 @@
           text-color="#bfcbd9"
           router
         >
-          <div>{{defaultActive}}</div>
           <el-menu-item index="/manage/home"><i class="el-icon-menu"></i>首页</el-menu-item>
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-document"></i>数据管理</template>
@@ -54,12 +53,9 @@
         :span="20"
         style="height: 100%;overflow: auto;"
       >
+
         <keep-alive>
-          <router-view
-            :restaurantInfo='restaurantInfo'
-            :menu='categoryForm.categoryList'
-            :userInfo='userInfo'
-          ></router-view>
+          <router-view></router-view>
         </keep-alive>
       </el-col>
     </el-row>
@@ -73,29 +69,26 @@ import { getRestaurantInfo } from '@/apiService/clientApi'
 export default {
   data() {
     return {
-      restaurantInfo: null,
-      categoryForm: {
-        categoryList: [],
-        categorySelect: '',
-        name: '',
-        description: ''
-      }
+      // restaurantInfo: null,
+      // userInfo: null,
+      // categoryForm: {
+      //   categoryList: [],
+      //   categorySelect: '',
+      //   name: '',
+      //   description: ''
+      // }
     }
   },
-  created() {
-    if (this.userInfo.auth == 0) {
-      this.getUserData()
-    }
-  },
+  created() {},
   mounted() {
-    if (!this.shopDetail) {
+    if (!this.restaurantInfo) {
       this.initData()
     }
   },
   computed: {
-    ...mapState(['userInfo', 'shopDetail']),
+    ...mapState(['userInfo', 'restaurantInfo']),
     defaultActive: function() {
-      // return this.$route.path.replace('/', '')
+      //   return this.$route.path.replace("/", "");
     }
   },
   watch: {},
@@ -104,44 +97,25 @@ export default {
     ...mapMutations(['RECORD_SHOPDETAIL']),
     async initData() {
       //获取商铺信息
-
       const result = await getRestaurantInfo({
         restaurantId: this.userInfo.restaurantId
       })
 
-      if (result.status === 1) {
-        this.restaurantInfo = result.data
-
-        this.RECORD_SHOPDETAIL(result.data)
-        // this.getShopCatagory()
-      } else {
-        this.$message({
-          type: 'error',
-          message: '店铺信息还未填写'
-        })
-      }
-    },
-
-    async getShopCatagory() {
-      try {
-        const result = await getCategory(this.restaurantInfo.data.id)
-        if (result.status == 1) {
-          result.category_list.map((item, index) => {
-            item.value = index
-            item.label = item.name
-          })
-          this.categoryForm.categoryList = result.category_list
-          console.log(
-            'categoryForm.categoryList',
-            this.categoryForm.categoryList
-          )
-        } else {
-          console.log(result)
-        }
-      } catch (err) {
-        console.log(err)
-      }
+      this.RECORD_SHOPDETAIL(result.data)
     }
+
+    // async getShopCatagory() {
+    //   try {
+    //     const result = await getCategory(this.userInfo.restaurantId)
+    //     result.category_list.map((item, index) => {
+    //       item.value = index
+    //       item.label = item.name
+    //     })
+    //     this.categoryForm.categoryList = result.category_list
+    //   } catch (err) {
+    //     console.log(err)
+    //   }
+    // }
   }
 }
 </script>

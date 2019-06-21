@@ -19,11 +19,11 @@
               <template slot-scope="scope">
                 {{ scope.row.nameWithSpecs }}
 
-                <div v-if="scope.row.extra">
+                <div v-if="scope.row.extra.length">
                   <el-tag
                     size="medium"
                     :key="index"
-                    v-for="{item,index} in scope.row.extra"
+                    v-for="(item, index) in scope.row.extra"
                   >{{item.name }}</el-tag>
                 </div>
 
@@ -35,11 +35,7 @@
               label="数量"
               width="70"
             ></el-table-column>
-            <!-- <el-table-column
-                  prop="price"
-                  label="金额"
-                  width="70"
-                ></el-table-column> -->
+
             <el-table-column
               label="操作"
               width="110"
@@ -153,10 +149,6 @@ import extraMenu from '../../assets/extraMenu.js'
 import { placeOrder } from '../../apiService/clientApi.js'
 
 export default {
-  props: {
-    menu: { type: Array },
-    shopDetail: { type: Object }
-  },
   data() {
     return {
       data: [],
@@ -181,7 +173,7 @@ export default {
     )
   },
   computed: {
-    ...mapState(['userInfo', 'cartList']),
+    ...mapState(['userInfo', 'cartList', 'restaurantInfo']),
 
     //购物车中总共商品的价格
     totalPrice: function() {
@@ -209,7 +201,7 @@ export default {
     addToCart(food_id, name, price, specs, extra) {
       let nameWithSpecs = specs ? `${name}+${specs}` : name
       this.ADD_CART({
-        shopid: this.shopDetail.id,
+        shopid: this.restaurantInfo.restaurantId,
         food_id,
         name,
         price,
@@ -288,7 +280,7 @@ export default {
       let food = this.selectedFood
 
       this.ADD_CART({
-        shopid: this.shopDetail.id,
+        shopid: this.restaurantInfo.restaurantId,
         food_id,
         name,
         price,
@@ -306,8 +298,8 @@ export default {
         const param = {
           userName: this.userInfo.username,
           userId: this.userInfo.userId,
-          restaurantId: this.shopDetail.restaurantId,
-          restaurantName: this.shopDetail.name,
+          restaurantId: this.restaurantInfo.restaurantId,
+          restaurantName: this.restaurantInfo.name,
           cartId: new Date().valueOf(),
           totalPrice: this.totalPrice,
           totalQuantity: this.totalNum,

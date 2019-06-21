@@ -49,10 +49,11 @@
 
 <script>
 import headTop from '@/components/adminComponent/headTop'
+import { mapState } from 'vuex'
+
 import { registerStaff } from '../apiService/clientApi'
 
 export default {
-  props: ['restaurantInfo'],
   data() {
     return {
       registerForm: {
@@ -73,23 +74,19 @@ export default {
     headTop
   },
   mounted() {},
-  watch: {
-    restaurantInfo: function(newValue) {
-      this.restaurantInfo = newValue
-      // this.categoryForm.categoryList = this.menu
-    }
+  computed: {
+    ...mapState(['userInfo'])
   },
+
   methods: {
     async registerButton(formName) {
-      console.log('this.restaurantInfo', this.restaurantInfo)
-
       this.$refs[formName].validate(async valid => {
         if (valid) {
           const result = await registerStaff({
             username: this.registerForm.username,
             password: this.registerForm.password,
-            restaurantId: this.restaurantInfo.restaurantId,
-            managerId: this.restaurantInfo.managerId
+            restaurantId: this.userInfo.restaurantId,
+            managerId: this.userInfo.userId
           })
 
           this.$message({

@@ -11,16 +11,10 @@
           class="pos-order"
           id="order-list"
         >
-          <home-Left
-            :shopDetail='shopDetail'
-            :menu="menuList"
-          ></home-Left>
+          <home-Left></home-Left>
         </el-col>
         <el-col :span="16">
-          <home-Right
-            :shopDetail='shopDetail'
-            :menu="menuList"
-          ></home-Right>
+          <home-Right :menu="menuList"></home-Right>
         </el-col>
 
       </el-row>
@@ -41,7 +35,6 @@ export default {
   components: { homeNav, homeLeft, homeRight },
   data() {
     return {
-      restaurantInfo: null, //商铺详情
       showActivities: false, //是否显示活动详情
       menuList: [] //食品列表
     }
@@ -51,33 +44,22 @@ export default {
     this.initData()
   },
   computed: {
-    ...mapState(['userInfo', 'shopDetail'])
+    ...mapState(['userInfo', 'restaurantInfo'])
   },
   methods: {
     ...mapMutations(['RECORD_SHOPDETAIL']),
     async initData() {
-      //获取商铺信息
-
-      this.restaurantInfo = await getRestaurantInfo({
-        restaurantId: this.userInfo.restaurantId
-      })
-      // //获取商铺食品列表
-      const menu = await getMenu({ restaurantId: this.userInfo.restaurantId })
-      if (menu.status === 1) {
+      try {
+        //获取商铺信息
+        const restaurantInfo = await getRestaurantInfo({
+          restaurantId: this.userInfo.restaurantId
+        })
+        // //获取商铺食品列表
+        const menu = await getMenu({ restaurantId: this.userInfo.restaurantId })
         this.menuList = menu.data
-      } else {
-        this.$message({
-          type: 'error',
-          message: '获取菜单失败'
-        })
-      }
-      if (this.restaurantInfo.status === 1) {
-        this.RECORD_SHOPDETAIL(this.restaurantInfo.data)
-      } else {
-        this.$message({
-          type: 'error',
-          message: this.restaurantInfo.message
-        })
+        this.RECORD_SHOPDETAIL(restaurantInfo.data)
+      } catch (err) {
+        console.log(err)
       }
     }
   }

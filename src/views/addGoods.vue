@@ -262,11 +262,13 @@
 
 <script>
 import headTop from '@/components/adminComponent/headTop'
+import { mapState } from 'vuex'
+
 import { getCategories, addCategory, addFood } from '@/apiService/clientApi'
 import { baseUrl, imgBaseUrl } from '@/config/env'
 
 export default {
-  props: ['restaurantInfo', 'menu'],
+  props: ['menu'],
   data() {
     return {
       baseUrl,
@@ -318,29 +320,22 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.restaurantInfo) {
-      this.initData()
-    }
+    this.initData()
   },
   computed: {
+    ...mapState(['userInfo', 'restaurantInfo']),
     selectValue: function() {
       return (
         this.categoryForm.categoryList[this.categoryForm.categorySelect] || {}
       )
     }
   },
-  watch: {
-    restaurantInfo: function(newValue) {
-      this.restaurantId = newValue.restaurantId
-      // this.categoryForm.categoryList = this.menu
-      this.initData()
-    }
-  },
+
   methods: {
     async initData() {
       try {
         const result = await getCategories({
-          restaurantId: this.restaurantInfo.restaurantId
+          restaurantId: this.userInfo.restaurantId
         })
 
         result.data.map((item, index) => {
@@ -349,7 +344,10 @@ export default {
         })
         this.categoryForm.categoryList = result.data
       } catch (err) {
-        console.log(err)
+        this.$message({
+          type: 'error',
+          message: '获取食品分类失败'
+        })
       }
     },
     addCategoryFun() {
@@ -361,53 +359,36 @@ export default {
           const params = {
             name: this.categoryForm.name,
             description: this.categoryForm.description,
-            restaurantId: this.restaurantInfo.restaurantId
+            restaurantId: this.userInfo.restaurantId
           }
           try {
             const result = await addCategory(params)
-            if (result.status == 1) {
-              this.initData()
-              this.categoryForm.name = ''
-              this.categoryForm.description = ''
-              this.showAddCategory = false
-              this.$message({
-                type: 'success',
-                message: '添加成功'
-              })
-            }
+
+            await this.initData()
+            this.categoryForm.name = ''
+            this.categoryForm.description = ''
+            this.showAddCategory = false
+            this.$message({
+              type: 'success',
+              message: '添加成功'
+            })
           } catch (err) {
-            console.log(err)
+            this.$message({
+              type: 'error',
+              message: err
+            })
           }
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '请检查输入是否正确',
-            offset: 100
+          this.$message({
+            type: 'error',
+            message: '请检查输入是否正确'
           })
+
           return false
         }
       })
     },
-    uploadImg(res, file) {
-      if (res.status == 1) {
-        this.foodForm.image_path = res.image_path
-      } else {
-        this.$message.error('上传图片失败！')
-      }
-    },
-    beforeImgUpload(file) {
-      const isRightType =
-        file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
 
-      if (!isRightType) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isRightType && isLt2M
-    },
     addspecs() {
       this.foodForm.specs.push({ ...this.specsForm })
       this.specsForm.specs = ''
@@ -439,7 +420,7 @@ export default {
           const params = {
             ...this.foodForm,
             categoryId: this.selectValue.categoryId,
-            restaurantId: this.restaurantInfo.restaurantId
+            restaurantId: this.userInfo.restaurantId
           }
 
           try {
@@ -469,10 +450,9 @@ export default {
             console.log(err)
           }
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '请检查输入是否正确',
-            offset: 100
+          this.$message({
+            type: 'error',
+            message: '请检查输入是否正确'
           })
           return false
         }

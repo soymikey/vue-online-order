@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div>{{userInfo}}</div>
-    <div>{{shopDetail}}</div>
+    <div>{{restaurantInfo}}</div>
     <!-- <div id="nav">
       <router-link to="/"></router-link> |
       <router-link to="/about">About</router-link>
@@ -25,7 +25,7 @@ export default {
       // return this.$route.path.replace('/', '')
     },
 
-    ...mapState(['userInfo', 'shopDetail'])
+    ...mapState(['userInfo', 'restaurantInfo'])
   },
   watch: {}
 }

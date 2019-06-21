@@ -96,12 +96,11 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 export default {
   name: 'home-right',
   props: {
-    menu: { type: Array },
-    shopDetail: { type: Object }
+    menu: { type: Array }
   },
   components: {},
   data() {
@@ -112,14 +111,16 @@ export default {
     }
   },
   created() {},
-  computed: {},
+  computed: {
+    ...mapState(['restaurantInfo'])
+  },
   methods: {
     ...mapMutations(['ADD_CART']),
     //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
 
     addToCart(food_id, name, price, specs) {
       this.ADD_CART({
-        shopid: this.shopDetail.id,
+        shopid: this.restaurantInfo.restaurantId,
         food_id,
         name,
         price,
@@ -147,7 +148,7 @@ export default {
         ? `${name}${specs == '默认' ? '' : '+' + specs}`
         : name
       this.ADD_CART({
-        shopid: this.shopDetail.id,
+        shopid: this.restaurantInfo.restaurantId,
         food_id,
         name,
         price,

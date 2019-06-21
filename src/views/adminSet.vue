@@ -56,15 +56,14 @@ export default {
   components: {
     headTop
   },
+
   computed: {
     ...mapState(['userInfo'])
   },
   methods: {
     uploadImg(res, file) {
-      console.log('res,file', res, file)
-
       if (res.status == 1) {
-        this.userInfo.avatar = res.image_path
+        this.userInfo.avatar = res.imagePath
       } else {
         this.$message.error('上传图片失败！')
       }
