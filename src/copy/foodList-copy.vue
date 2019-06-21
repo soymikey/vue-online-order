@@ -164,7 +164,6 @@
             >
             </el-table-column>
 
-            </el-table-column>
             <el-table-column
               prop="price"
               label="价格"

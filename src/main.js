@@ -48,8 +48,6 @@ for (const router of router.options.routes) {
   }
 }
 router.beforeEach((to, from, next) => {
-  console.log('to.path', to.path)
-
   if (managerRouter.indexOf(to.path) !== -1) {
     if (to.path === '/') {
       next()
@@ -60,11 +58,6 @@ router.beforeEach((to, from, next) => {
         next({ path: '/' })
       } else if (store.getters.state.userInfo.auth === 0) {
         store.dispatch('getUserData').then(() => {
-          console.log(
-            'store.getters.state.userInfo.auth',
-            store.getters.state.userInfo
-          )
-
           if (store.getters.state.userInfo.auth === 0) {
             next({ path: '/' })
           } else if (store.getters.state.userInfo.auth === 1) {

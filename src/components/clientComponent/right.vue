@@ -133,7 +133,6 @@ export default {
       if (foods) {
         this.choosedFoods = foods
       }
-      console.log('this.choosedFoods', this.choosedFoods)
 
       this.showSpecs = !this.showSpecs
       this.specsIndex = 0

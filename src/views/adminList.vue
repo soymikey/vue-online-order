@@ -22,8 +22,8 @@
           prop="city"
           label="地址"
           width="180"
-        > -->
-        </el-table-column>
+        >
+        </el-table-column>-->
         <el-table-column
           prop="authName"
           label="权限"

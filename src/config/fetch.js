@@ -15,7 +15,6 @@ export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
       url = url + '?' + dataStr
     }
   }
-  console.log('api', data)
 
   if (window.fetch && method === 'fetch') {
     let requestConfig = {
@@ -36,8 +35,6 @@ export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
     }
 
     try {
-      // console.log('requestConfig', requestConfig);
-
       const response = await fetch(url, requestConfig)
       const responseJson = await response.json()
 

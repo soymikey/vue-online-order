@@ -158,8 +158,6 @@ export default {
       console.log(key, keyPath)
     },
     changeLanguageZh() {
-      console.log('hello')
-
       this.$i18n.locale = 'zh'
     },
     changeLanguageEn() {

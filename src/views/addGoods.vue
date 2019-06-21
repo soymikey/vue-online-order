@@ -188,8 +188,8 @@
               <!-- <el-table-column
                 prop="packing_fee"
                 label="包装费"
-              > -->
-              </el-table-column>
+              >
+              </el-table-column> -->
               <el-table-column
                 prop="price"
                 label="价格"
@@ -343,15 +343,11 @@ export default {
           restaurantId: this.restaurantInfo.restaurantId
         })
 
-        if (result.status == 1) {
-          result.data.map((item, index) => {
-            item.value = index
-            item.label = item.name
-          })
-          this.categoryForm.categoryList = result.data
-        } else {
-          console.log(result)
-        }
+        result.data.map((item, index) => {
+          item.value = index
+          item.label = item.name
+        })
+        this.categoryForm.categoryList = result.data
       } catch (err) {
         console.log(err)
       }

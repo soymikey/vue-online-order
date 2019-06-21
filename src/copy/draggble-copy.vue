@@ -162,11 +162,6 @@ export default {
 
           this.newList.splice(evt.newIndex, 0, tempIndex)
 
-          // console.log('start', startRow, 'end', endRow)
-          console.log('this.list', this.list)
-
-          console.log('categoryid', endRow.categoryId)
-
           if (evt.newIndex !== evt.oldIndex) {
             let result = await updateFoodPosition({
               ...startRow,

@@ -1,8 +1,0 @@
-{
-  "parserOptions": {
-    "ecmaFeatures": {
-      "vue": true,
-      "modules": true
-    }
-  }
-}

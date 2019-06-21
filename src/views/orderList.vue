@@ -22,8 +22,8 @@
         <!-- <el-table-column
           label="订单状态"
           prop="status"
-        > -->
-        </el-table-column>
+        >
+        </el-table-column>-->
         <el-table-column
           label="订单日期"
           prop="createdDate"

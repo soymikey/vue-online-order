@@ -112,7 +112,6 @@
             >
             </el-table-column>
 
-            </el-table-column>
             <el-table-column
               prop="price"
               label="价格"
@@ -267,6 +266,8 @@ export default {
   },
   created() {},
   mounted() {
+    console.log('this.restaurantInfo', this.restaurantInfo)
+
     if (this.restaurantInfo) {
       this.initData()
     }
@@ -297,6 +298,7 @@ export default {
   },
   methods: {
     async initData() {
+      console.log('restaurantInfo', this.restaurantInfo)
       try {
         const menu = await getMenu({
           restaurantId: this.restaurantInfo.restaurantId
@@ -313,6 +315,10 @@ export default {
             foods.push(food)
           }
         }
+        this.$message({
+          type: 'success',
+          message: menu.message
+        })
 
         this.count = menu.count
         this.tableData = foods

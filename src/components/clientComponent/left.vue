@@ -123,7 +123,8 @@
             class="tag-container"
           >
             <div
-              v-for="item in category.children"
+              v-for="(item,index) in category.children"
+              :key='index'
               :label="item"
               class="tag"
             >
@@ -206,8 +207,6 @@ export default {
     //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
 
     addToCart(food_id, name, price, specs, extra) {
-      // console.log('add', category_id, item_id, food_id, name, price, specs)
-
       let nameWithSpecs = specs ? `${name}+${specs}` : name
       this.ADD_CART({
         shopid: this.shopDetail.id,
@@ -429,9 +428,6 @@ export default {
 .tag-container {
   display: flex;
   flex-wrap: wrap;
-  .tag {
-    // width: 10%;
-  }
 }
 .button {
   width: 150px;

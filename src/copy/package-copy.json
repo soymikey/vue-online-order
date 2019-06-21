@@ -39,11 +39,17 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/base"
+      "plugin:vue/essential",
+      "@vue/standard"
     ],
     "rules": {},
     "parserOptions": {
-      "parser": "babel-eslint"
+
+      "ecmaFeatures": {
+        "vue": true,
+        "modules": true
+      }
+
     }
   },
   "postcss": {
@@ -56,3 +62,4 @@
     "last 2 versions"
   ]
 }
+ // "parser": "babel-eslint"
