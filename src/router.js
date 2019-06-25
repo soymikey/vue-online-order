@@ -17,12 +17,16 @@ const addShop = r =>
   require.ensure([], () => r(require('@/views/addShop')), 'addShop')
 const addGoods = r =>
   require.ensure([], () => r(require('@/views/addGoods')), 'addGoods')
+const addExtras = r =>
+  require.ensure([], () => r(require('@/views/addExtras')), 'addExtras')
 const userList = r =>
   require.ensure([], () => r(require('@/views/userList')), 'userList')
 const shopList = r =>
   require.ensure([], () => r(require('@/views/shopList')), 'shopList')
 const foodList = r =>
   require.ensure([], () => r(require('@/views/foodList')), 'foodList')
+const extraList = r =>
+  require.ensure([], () => r(require('@/views/extraList')), 'extraList')
 const orderList = r =>
   require.ensure([], () => r(require('@/views/orderList')), 'orderList')
 const adminList = r =>
@@ -93,6 +97,12 @@ export default new Router({
           authorisation: ['manager']
         },
         {
+          path: 'addExtras',
+          component: addExtras,
+          meta: ['添加数据', '添加额外'],
+          authorisation: ['manager']
+        },
+        {
           path: 'userList',
           component: userList,
           meta: ['数据管理', '用户列表'],
@@ -108,6 +118,12 @@ export default new Router({
           path: 'foodList',
           component: foodList,
           meta: ['数据管理', '食品列表'],
+          authorisation: ['manager']
+        },
+        {
+          path: 'extraList',
+          component: extraList,
+          meta: ['数据管理', '额外列表'],
           authorisation: ['manager']
         },
         {

@@ -17,14 +17,17 @@
             <template slot="title"><i class="el-icon-document"></i>数据管理</template>
             <!-- <el-menu-item index="userList">用户列表</el-menu-item>
             <el-menu-item index="shopList">商家列表</el-menu-item> -->
-            <el-menu-item index="/manage/foodList">食品列表</el-menu-item>
+            <el-menu-item index="/manage/adminList">管理员列表</el-menu-item>
             <el-menu-item index="/manage/orderList">订单列表</el-menu-item>
-            <el-menu-item index="adminList">管理员列表</el-menu-item>
+            <el-menu-item index="/manage/foodList">食品列表</el-menu-item>
+            <el-menu-item index="/manage/extraList">额外列表</el-menu-item>
+
           </el-submenu>
           <el-submenu index="3">
             <template slot="title"><i class="el-icon-plus"></i>添加数据</template>
 
             <el-menu-item index="/manage/addGoods">添加商品</el-menu-item>
+            <el-menu-item index="/manage/addExtras">添加额外</el-menu-item>
           </el-submenu>
           <el-submenu index="4">
             <template slot="title"><i class="el-icon-star-on"></i>图表</template>

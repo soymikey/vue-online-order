@@ -106,8 +106,40 @@
         :visible.sync="showExtra"
         width="80%"
       >
+        <el-tabs type="border-card">
+          <el-tab-pane
+            v-bind:key="
+          category.name"
+            v-for="category in extraMenu "
+            :label="category.name"
+            class="tag-container"
+          >
 
-        <el-tabs
+            <div
+              v-for="(item,index) in category.children"
+              :key='index'
+              class="extra-box"
+              :class="{'actived':item.selected}"
+              @click="selectExtra(item)"
+            >
+              <div
+                class="extra-item"
+                border
+              >{{item.name}}</div>
+
+            </div>
+          </el-tab-pane>
+
+        </el-tabs>
+        <div class="button-container">
+          <el-button @click="cancelExtra">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="confirmExtra"
+          >确 定</el-button>
+        </div>
+
+        <!-- <el-tabs
           type="border-card"
           tab-position='left'
           style="height: 100%;"
@@ -135,7 +167,7 @@
             type="primary"
             @click="confirmExtra"
           >确 定</el-button>
-        </div>
+        </div> -->
 
       </el-dialog>
     </section>
@@ -316,6 +348,9 @@ export default {
       } else {
         window.alert('没有需要打印的')
       }
+    },
+    selectExtra(item) {
+      item.selected = !item.selected
     }
   }
 }
@@ -326,83 +361,6 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
   text-align: center;
-}
-
-.title {
-  height: 20px;
-  border-bottom: 1px solid #d3dce6;
-  background-color: #f9fafc;
-  padding: 10px;
-}
-
-.often-goods-list ul li {
-  list-style: none;
-  float: left;
-  border: 1px solid #e5e9f2;
-  padding: 10px;
-  margin: 5px;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.goods-type {
-  clear: both;
-}
-
-.o-price {
-  color: #58b7ff;
-}
-
-.often-goods-list {
-  border-bottom: 1px solid #c0ccda;
-  height: auto;
-  overflow: hidden;
-  padding-bottom: 10px;
-  background-color: #f9fafc;
-}
-.cookList {
-  padding: 0 10px;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.cookList li {
-  list-style: none;
-  width: 20%;
-  box-sizing: border-box;
-  border: 3px solid #eff2f7;
-  height: auot;
-  background-color: #fff;
-  padding: 2px;
-  /* margin: 2px; */
-  cursor: pointer;
-  text-align: center;
-}
-
-.cookList li span {
-  display: block;
-  /* float: left; */
-}
-
-.foodImg {
-  width: 40%;
-  height: 100px;
-}
-
-.foodName {
-  font-size: 13px;
-
-  color: brown;
-  white-space: nowrap;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.foodPrice {
-  font-size: 16px;
-  padding-left: 10px;
-  padding-top: 10px;
 }
 
 .totalDiv {
@@ -420,9 +378,23 @@ export default {
 .tag-container {
   display: flex;
   flex-wrap: wrap;
+  .extra-box {
+    width: 15%;
+    height: 40px;
+    border: 1px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 1px 0 1px;
+  }
+  .actived {
+    background-color: #409eff;
+  }
 }
 .button {
   width: 150px;
   height: 80px;
 }
+
+//#409EFF
 </style>
