@@ -22,7 +22,7 @@
 
     <div class="goods-type">
 
-      <el-tabs stretch>
+      <el-tabs>
         <el-tab-pane
           v-bind:key="category.categoryId"
           :label="category.name"

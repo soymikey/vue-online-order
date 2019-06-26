@@ -10,15 +10,18 @@
         <el-col :span="4">
           <div class="data_list today_head"><span class="data_num head">当日数据：</span></div>
         </el-col>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <div class="data_list"><span class="data_num">{{userCount}}</span> 新增用户</div>
+        </el-col> -->
+        <el-col :span="4">
+          <div class="data_list"> 今日营业额<span class="data_num">{{totalMoneyCount}}</span></div>
         </el-col>
         <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{orderCount}}</span> 新增订单</div>
+          <div class="data_list"> 新增订单<span class="data_num">{{orderCount}}</span></div>
         </el-col>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <div class="data_list"><span class="data_num">{{adminCount}}</span> 新增管理员</div>
-        </el-col>
+        </el-col> -->
       </el-row>
       <!-- <el-row :gutter="20">
         <el-col :span="4">
@@ -46,18 +49,28 @@
 import headTop from '@/components/adminComponent/headTop'
 import tendency from '@/components/adminComponent/tendency'
 import dtime from 'time-formater'
-import // userCount,
+import moment from 'moment'
+// userCount,
 // orderCount,
 // getUserCount,
 // getOrderCount,
 // adminDayCount,
 // adminCount
-'@/apiService/clientApi'
+import { countOrder, totalMoneyOrder } from '@/apiService/clientApi'
+import testVue from './test.vue'
+// import // userCount,
+// // orderCount,
+// // getUserCount,
+// // getOrderCount,
+// // adminDayCount,
+// // adminCount
+// '@/apiService/clientApi'
 export default {
   data() {
     return {
       userCount: null,
       orderCount: null,
+      totalMoneyCount: null, // 营业额
       adminCount: null,
       allUserCount: null,
       allOrderCount: null,
@@ -73,17 +86,30 @@ export default {
   mounted() {
     this.initData()
     for (let i = 6; i > -1; i--) {
-      const date = dtime(new Date().getTime() - 86400000 * i).format(
+      const date = moment(new Date().getTime() - 86400000 * i).format(
         'YYYY-MM-DD'
       )
+
       this.sevenDay.push(date)
     }
+
     this.getSevenData()
   },
   computed: {},
   methods: {
     async initData() {
-      const today = dtime().format('YYYY-MM-DD')
+      const today = moment().format('YYYY-MM-DD')
+      const orderTotalMoney = await totalMoneyOrder({ date: today })
+      const orderCount = await countOrder({ date: today })
+
+      this.orderCount = orderCount.data
+      this.totalMoneyCount = orderTotalMoney.data
+
+      this.$message({
+        type: 'success',
+        message: orderCount.message
+      })
+
       // Promise.all([
       //   userCount(today),
       //   orderCount(today),
@@ -106,25 +132,22 @@ export default {
     },
     async getSevenData() {
       const apiArr = [[], [], []]
-      this.sevenDay.forEach(item => {
-        apiArr[0].push(userCount(item))
-        apiArr[1].push(orderCount(item))
-        apiArr[2].push(adminDayCount(item))
+      this.sevenDay.forEach(day => {
+        apiArr[0].push(totalMoneyOrder({ date: day }))
+        apiArr[1].push(countOrder({ date: day }))
+        // apiArr[2].push(adminDayCount(item))
       })
-      const promiseArr = [...apiArr[0], ...apiArr[1], ...apiArr[2]]
-      Promise.all(promiseArr)
-        .then(res => {
-          const resArr = [[], [], []]
-          res.forEach((item, index) => {
-            if (item.status == 1) {
-              resArr[Math.floor(index / 7)].push(item.count)
-            }
-          })
-          this.sevenDate = resArr
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      const promiseArr = [...apiArr[0], ...apiArr[1]]
+
+      const res = await Promise.all(promiseArr)
+      const resArr = [[], [], []]
+      res.forEach((item, index) => {
+        if (item.status == 1) {
+          resArr[Math.floor(index / 7)].push(item.data)
+        }
+      })
+
+      this.sevenDate = resArr
     }
   }
 }
@@ -149,6 +172,7 @@ export default {
     .data_num {
       color: #333;
       font-size: 26px;
+      margin: 0 10px 0 10px;
     }
     .head {
       border-radius: 6px;

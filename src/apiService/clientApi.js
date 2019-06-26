@@ -67,3 +67,6 @@ export const placeOrder = async data =>
   await axios.post('/order/placeOrder', data)
 export const getOrders = async data => await axios.post('/order/get', data)
 export const deleteOrder = async data => await axios.post('/order/delete', data)
+export const countOrder = async data => await axios.post('/order/count', data)
+export const totalMoneyOrder = async data =>
+  await axios.post('/order/totalmoney', data)
