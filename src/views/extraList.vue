@@ -2,12 +2,12 @@
   <div class="fillcontain">
     <head-top></head-top>
     <div class="table_container">
-
+      {{ this.tableData}}
       <el-table
         ref="dragTable"
         v-loading="listLoading"
         :data="tableData"
-        row-key="foodId"
+        row-key="extraId"
         fit
         highlight-current-row
         style="width: 100%"
@@ -15,7 +15,7 @@
 
         <el-table-column
           align="center"
-          label="额外Id"
+          label="额外ID"
           width="150"
         >
           <template slot-scope="scope">
@@ -96,6 +96,18 @@
             label-width="100px"
           >
             <el-input v-model="selectTable.description"></el-input>
+          </el-form-item>
+          <el-form-item
+            label="价格"
+            label-width="100px"
+          >
+            <el-input-number
+              v-model="selectTable.price"
+              :precision="2"
+              :step="0.1"
+              :min="0"
+              :max="10000"
+            ></el-input-number>
           </el-form-item>
 
         </el-form>
@@ -217,45 +229,7 @@ export default {
         console.log('获取数据失败', err)
       }
     },
-    // async getMenu() {
-    //   this.menuOptions = []
-    //   try {
-    //     const menu = await getMenu({
-    //       restaurantId: this.userInfo.restaurantId
-    //     })
 
-    //     menu.data.forEach((item, index) => {
-    //       this.menuOptions.push({
-    //         label: item.name,
-    //         value: item.categoryId,
-    //         index
-    //       })
-    //     })
-    //   } catch (err) {
-    //     console.log('获取食品种类失败', err)
-    //   }
-    // },
-    // async getFoods() {
-    //   try {
-    //     const menu = await getMenu({
-    //       offset: this.offset,
-    //       limit: this.limit,
-    //       restaurantId: this.restaurantInfo.restaurantId
-    //     })
-    //     let foods = []
-    //     for (const category of menu.data) {
-    //       for (const food of category.foods) {
-    //         food.categoryName = category.name
-    //         foods.push(food)
-    //       }
-    //     }
-
-    //     this.count = menu.count
-    //     this.tableData = foods
-    //   } catch (err) {
-    //     console.log('获取食品种类失败', err)
-    //   }
-    // },
     tableRowClassName(row, index) {
       if (index === 1) {
         return 'info-row'
@@ -311,7 +285,7 @@ export default {
     },
     async confirmDeleteButton() {
       try {
-        const result = await deleteFood({ foodId: this.currentRow.foodId })
+        const result = await deleteFood({ extraId: this.currentRow.extraId })
 
         this.$message({
           type: 'success',
@@ -319,7 +293,7 @@ export default {
         })
         this.dialogDeleteVisible = false
         this.tableData = this.tableData.filter(
-          row => row.foodId !== this.currentRow.foodId
+          row => row.extraId !== this.currentRow.extraId
         )
       } catch (err) {
         this.$message({
@@ -335,6 +309,7 @@ export default {
         const subData = {
           newExtraCategoryId: this.selectMenu.value
         }
+
         const postData = { ...this.selectTable, ...subData }
 
         const result = await updateExtra(postData)
