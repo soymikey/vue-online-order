@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+
     <div class="nav">
       <homeNav></homeNav>
     </div>
@@ -36,7 +37,8 @@ export default {
   data() {
     return {
       showActivities: false, //是否显示活动详情
-      menuList: [] //食品列表
+      menuList: [], //食品列表
+      extraList: [] // 额外选项列表
     }
   },
   created() {},
@@ -56,7 +58,9 @@ export default {
         })
         // //获取商铺食品列表
         const menu = await getMenu({ restaurantId: this.userInfo.restaurantId })
+
         this.menuList = menu.data
+
         this.RECORD_SHOPDETAIL(restaurantInfo.data)
       } catch (err) {
         console.log(err)

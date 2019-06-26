@@ -18,7 +18,6 @@
             >
               <template slot-scope="scope">
                 {{ scope.row.nameWithSpecs }}
-
                 <div v-if="scope.row.extra.length">
                   <el-tag
                     size="medium"
@@ -29,6 +28,15 @@
 
               </template>
 
+            </el-table-column>
+            <el-table-column
+              label="价格"
+              width="70"
+            >
+              <template slot-scope="scope">
+                <span>{{foodAndExtraPrice(scope.row)}}</span>
+
+              </template>
             </el-table-column>
             <el-table-column
               prop="num"
@@ -108,15 +116,14 @@
       >
         <el-tabs type="border-card">
           <el-tab-pane
-            v-bind:key="
-          category.name"
-            v-for="category in extraMenu "
+            v-bind:key="index"
+            v-for="(category,index) in extraMenu "
             :label="category.name"
             class="tag-container"
           >
 
             <div
-              v-for="(item,index) in category.children"
+              v-for="(item,index) in category.extras"
               :key='index'
               class="extra-box"
               :class="{'actived':item.selected}"
@@ -177,8 +184,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import PrintHTML from '../../config/PrintHTML.js'
-import extraMenu from '../../assets/extraMenu.js'
-import { placeOrder } from '../../apiService/clientApi.js'
+import { placeOrder, getExtras } from '../../apiService/clientApi.js'
 
 export default {
   data() {
@@ -189,7 +195,7 @@ export default {
       totalMoney: 0, //订单总价格
       tableHeight: window.innerHeight - 216, //table的高度
       showExtra: false,
-      extraMenu: extraMenu,
+      extraMenu: null,
       selectedFood: null,
       canvasUrl: null,
       foodIndex: null
@@ -197,6 +203,7 @@ export default {
   },
   created() {},
   mounted: function() {
+    this.initData()
     window.addEventListener(
       'resize',
       function(event) {
@@ -229,7 +236,35 @@ export default {
   methods: {
     ...mapMutations(['ADD_CART', 'REDUCE_CART', 'CLEAR_CART']),
     //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
+    async initData() {
+      const extras = await getExtras({
+        restaurantId: this.userInfo.restaurantId
+      })
+      let formatedExtras = []
+      for (const category of extras.data) {
+        for (const item of category.extras) {
+          item.selected = false
+        }
+        formatedExtras.push(category)
+      }
+      this.extraMenu = formatedExtras
+      // this.extraMenu = extras.data
+    },
+    foodAndExtraPrice(item) {
+      let totalprice = 0
+      if (item.extra.length) {
+        let extraPrice = 0
+        for (const extra of item.extra) {
+          extraPrice += extra.price
+        }
+        totalprice = item.price + extraPrice
+      } else {
+        totalprice = item.price
+      }
+      console.log('totalprice', totalprice)
 
+      return totalprice
+    },
     addToCart(food_id, name, price, specs, extra) {
       let nameWithSpecs = specs ? `${name}+${specs}` : name
       this.ADD_CART({
@@ -260,7 +295,6 @@ export default {
     showDialog(row, column, cell, event) {
       if (column.label == '商品') {
         this.selectedFood = row
-
         if (this.selectedFood.extra.length) {
           //把已选择的extra id 放到数组里面
           let extraId = []
@@ -269,8 +303,8 @@ export default {
           }
 
           for (const category of this.extraMenu) {
-            for (const item of category.children) {
-              if (extraId.includes(item.id)) {
+            for (const item of category.extras) {
+              if (extraId.includes(item.extraId)) {
                 item.selected = true
               } else {
                 item.selected = false
@@ -279,11 +313,12 @@ export default {
           }
         } else {
           for (const category of this.extraMenu) {
-            for (const item of category.children) {
+            for (const item of category.extras) {
               item.selected = false
             }
           }
         }
+
         this.showExtra = !this.showExtra
       }
     },
@@ -294,11 +329,12 @@ export default {
     confirmExtra() {
       const selectedExtraList = []
       for (const category of this.extraMenu) {
-        for (const item of category.children) {
+        for (const item of category.extras) {
           if (item.selected) {
             selectedExtraList.push({
               name: category.name + item.name,
-              id: item.id
+              id: item.extraId,
+              price: item.price
             })
           }
         }
@@ -350,7 +386,7 @@ export default {
       }
     },
     selectExtra(item) {
-      item.selected = !item.selected
+      item.selected = !item.selected //!item.selected
     }
   }
 }

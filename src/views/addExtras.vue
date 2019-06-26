@@ -103,7 +103,6 @@
               v-model="extraForm.price"
               :precision="2"
               :step="0.1"
-              :min='0'
               :max="1000"
             ></el-input-number>
           </el-form-item>
