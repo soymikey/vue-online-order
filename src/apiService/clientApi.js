@@ -37,6 +37,8 @@ export const getExtraCategories = async data =>
   await axios.post('/extracategory/get', data)
 export const addExtraCategory = async data =>
   await axios.post('/extracategory/add', data)
+export const deleteExtraCategory = async data =>
+  await axios.post('/extracategory/delete', data)
 /**
  * extra
  */
@@ -45,6 +47,8 @@ export const getExtras = async data => await axios.post('/extra/get', data)
 export const updateExtra = async data => await axios.post('/extra/update', data)
 export const updateExtraPosition = async data =>
   await axios.post('/extra/updateposition', data)
+export const deleteExtra = async data => await axios.post('/extra/delete', data)
+
 /**
  * food
  */

@@ -27,6 +27,11 @@
                   :label="item.label"
                   :value="item.value"
                 >
+                  <span>{{ item.label }}</span>
+                  <span
+                    style="float: right; color: #8492a6; font-size: 13px"
+                    @click="handleDeleteCategory(item)"
+                  >X</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -92,47 +97,7 @@
           >
             <el-input v-model="foodForm.description"></el-input>
           </el-form-item>
-          <!-- <el-form-item
-            label="食品活动"
-            prop="activity"
-          >
-            <el-input v-model="foodForm.activity"></el-input>
-          </el-form-item>
 
-          <el-form-item label="上传食品图片">
-            <el-upload
-              class="avatar-uploader"
-              :action="baseUrl + '/v1/addimg/food'"
-              :show-file-list="false"
-              :on-success="uploadImg"
-              :before-upload="beforeImgUpload"
-            >
-              <img
-                v-if="foodForm.image_path"
-                :src="imgBaseUrl + foodForm.image_path"
-                class="avatar"
-              >
-              <i
-                v-else
-                class="el-icon-plus avatar-uploader-icon"
-              ></i>
-            </el-upload>
-          </el-form-item>
-          <el-form-item label="食品特点">
-            <el-select
-              v-model="foodForm.attributes"
-              multiple
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in attributes"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item> -->
           <el-form-item label="食品规格">
             <el-radio
               class="radio"
@@ -146,15 +111,7 @@
             >多规格</el-radio>
           </el-form-item>
           <el-row v-if="foodSpecs == 'one'">
-            <!-- <el-form-item label="包装费">
-              <el-input-number
-                v-model="foodForm.specs[0].packing_fee"
-                :precision="2"
-                :step="0.1"
-                :min="0"
-                :max="100"
-              ></el-input-number>
-            </el-form-item> -->
+
             <el-form-item label="价格">
 
               <el-input-number
@@ -256,6 +213,25 @@
             >确 定</el-button>
           </div>
         </el-dialog>
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogDeleteCategoryVisible"
+          width="30%"
+          center
+        >
+          <span>删除"{{currentCategory.name}}"类目,将删除类目下的所有食品,确定要删除吗?</span>
+
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="dialogDeleteCategoryVisible = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="confirmDeleteCategoryButton"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
       </el-col>
     </el-row>
   </div>
@@ -265,7 +241,12 @@
 import headTop from '@/components/adminComponent/headTop'
 import { mapState } from 'vuex'
 
-import { getCategories, addCategory, addFood } from '@/apiService/clientApi'
+import {
+  getCategories,
+  addCategory,
+  addFood,
+  deleteCategory
+} from '@/apiService/clientApi'
 import { baseUrl, imgBaseUrl } from '@/config/env'
 
 export default {
@@ -294,16 +275,7 @@ export default {
       foodrules: {
         name: [{ required: true, message: '请输入食品名称', trigger: 'blur' }]
       },
-      attributes: [
-        {
-          value: '新',
-          label: '新品'
-        },
-        {
-          value: '招牌',
-          label: '招牌'
-        }
-      ],
+
       showAddCategory: false,
       foodSpecs: 'one',
       dialogFormVisible: false,
@@ -313,7 +285,9 @@ export default {
       },
       specsFormrules: {
         specs: [{ required: true, message: '请输入规格', trigger: 'blur' }]
-      }
+      },
+      dialogDeleteCategoryVisible: false,
+      currentCategory: {}
     }
   },
   components: {
@@ -458,6 +432,31 @@ export default {
           return false
         }
       })
+    },
+    handleDeleteCategory(category) {
+      this.currentCategory = category
+      this.dialogDeleteCategoryVisible = true
+    },
+    async confirmDeleteCategoryButton() {
+      try {
+        const result = await deleteCategory({
+          categoryId: this.currentCategory.categoryId
+        })
+        this.$message({
+          type: 'success',
+          message: result.message
+        })
+        this.dialogDeleteCategoryVisible = false
+        this.categoryForm.categorySelect = ''
+        this.categoryForm.name = ''
+        this.categoryForm.description = ''
+        this.initData()
+      } catch (err) {
+        this.$message({
+          type: 'error',
+          message: err.message
+        })
+      }
     }
   }
 }

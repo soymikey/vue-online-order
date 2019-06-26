@@ -27,6 +27,11 @@
                   :label="item.label"
                   :value="item.value"
                 >
+                  <span>{{ item.label }}</span>
+                  <span
+                    style="float: right; color: #8492a6; font-size: 13px"
+                    @click="handleDelete(item)"
+                  >X</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -74,9 +79,9 @@
         </el-form>
         <header class="form_header">添加额外</header>
         <el-form
-          :model="foodForm"
+          :model="extraForm"
           :rules="foodrules"
-          ref="foodForm"
+          ref="extraForm"
           label-width="110px"
           class="form food_form"
         >
@@ -84,18 +89,18 @@
             label="额外名称"
             prop="name"
           >
-            <el-input v-model="foodForm.name"></el-input>
+            <el-input v-model="extraForm.name"></el-input>
           </el-form-item>
           <el-form-item
             label="额外详情"
             prop="description"
           >
-            <el-input v-model="foodForm.description"></el-input>
+            <el-input v-model="extraForm.description"></el-input>
           </el-form-item>
           <el-form-item label="价格">
 
             <el-input-number
-              v-model="foodForm.price"
+              v-model="extraForm.price"
               :precision="2"
               :step="0.1"
               :min='0'
@@ -105,13 +110,31 @@
           <el-form-item>
             <el-button
               type="primary"
-              @click="addFood('foodForm')"
+              @click="addExtra('extraForm')"
             >确认添加食品</el-button>
           </el-form-item>
         </el-form>
 
       </el-col>
     </el-row>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogDeleteVisible"
+      width="30%"
+      center
+    >
+      <span>删除"{{currentCategory.name}}"类目,将删除类目下的所有选项,确定要删除吗?</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogDeleteVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmDeleteButton"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -122,7 +145,8 @@ import { mapState } from 'vuex'
 import {
   getExtraCategories,
   addExtraCategory,
-  addExtra
+  addExtra,
+  deleteExtraCategory
 } from '@/apiService/clientApi'
 import { baseUrl, imgBaseUrl } from '@/config/env'
 
@@ -139,7 +163,7 @@ export default {
         name: '',
         description: ''
       },
-      foodForm: {
+      extraForm: {
         name: '',
         description: '',
         price: 0
@@ -147,26 +171,10 @@ export default {
       foodrules: {
         name: [{ required: true, message: '请输入食品名称', trigger: 'blur' }]
       },
-      attributes: [
-        {
-          value: '新',
-          label: '新品'
-        },
-        {
-          value: '招牌',
-          label: '招牌'
-        }
-      ],
+
       showAddCategory: false,
-      foodSpecs: 'one',
-      dialogFormVisible: false,
-      specsForm: {
-        specs: '',
-        price: 20
-      },
-      specsFormrules: {
-        specs: [{ required: true, message: '请输入规格', trigger: 'blur' }]
-      }
+      currentCategory: {},
+      dialogDeleteVisible: false
     }
   },
   components: {
@@ -243,25 +251,7 @@ export default {
       })
     },
 
-    addspecs() {
-      this.foodForm.specs.push({ ...this.specsForm })
-      this.specsForm.specs = ''
-      // this.specsForm.packing_fee = 0
-      this.specsForm.price = 20
-      this.dialogFormVisible = false
-    },
-    handleDelete(index) {
-      this.foodForm.specs.splice(index, 1)
-    },
-    tableRowClassName(row, index) {
-      if (index === 1) {
-        return 'info-row'
-      } else if (index === 3) {
-        return 'positive-row'
-      }
-      return ''
-    },
-    addFood(foodForm) {
+    addExtra(extraForm) {
       if (!this.selectValue.label) {
         this.$message({
           type: 'error',
@@ -269,10 +259,10 @@ export default {
         })
         return
       }
-      this.$refs[foodForm].validate(async valid => {
+      this.$refs[extraForm].validate(async valid => {
         if (valid) {
           const params = {
-            ...this.foodForm,
+            ...this.extraForm,
             extraCategoryId: this.selectValue.extraCategoryId,
             restaurantId: this.userInfo.restaurantId
           }
@@ -280,7 +270,6 @@ export default {
           try {
             const result = await addExtra(params)
 
-            console.log(result)
             this.$message({
               type: 'success',
               message: result.message
@@ -299,6 +288,31 @@ export default {
           return false
         }
       })
+    },
+    handleDelete(category) {
+      this.currentCategory = category
+      this.dialogDeleteVisible = true
+    },
+    async confirmDeleteButton() {
+      try {
+        const result = await deleteExtraCategory({
+          extraCategoryId: this.currentCategory.extraCategoryId
+        })
+        this.$message({
+          type: 'success',
+          message: result.message
+        })
+        this.dialogDeleteVisible = false
+        this.categoryForm.categorySelect = ''
+        this.categoryForm.name = ''
+        this.categoryForm.description = ''
+        this.initData()
+      } catch (err) {
+        this.$message({
+          type: 'error',
+          message: err.message
+        })
+      }
     }
   }
 }

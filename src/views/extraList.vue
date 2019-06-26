@@ -2,7 +2,7 @@
   <div class="fillcontain">
     <head-top></head-top>
     <div class="table_container">
-      {{ this.tableData}}
+
       <el-table
         ref="dragTable"
         v-loading="listLoading"
@@ -154,12 +154,9 @@ import { baseUrl, imgBaseUrl } from '@/config/env'
 import Sortable from 'sortablejs'
 import {
   getExtras,
-  getFoods,
-  getFoodsCount,
-  getMenu,
   updateExtra,
-  deleteFood,
-  updateExtraPosition
+  updateExtraPosition,
+  deleteExtra
 } from '@/apiService/clientApi'
 export default {
   data() {
@@ -186,7 +183,6 @@ export default {
         specs: [{ required: true, message: '请输入规格', trigger: 'blur' }]
       },
       specsFormVisible: false,
-      expendRow: [],
       listLoading: true,
       sortable: null,
       dialogDeleteVisible: false,
@@ -230,23 +226,6 @@ export default {
       }
     },
 
-    tableRowClassName(row, index) {
-      if (index === 1) {
-        return 'info-row'
-      } else if (index === 3) {
-        return 'positive-row'
-      }
-      return ''
-    },
-    addspecs() {
-      this.specs.push({ ...this.specsForm })
-      this.specsForm.specs = ''
-      this.specsForm.price = 20
-      this.specsFormVisible = false
-    },
-    deleteSpecs(index) {
-      this.specs.splice(index, 1)
-    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
     },
@@ -274,18 +253,14 @@ export default {
       this.initData()
       // this.getMenu()
     },
-    handleSelect(index) {
-      this.selectIndex = null
-      this.selectMenu = this.menuOptions[index]
-    },
+
     handleDelete(row) {
       this.currentRow = row
-
       this.dialogDeleteVisible = true
     },
     async confirmDeleteButton() {
       try {
-        const result = await deleteFood({ extraId: this.currentRow.extraId })
+        const result = await deleteExtra({ extraId: this.currentRow.extraId })
 
         this.$message({
           type: 'success',
