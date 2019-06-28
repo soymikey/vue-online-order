@@ -12,6 +12,7 @@
               :model="loginForm"
               :rules="loginRules"
               ref="loginForm"
+              v-loading="loading"
             >
               <el-form-item prop="username">
                 <el-input
@@ -61,16 +62,16 @@
           </el-tab-pane>
           <el-tab-pane label="注册">
             <el-form
-              v-loading="loading"
               :model="registerForm"
               :rules="registerRules"
               ref="registerForm"
+              v-loading="loading"
             >
               <el-form-item prop="username">
                 <el-input
                   v-model="registerForm.username"
                   placeholder="用户名"
-                ><span>dsfsf</span></el-input>
+                ></el-input>
               </el-form-item>
               <el-form-item prop="password">
                 <el-input
@@ -227,11 +228,13 @@ export default {
     async loginButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          this.loading = true
           const result = await login({
             username: this.loginForm.username,
             password: this.loginForm.password,
             captchaCode: this.loginForm.captchaCode
           })
+          this.loading = false
           setStore('username', result.username)
           setStore('token', result.token)
           removeStore('captcha')
@@ -251,18 +254,20 @@ export default {
     async registerButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          this.loading = true
           const result = await register({
             username: this.registerForm.username,
             password: this.registerForm.password,
             captchaCode: this.registerForm.captchaCode
           })
+          this.loading = false
           this.$message({
             type: 'success',
             message: result.message
           })
           setStore('username', result.username)
           setStore('token', result.token)
-          this.loading = true
+
           store.dispatch('getUserData').then(() => {
             this.$router.push('manage/addShop')
           })

@@ -99,13 +99,13 @@
               <el-button
                 type="primary"
                 @click="createButton('formData')"
-              >立即创建</el-button>
+              >立即创建店铺</el-button>
             </div>
             <div v-else>
               <el-button
                 type="primary"
                 @click="updateButton('formData')"
-              >更新</el-button>
+              >更新店铺</el-button>
             </div>
           </el-form-item>
         </el-form>

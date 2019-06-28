@@ -5,9 +5,6 @@ const login = r =>
   require.ensure([], () => r(require('@/views/login')), 'login') //client 登入页面
 const home = r => require.ensure([], () => r(require('@/views/home')), 'home') // client 点餐页面
 
-const adminLogin = r =>
-  require.ensure([], () => r(require('@/views/adminLogin')), 'login') //admin登入
-
 const adminLayout = r =>
   require.ensure([], () => r(require('@/views/adminLayout')), 'adminLayout')
 const adminHome = r =>

@@ -284,7 +284,7 @@ export default {
       selectIndex: null,
       specsForm: {
         specs: '',
-        price: 20
+        price: 0
       },
       specsFormrules: {
         specs: [{ required: true, message: '请输入规格', trigger: 'blur' }]

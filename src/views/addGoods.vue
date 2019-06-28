@@ -231,9 +231,9 @@
           >
             <el-button @click="dialogDeleteCategoryVisible = false">取 消</el-button>
             <el-button
-              type="primary"
+              type="danger"
               @click="confirmDeleteCategoryButton"
-            >确 定</el-button>
+            >删 除</el-button>
           </span>
         </el-dialog>
       </el-col>
@@ -272,7 +272,7 @@ export default {
         specs: [
           {
             specs: '默认',
-            price: 20
+            price: 0
           }
         ]
       },
@@ -288,7 +288,7 @@ export default {
       dialogFormVisible: false,
       specsForm: {
         specs: '',
-        price: 20
+        price: 0
       },
       specsFormrules: {
         specs: [{ required: true, message: '请输入规格', trigger: 'blur' }]
@@ -417,7 +417,7 @@ export default {
               specs: [
                 {
                   specs: '默认',
-                  price: 20
+                  price: 0
                 }
               ]
             }

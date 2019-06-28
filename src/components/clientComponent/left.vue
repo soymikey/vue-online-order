@@ -271,7 +271,7 @@ export default {
         totalprice = item.price
       }
 
-      return totalprice
+      return totalprice.toFixed(2)
     },
     addToCart(food_id, name, price, specs, extra) {
       let nameWithSpecs = specs ? `${name}+${specs}` : name

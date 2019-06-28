@@ -210,9 +210,9 @@
         >
           <el-button @click="dialogDeleteVisible = false">取 消</el-button>
           <el-button
-            type="primary"
+            type="danger"
             @click="confirmDeleteButton"
-          >确 定</el-button>
+          >删 除</el-button>
         </span>
       </el-dialog>
     </div>
@@ -254,7 +254,7 @@ export default {
       selectIndex: null,
       specsForm: {
         specs: '',
-        price: 20
+        price: 0
       },
       specsFormrules: {
         specs: [{ required: true, message: '请输入规格', trigger: 'blur' }]
