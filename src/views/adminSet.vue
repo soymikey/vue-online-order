@@ -20,7 +20,7 @@
           <span>更换头像：</span>
           <el-upload
             class="avatar-uploader"
-            :action="baseUrl + '/user/updateavatar/' + userInfo.userId"
+            :action="baseUrl + '/api/user/updateavatar/' + userInfo.userId"
             :show-file-list="false"
             :on-success="uploadImg"
             :before-upload="beforeImgUpload"

@@ -96,10 +96,9 @@ export default {
           this.registerForm.username = ''
           this.registerForm.password = ''
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '请输入正确的用户名密码',
-            offset: 100
+          this.$message({
+            type: 'error',
+            message: '请输入正确的用户名和密码'
           })
           return false
         }
@@ -112,7 +111,7 @@ export default {
 <style lang="scss" scoped>
 @import '../style/mixin';
 .login_page {
-  background-color: #324057;
+  // background-color: #324057;
   height: 100%;
 }
 .manage_tip {
@@ -127,53 +126,13 @@ export default {
 }
 .form_contianer {
   @include wh(320px, 210px);
-  @include ctp(320px, 210px);
+  // @include ctp(320px, 210px);
+
+  margin: 80px auto;
   padding: 25px;
   border-radius: 5px;
   text-align: center;
-  // background-color: #fff;
-  .submit_btn {
-    width: 100%;
-    font-size: 16px;
-  }
-}
-.tip {
-  font-size: 12px;
-  color: red;
-}
-.form-fade-enter-active,
-.form-fade-leave-active {
-  transition: all 1s;
-}
-.form-fade-enter,
-.form-fade-leave-active {
-  transform: translate3d(0, -50px, 0);
-  opacity: 0;
-}
-</style>
-<style lang="scss" scoped>
-@import '../style/mixin';
-.login_page {
-  background-color: #324057;
-  height: 100%;
-}
-.manage_tip {
-  position: absolute;
-  width: 100%;
-  top: -100px;
-  left: 0;
-  p {
-    font-size: 34px;
-    color: #fff;
-  }
-}
-.form_contianer {
-  @include wh(320px, 210px);
-  @include ctp(320px, 210px);
-  padding: 25px;
-  border-radius: 5px;
-  text-align: center;
-  // background-color: #fff;
+  background-color: #fff;
   .submit_btn {
     width: 100%;
     font-size: 16px;

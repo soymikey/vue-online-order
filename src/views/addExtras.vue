@@ -1,7 +1,7 @@
 <template>
   <div>
     <head-top></head-top>
-    <el-row style="margin-top: 20px;">
+    <el-row style="margin-top: 80px;">
       <el-col
         :span="14"
         :offset="4"
@@ -9,13 +9,17 @@
         <header class="form_header">选择额外种类</header>
         <el-form
           :model="categoryForm"
+          :rules="categoryRules"
           ref="categoryForm"
           label-width="110px"
           class="form"
         >
           <el-row class="category_select">
 
-            <el-form-item label="种类">
+            <el-form-item
+              label="种类"
+              prop="name"
+            >
               <el-select
                 v-model="categoryForm.categorySelect"
                 :placeholder="selectValue.label"
@@ -80,7 +84,7 @@
         <header class="form_header">添加额外</header>
         <el-form
           :model="extraForm"
-          :rules="foodrules"
+          :rules="foodRules"
           ref="extraForm"
           label-width="110px"
           class="form food_form"
@@ -110,7 +114,7 @@
             <el-button
               type="primary"
               @click="addExtra('extraForm')"
-            >确认添加食品</el-button>
+            >确认添加</el-button>
           </el-form-item>
         </el-form>
 
@@ -167,8 +171,11 @@ export default {
         description: '',
         price: 0
       },
-      foodrules: {
-        name: [{ required: true, message: '请输入食品名称', trigger: 'blur' }]
+      foodRules: {
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+      },
+      categoryRules: {
+        name: [{ required: true, message: '请选择类别', trigger: 'blur' }]
       },
 
       showAddCategory: false,
@@ -233,12 +240,7 @@ export default {
               type: 'success',
               message: result.message
             })
-          } catch (err) {
-            // this.$message({
-            //   type: 'error',
-            //   message: err
-            // })
-          }
+          } catch (err) {}
         } else {
           this.$message({
             type: 'error',
@@ -273,12 +275,12 @@ export default {
               type: 'success',
               message: result.message
             })
-          } catch (err) {
-            this.$message({
-              type: 'error',
-              message: err
-            })
-          }
+            this.extraForm = {
+              name: '',
+              description: '',
+              price: 0
+            }
+          } catch (err) {}
         } else {
           this.$message({
             type: 'error',

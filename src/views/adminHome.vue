@@ -10,33 +10,16 @@
         <el-col :span="4">
           <div class="data_list today_head"><span class="data_num head">当日数据：</span></div>
         </el-col>
-        <!-- <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{userCount}}</span> 新增用户</div>
-        </el-col> -->
+
         <el-col :span="4">
           <div class="data_list"> 今日营业额<span class="data_num">{{totalMoneyCount}}</span></div>
         </el-col>
         <el-col :span="4">
           <div class="data_list"> 新增订单<span class="data_num">{{orderCount}}</span></div>
         </el-col>
-        <!-- <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{adminCount}}</span> 新增管理员</div>
-        </el-col> -->
+
       </el-row>
-      <!-- <el-row :gutter="20">
-        <el-col :span="4">
-          <div class="data_list all_head"><span class="data_num head">总数据：</span></div>
-        </el-col>
-        <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{allUserCount}}</span> 注册用户</div>
-        </el-col>
-        <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{allOrderCount}}</span> 订单</div>
-        </el-col>
-        <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{allAdminCount}}</span> 管理员</div>
-        </el-col>
-      </el-row> -->
+
     </section>
     <tendency
       :sevenDate='sevenDate'
@@ -48,23 +31,11 @@
 <script>
 import headTop from '@/components/adminComponent/headTop'
 import tendency from '@/components/adminComponent/tendency'
-import dtime from 'time-formater'
 import moment from 'moment'
-// userCount,
-// orderCount,
-// getUserCount,
-// getOrderCount,
-// adminDayCount,
-// adminCount
+import { mapState } from 'vuex'
+
 import { countOrder, totalMoneyOrder } from '@/apiService/clientApi'
-import testVue from './test.vue'
-// import // userCount,
-// // orderCount,
-// // getUserCount,
-// // getOrderCount,
-// // adminDayCount,
-// // adminCount
-// '@/apiService/clientApi'
+
 export default {
   data() {
     return {
@@ -95,20 +66,23 @@ export default {
 
     this.getSevenData()
   },
-  computed: {},
+  computed: {
+    ...mapState(['userInfo'])
+  },
   methods: {
     async initData() {
       const today = moment().format('YYYY-MM-DD')
-      const orderTotalMoney = await totalMoneyOrder({ date: today })
-      const orderCount = await countOrder({ date: today })
+      const orderTotalMoney = await totalMoneyOrder({
+        date: today,
+        restaurantId: this.userInfo.restaurantId
+      })
+      const orderCount = await countOrder({
+        date: today,
+        restaurantId: this.userInfo.restaurantId
+      })
 
       this.orderCount = orderCount.data
       this.totalMoneyCount = orderTotalMoney.data
-
-      this.$message({
-        type: 'success',
-        message: orderCount.message
-      })
 
       // Promise.all([
       //   userCount(today),
@@ -133,8 +107,15 @@ export default {
     async getSevenData() {
       const apiArr = [[], [], []]
       this.sevenDay.forEach(day => {
-        apiArr[0].push(totalMoneyOrder({ date: day }))
-        apiArr[1].push(countOrder({ date: day }))
+        apiArr[0].push(
+          totalMoneyOrder({
+            date: day,
+            restaurantId: this.userInfo.restaurantId
+          })
+        )
+        apiArr[1].push(
+          countOrder({ date: day, restaurantId: this.userInfo.restaurantId })
+        )
         // apiArr[2].push(adminDayCount(item))
       })
       const promiseArr = [...apiArr[0], ...apiArr[1]]

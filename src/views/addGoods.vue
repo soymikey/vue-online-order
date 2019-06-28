@@ -1,7 +1,7 @@
 <template>
   <div>
     <head-top></head-top>
-    <el-row style="margin-top: 20px;">
+    <el-row style="margin-top: 80px;">
       <el-col
         :span="14"
         :offset="4"
@@ -9,13 +9,17 @@
         <header class="form_header">选择食品种类</header>
         <el-form
           :model="categoryForm"
+          :rules="categoryRules"
           ref="categoryForm"
           label-width="110px"
           class="form"
         >
           <el-row class="category_select">
 
-            <el-form-item label="食品种类">
+            <el-form-item
+              label="食品种类"
+              prop="name"
+            >
               <el-select
                 v-model="categoryForm.categorySelect"
                 :placeholder="selectValue.label"
@@ -80,7 +84,7 @@
         <header class="form_header">添加食品</header>
         <el-form
           :model="foodForm"
-          :rules="foodrules"
+          :rules="foodRules"
           ref="foodForm"
           label-width="110px"
           class="form food_form"
@@ -272,8 +276,11 @@ export default {
           }
         ]
       },
-      foodrules: {
+      foodRules: {
         name: [{ required: true, message: '请输入食品名称', trigger: 'blur' }]
+      },
+      categoryRules: {
+        name: [{ required: true, message: '请选择类别', trigger: 'blur' }]
       },
 
       showAddCategory: false,
@@ -400,26 +407,19 @@ export default {
 
           try {
             const result = await addFood(params)
-            if (result.status == 1) {
-              console.log(result)
-              this.$message({
-                type: 'success',
-                message: '添加成功'
-              })
-              this.foodForm = {
-                name: '',
-                specs: [
-                  {
-                    specs: '默认',
-                    price: 20
-                  }
-                ]
-              }
-            } else {
-              this.$message({
-                type: 'error',
-                message: result.message
-              })
+
+            this.$message({
+              type: 'success',
+              message: '添加成功'
+            })
+            this.foodForm = {
+              name: '',
+              specs: [
+                {
+                  specs: '默认',
+                  price: 20
+                }
+              ]
             }
           } catch (err) {
             console.log(err)

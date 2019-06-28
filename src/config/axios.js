@@ -2,12 +2,12 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 // import NProgress from 'nprogress'
 
-// 'http://119.23.201.183:4001'
+// 'http://119.23.201.183:4000'
 const instance = axios.create({
   baseURL:
     process.env.NODE_ENV === 'development'
-      ? 'http://127.0.0.1:4001'
-      : 'https://blog.migaox.com', // api的base_url
+      ? 'http://127.0.0.1:4000/api'
+      : 'http://test.migaox.com/api', // api的base_url
   timeout: 20000 // 请求超时时间
 })
 
@@ -18,8 +18,12 @@ instance.interceptors.request.use(
   config => {
     // config.url = '/api' + config.url
     const token = localStorage.getItem('token')
+    const Captcha = localStorage.getItem('captcha')
     if (token) {
       config.headers.common['Authorization'] = 'Bearer ' + token
+    }
+    if (Captcha) {
+      config.headers.common['Captcha'] = 'Bearer ' + Captcha
     }
 
     return config

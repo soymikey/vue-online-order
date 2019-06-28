@@ -23,12 +23,15 @@
     <div class="goods-type">
 
       <el-tabs>
+
         <el-tab-pane
           v-bind:key="category.categoryId"
-          :label="category.name"
           v-for="category in menu"
         >
+          <span slot="label"> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; {{category.name}} &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </span>
+
           <ul class='cookList'>
+
             <li
               v-bind:key="item.item_id"
               v-for="item in category.foods"
@@ -39,14 +42,18 @@
               >
 
                 <span class="foodName">{{item.name}}</span>
-                <span class="foodPrice">￥{{item.specfoods[0].price}}元</span>
+                <span class="foodPrice">￥{{item.specfoods[0].price}}</span>
 
               </section>
               <section
                 v-else
                 @click="showChooseList(item)"
-              > <span class="foodName">{{item.name}}</span>
-                <span class="foodPrice">￥{{item.specfoods[0].price}}元</span>
+              >
+                <div class="foodName">
+                  <span>{{item.name}}</span></div>
+                <div class="foodPrice">
+                  <span>￥{{item.specfoods[0].price}}</span>
+                </div>
 
               </section>
             </li>
@@ -240,19 +247,21 @@ export default {
 }
 
 .foodName {
-  font-size: 13px;
-
+  font-size: 20px;
+  text-align: center;
   color: brown;
   white-space: nowrap;
   width: 100%;
+  padding: 5px 0 5px 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .foodPrice {
   font-size: 16px;
-  padding-left: 10px;
-  padding-top: 10px;
+  text-align: center;
+  // padding-left: 10px;
+  // padding-top: 10px;
 }
 
 .totalDiv {

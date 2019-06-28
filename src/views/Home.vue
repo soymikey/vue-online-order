@@ -25,7 +25,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import { mapState, mapMutations } from 'vuex'
 import homeLeft from '@/components/clientComponent/left.vue'
 import homeRight from '@/components/clientComponent/right.vue'

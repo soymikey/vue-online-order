@@ -83,7 +83,6 @@ export default new Router({
           meta: [],
           authorisation: ['manager']
         },
-
         {
           path: 'addShop',
           component: addShop,

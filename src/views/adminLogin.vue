@@ -111,11 +111,11 @@ export default {
             })
           }
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '请输入正确的用户名密码',
-            offset: 100
+          this.$message({
+            type: 'error',
+            message: '请输入正确的用户名密码'
           })
+
           return false
         }
       })

@@ -26,6 +26,30 @@
                   v-model="loginForm.password"
                 ></el-input>
               </el-form-item>
+              <el-form-item prop="captchaCode">
+                <el-col :span="14">
+                  <el-input
+                    type="text"
+                    placeholder="验证码"
+                    v-model="loginForm.captchaCode"
+                  ></el-input>
+                </el-col>
+                <el-col :span="6">
+                  <img
+                    :src="captchaImg"
+                    alt="captcha"
+                  >
+
+                </el-col>
+                <el-col :span="4">
+                  <el-link
+                    @click="refreshCaptcha"
+                    type="primary"
+                    :underline="false"
+                  >刷新</el-link>
+                </el-col>
+
+              </el-form-item>
               <el-form-item>
                 <el-button
                   type="primary"
@@ -55,6 +79,37 @@
                   v-model="registerForm.password"
                 ></el-input>
               </el-form-item>
+              <el-form-item prop="checkPassword">
+                <el-input
+                  type="password"
+                  placeholder="确认密码"
+                  v-model="registerForm.checkPassword"
+                ></el-input>
+              </el-form-item>
+              <el-form-item prop="captchaCode">
+                <el-col :span="14">
+                  <el-input
+                    type="text"
+                    placeholder="验证码"
+                    v-model="registerForm.captchaCode"
+                  ></el-input>
+                </el-col>
+                <el-col :span="6">
+                  <img
+                    :src="captchaImg"
+                    alt="captcha"
+                  >
+
+                </el-col>
+                <el-col :span="4">
+                  <el-link
+                    @click="refreshCaptcha"
+                    type="primary"
+                    :underline="false"
+                  >刷新</el-link>
+                </el-col>
+
+              </el-form-item>
               <el-form-item>
                 <el-button
                   type="primary"
@@ -68,75 +123,86 @@
         </el-tabs>
       </div>
 
-      <!-- <section class="form_contianer">
-        <div class="manage_tip">
-          <p>米高接单系统</p>
-        </div>
-        <el-form
-          :model="loginForm"
-          :rules="rules"
-          ref="loginForm"
-        >
-          <el-form-item prop="username">
-            <el-input
-              v-model="loginForm.username"
-              placeholder="用户名"
-            ><span>dsfsf</span></el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input
-              type="password"
-              placeholder="密码"
-              v-model="loginForm.password"
-            ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="loginButton('loginForm')"
-              class="submit_btn"
-            >登陆</el-button>
-          </el-form-item>
-        </el-form>
-
-      </section> -->
     </transition>
   </div>
 </template>
 
 <script>
-import { login, register, getuserInfo } from '../apiService/clientApi'
+import {
+  login,
+  register,
+  getuserInfo,
+  getCaptcha
+} from '../apiService/clientApi'
 import { Loading } from 'element-ui'
-import { setStore } from '../config/mUtils'
+import { setStore, removeStore } from '../config/mUtils'
 import { mapActions, mapState } from 'vuex'
 import store from '../store/index.js'
 
 export default {
   data() {
+    const checkPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码不能小于6位数!'))
+      } else {
+        callback()
+      }
+    }
+
+    const validatePassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        captchaCode: ''
       },
       loginRules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        captchaCode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
+        ]
       },
       registerForm: {
         username: '',
-        password: ''
+        password: '',
+        checkPassword: '',
+        captchaCode: ''
+        // validateCode:''
       },
       registerRules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        password: [
+          { required: true, validator: checkPassword, trigger: 'blur' }
+        ],
+        captchaCode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
+        ],
+        checkPassword: [
+          { required: true, validator: validatePassword, trigger: 'blur' }
+        ]
       },
       showLogin: false,
-      loading: false
+      loading: false,
+      captchaImg: ''
     }
+  },
+  created() {
+    this.getCaptcha()
   },
   mounted() {
     this.showLogin = true
@@ -150,68 +216,62 @@ export default {
   },
   methods: {
     ...mapActions(['getUserData']),
+    async getCaptcha() {
+      const result = await getCaptcha()
+      this.captchaImg = result.data
+      setStore('captcha', result.code)
+    },
+    refreshCaptcha() {
+      this.getCaptcha()
+    },
     async loginButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          login({
+          const result = await login({
             username: this.loginForm.username,
-            password: this.loginForm.password
+            password: this.loginForm.password,
+            captchaCode: this.loginForm.captchaCode
           })
-            .then(res => {
-              this.$message({
-                type: 'success',
-                message: res.message
-              })
-              setStore('username', res.username)
-              setStore('token', res.token)
-              store.dispatch('getUserData').then(() => {
-                this.$router.push('home')
-              })
-            })
-            .catch(error => {})
+          setStore('username', result.username)
+          setStore('token', result.token)
+          removeStore('captcha')
+          store.dispatch('getUserData').then(() => {
+            this.$router.push('home')
+          })
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '请输入正确的用户名密码',
-            offset: 100
+          this.$message({
+            type: 'error',
+            message: '请输入正确的用户名和密码'
           })
           return false
         }
       })
     },
+
     async registerButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          register({
+          const result = await register({
             username: this.registerForm.username,
-            password: this.registerForm.password
-          }).then(res => {
-            if (res.status === 1) {
-              this.$message({
-                type: 'success',
-                message: res.message
-              })
-              setStore('username', res.username)
-              setStore('token', res.token)
-              this.loading = true
-
-              store.dispatch('getUserData').then(() => {
-                this.$router.push('home')
-              })
-            } else {
-              this.$message({
-                type: 'error',
-                message: res.message
-              })
-            }
+            password: this.registerForm.password,
+            captchaCode: this.registerForm.captchaCode
           })
-          // console.log('res=====================', res)
+          this.$message({
+            type: 'success',
+            message: result.message
+          })
+          setStore('username', result.username)
+          setStore('token', result.token)
+          this.loading = true
+          store.dispatch('getUserData').then(() => {
+            this.$router.push('manage/addShop')
+          })
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '请输入正确的用户名密码',
-            offset: 100
+          this.$message({
+            type: 'error',
+            message: '请输入正确的用户名和密码'
           })
+
           return false
         }
       })

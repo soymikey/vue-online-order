@@ -1,32 +1,19 @@
 <template>
   <div id="app">
-    <div>{{userInfo}}</div>
-    <div>{{restaurantInfo}}</div>
-    <!-- <div id="nav">
-      <router-link to="/"></router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
+    <!-- <div>{{userInfo}}</div>
+    <div>{{restaurantInfo}}</div> -->
 
     <router-view />
 
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
 export default {
   data() {
-    return {
-      mapStateData: null
-    }
+    return {}
   },
   mounted() {},
-  computed: {
-    defaultActive: function() {
-      // return this.$route.path.replace('/', '')
-    },
-
-    ...mapState(['userInfo', 'restaurantInfo'])
-  },
+  computed: {},
   watch: {}
 }
 </script>

@@ -19,13 +19,24 @@ import 'echarts/lib/component/toolbox'
 import 'echarts/lib/component/markPoint'
 import 'echarts/lib/component/tooltip'
 export default {
-  mounted() {
-    this.myChart = echarts.init(document.getElementById('line1'))
-    this.initData()
-  },
   props: ['sevenDate', 'sevenDay'],
+  mounted() {
+    let maxNumber = 0
+    for (const category of this.sevenDate) {
+      for (const date of category) {
+        if (date >= maxNumber) {
+          maxNumber = date
+        }
+      }
+    }
+    maxNumber = Math.round(maxNumber / 50) * 100
+    this.myChart = echarts.init(document.getElementById('line1'))
+
+    this.initData(maxNumber)
+  },
+
   methods: {
-    initData() {
+    initData(maxNumber) {
       const colors = ['#5793f3', '#675bba', '#d14a61']
       const option = {
         color: colors,
@@ -61,7 +72,7 @@ export default {
             type: 'value',
             name: '用户',
             min: 0,
-            max: 200,
+            max: maxNumber,
             position: 'left',
             axisLine: {
               lineStyle: {
@@ -76,7 +87,7 @@ export default {
             type: 'value',
             name: '订单',
             min: 0,
-            max: 200,
+            max: maxNumber,
             position: 'right',
             axisLine: {
               lineStyle: {
@@ -145,7 +156,16 @@ export default {
   },
   watch: {
     sevenDate: function() {
-      this.initData()
+      let maxNumber = 0
+      for (const category of this.sevenDate) {
+        for (const date of category) {
+          if (date >= maxNumber) {
+            maxNumber = date
+          }
+        }
+      }
+      maxNumber = Math.round(maxNumber / 50) * 100
+      this.initData(maxNumber)
     },
     sevenDay: function() {
       this.initData()

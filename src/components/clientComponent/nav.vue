@@ -1,42 +1,5 @@
 <template>
   <div class="left-nav">
-    <!-- <ul>
-      <li>
-        <i class="icon iconfont icon-wodezichan"></i>
-        <div>收银</div>
-      </li>
-
-      <li>
-        <i class="icon iconfont icon-dianpu"></i>
-        <div>店铺</div>
-      </li>
-
-      <li>
-        <i class="icon iconfont icon-hanbao"></i>
-        <div>商品</div>
-      </li>
-
-      <li>
-        <i class="icon iconfont icon-huiyuanqia"></i>
-        <div>会员</div>
-      </li>
-
-      <li>
-        <i class="icon iconfont icon-shijian"></i>
-        <div>抢购</div>
-      </li>
-
-      <li @click="goToAdminManagement">
-        <i class="icon iconfont icon-tongji"></i>
-        <div>管理</div>
-      </li>
-      <li @click="exitButton">
-        <div><i class="icon iconfont icon-guanbi"></i>
-          <div>退出</div>
-        </div>
-
-      </li>
-    </ul> -->
 
     <el-menu
       default-active="1-4-1"
@@ -49,38 +12,82 @@
       :collapse="isCollapse"
     >
 
+      <el-menu-item index="-1">
+
+        <img
+          :src="imgBaseUrl + userInfo.avatar"
+          class="avator iconfont"
+          style='margin-right:0px'
+        >
+        <span class="title">{{userInfo.username}}</span>
+      </el-menu-item>
+
+      <el-menu-item
+        index="0"
+        @click="isShowFullSidebar"
+      >
+        <i
+          class="iconfont"
+          :class="isCollapse?'icon-expand':'icon-shrink'"
+        ></i>
+        <span
+          slot='title'
+          class="title"
+        >{{isCollapse?'展开':'收起'}}</span>
+      </el-menu-item>
       <el-menu-item index="1">
-        <i class="icon iconfont icon-wodezichan"></i>
-        <span slot='title'>{{$t("sidebar.cashTill")}}</span>
+        <i class="iconfont icon-cash"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.cashTill")}}</span>
       </el-menu-item>
       <el-menu-item index="2">
-        <i class="icon iconfont icon-dianpu"></i>
-        <span slot='title'>{{$t("sidebar.shop")}}</span>
+        <i class="iconfont icon-shop"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.shop")}}</span>
       </el-menu-item>
       <el-menu-item index="3">
-        <i class="icon iconfont icon-hanbao"></i>
-        <span slot='title'>{{$t("sidebar.store")}}</span>
+        <i class="iconfont icon-food"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.store")}}</span>
       </el-menu-item>
       <el-menu-item index="4">
-        <i class="icon iconfont icon-huiyuanqia"></i>
-        <span slot='title'>{{$t("sidebar.memebership")}}</span>
+        <i class="iconfont icon-vip"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.memebership")}}</span>
       </el-menu-item>
       <el-menu-item index="5">
-        <i class="icon iconfont icon-shijian"></i>
-        <span slot='title'>{{$t("sidebar.promotion")}}</span>
+        <i class="iconfont icon-clock"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.promotion")}}</span>
       </el-menu-item>
       <el-menu-item
         index="6"
         @click="goToAdminManagement"
       >
-        <i class="icon iconfont icon-tongji"></i>
-        <span slot='title'>{{$t("sidebar.management")}}</span>
+        <i class="iconfont icon-static"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.management")}}</span>
       </el-menu-item>
 
       <el-submenu index="7">
         <template slot="title">
-          <i class="icon iconfont icon-tongji"></i>
-          <span slot="title">{{$t("sidebar.language")}}</span>
+          <i class="iconfont icon-language"></i>
+          <span
+            slot="title"
+            class="title"
+          >{{$t("sidebar.language")}}</span>
         </template>
         <el-menu-item-group>
           <span slot="title">语言</span>
@@ -103,8 +110,11 @@
         index="8"
         @click="exitButton"
       >
-        <i class="icon iconfont icon-guanbi"> </i>
-        <span slot='title'>{{$t("sidebar.exit")}}</span>
+        <i class="iconfont icon-exit"> </i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.exit")}}</span>
       </el-menu-item>
 
     </el-menu>
@@ -119,22 +129,28 @@
 </template>
 
 <script>
+import { imgBaseUrl } from '@/config/env'
+
 import { removeAllStore } from '@/config/mUtils'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 export default {
   name: 'Nav',
-  data() {
-    return {}
-  },
 
   data() {
     return {
+      imgBaseUrl,
       isCollapse: true
     }
   },
   created() {},
+  computed: {
+    ...mapState(['userInfo'])
+  },
   methods: {
     ...mapMutations(['RESET_STATE']),
+    isShowFullSidebar() {
+      this.isCollapse = !this.isCollapse
+    },
     exitButton() {
       this.$confirm('是否退出?', '提示', {
         confirmButtonText: '确定',
@@ -171,7 +187,8 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style lang="scss">
+@import '../../style/mixin';
 .left-nav {
   color: #fff;
   font-size: 10px;
@@ -183,7 +200,7 @@ export default {
   /* width: 5%; */
 }
 .iconfont {
-  font-size: 24px;
+  font-size: 36px;
 }
 /* .left-nav ul {
   padding: 0px;
@@ -202,9 +219,12 @@ export default {
   width: 200px;
   min-height: 400px;
 }
-.icon {
-  color: #ffffff;
-  margin-right: 10px;
+.title {
+  display: inline-block;
   margin-left: 10px;
+}
+.avator {
+  @include wh(36px, 36px);
+  border-radius: 50%;
 }
 </style>

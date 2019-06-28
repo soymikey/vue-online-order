@@ -7,13 +7,11 @@ import i18n from './lang' // Internationalization
 import { getStore } from './config/mUtils'
 import '../src/style/reset.scss'
 import 'element-ui/lib/theme-chalk/index.css'
-import VueDraggable from 'vue-draggable'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-Vue.use(VueDraggable)
 
-function loginNotification(type, message) {
+function notification(type, message) {
   ElementUI.Message({
     type,
     message
@@ -64,24 +62,24 @@ router.beforeEach((to, from, next) => {
             if (staffRouter.indexOf(to.path) !== -1) {
               next()
             } else {
-              loginNotification('error', '请登陆管理员账号')
+              notification('error', '请登陆管理员账号')
             }
           } else if (store.getters.state.userInfo.auth === 2) {
             next()
           } else {
-            loginNotification('error', '路由逻辑出错')
+            notification('error', '路由逻辑出错')
           }
         })
       } else if (store.getters.state.userInfo.auth === 1) {
         if (staffRouter.indexOf(to.path) !== -1) {
           next()
         } else {
-          loginNotification('error', '请登陆管理员账号')
+          notification('error', '请登陆管理员账号')
         }
       } else if (store.getters.state.userInfo.auth === 2) {
         next()
       } else {
-        loginNotification('error', '路由逻辑出错')
+        notification('error', '路由逻辑出错')
       }
     }
   } else {
@@ -108,11 +106,11 @@ router.beforeEach((to, from, next) => {
 //             if (staffRouter.indexOf(to.path) !== -1) {
 //               next()
 //             } else {
-//               loginNotification('error', '普通管理员的权限不够')
+//               notification('error', '普通管理员的权限不够')
 //               next({ path: '/admin' })
 //             }
 //           } else {
-//             loginNotification('error', '请登录...')
+//             notification('error', '请登录...')
 //             next({ path: '/' })
 //           }
 //         })
@@ -123,7 +121,7 @@ router.beforeEach((to, from, next) => {
 //           if (staffRouter.indexOf(to.path) !== -1) {
 //             next()
 //           } else {
-//             loginNotification('error', '普通管理员的权限不够')
+//             notification('error', '普通管理员的权限不够')
 //             next({ path: '/admin' })
 //           }
 //         }

@@ -14,7 +14,7 @@
 
       <el-table-column
         align="center"
-        label="食品Id"
+        label="食品ID"
         width="150"
       >
         <template slot-scope="scope">

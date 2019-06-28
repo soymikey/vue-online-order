@@ -41,7 +41,7 @@ export default {
     ...mapMutations(['RESET_STATE']),
     handleCommand(command) {
       if (command == 'home') {
-        this.$router.push('/manage')
+        this.$router.push('/home')
       } else if (command == 'signout') {
         this.$confirm('是否退出?', '提示', {
           confirmButtonText: '确定',

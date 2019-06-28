@@ -1,7 +1,8 @@
 <template>
   <div class="home-left">
     <el-tabs>
-      <el-tab-pane label="点餐">
+      <el-tab-pane>
+        <span slot="label"> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 点餐 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </span>
         <div id='order-details'>
           <el-table
             :data="cartList"
@@ -10,7 +11,6 @@
             border
             :height='tableHeight'
           >
-
             >
             <el-table-column
               prop="nameWithSpecs"
@@ -77,6 +77,7 @@
               type="warning"
               class="button"
               :disabled='totalNum===0'
+              @click="notAvailable()"
             >挂单</el-button>
             <el-button
               type="danger"
@@ -96,11 +97,11 @@
 
       </el-tab-pane>
 
-      <el-tab-pane label="挂单">
-        挂单
+      <el-tab-pane>
+        <span slot="label"> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 挂单 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </span>
       </el-tab-pane>
       <el-tab-pane label="外卖">
-        外卖
+        <span slot="label"> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 外卖 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </span>
       </el-tab-pane>
 
     </el-tabs>
@@ -218,7 +219,15 @@ export default {
     totalPrice: function() {
       let total = 0
       this.cartList.forEach(item => {
-        total += item.num * item.price
+        if (item.extra) {
+          let extraPirce = 0
+          for (const extra of item.extra) {
+            extraPirce += extra.price
+          }
+          total += item.num * item.price + extraPirce * item.num
+        } else {
+          total += item.num * item.price
+        }
       })
       return total.toFixed(2)
     },
@@ -261,7 +270,6 @@ export default {
       } else {
         totalprice = item.price
       }
-      console.log('totalprice', totalprice)
 
       return totalprice
     },
@@ -290,7 +298,19 @@ export default {
     //清除购物车
     clearCart() {
       // this.toggleCartList();
-      this.CLEAR_CART()
+      this.$confirm('是否删除订单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          this.CLEAR_CART()
+        })
+        .catch(error => {})
     },
     showDialog(row, column, cell, event) {
       if (column.label == '商品') {
@@ -377,6 +397,7 @@ export default {
         }
 
         const result = await placeOrder(param)
+        this.CLEAR_CART()
         this.$message({
           type: 'success',
           message: result.message
@@ -387,6 +408,12 @@ export default {
     },
     selectExtra(item) {
       item.selected = !item.selected //!item.selected
+    },
+    notAvailable() {
+      this.$message({
+        type: 'error',
+        message: '此功能暂时还未开放..'
+      })
     }
   }
 }

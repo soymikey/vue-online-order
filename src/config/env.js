@@ -4,15 +4,21 @@
 //  routerMode: 路由模式
 //  imgBaseUrl: 图片所在域名地址
 
-let baseUrl = '//localhost:4001'
+let baseUrl = '//localhost:4000'
 let routerMode = 'hash'
 let imgBaseUrl = ''
 
 if (process.env.NODE_ENV === 'development') {
-  imgBaseUrl = 'http://localhost:4001/img/'
+  imgBaseUrl = 'http://localhost:4000/img/'
 } else if (process.env.NODE_ENV === 'production') {
-  baseUrl = '//elm.cangdu.org'
-  imgBaseUrl = '//elm.cangdu.org/img/'
+  baseUrl = '//test.migaox.com'
+  imgBaseUrl = 'http://test.migaox.com/img/'
 }
+// if (process.env.NODE_ENV === 'development') {
+//   imgBaseUrl = 'http://localhost:4000/img/'
+// } else if (process.env.NODE_ENV === 'production') {
+//   baseUrl = '//elm.cangdu.org'
+//   imgBaseUrl = '//elm.cangdu.org/img/'
+// }
 
 export { baseUrl, routerMode, imgBaseUrl }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <head-top></head-top>
-    <el-row style="margin-top: 20px;">
+    <el-row style="margin-top: 80px;">
       <el-col
         :span="12"
         :offset="4"
@@ -68,6 +68,7 @@
           <el-form-item
             label="营业时间"
             style="white-space: nowrap;"
+            prop="startTime"
           >
             <el-time-select
               placeholder="起始时间"
@@ -110,7 +111,6 @@
         </el-form>
       </el-col>
     </el-row>
-    <div>{{this.restaurantInfo}}</div>
   </div>
 </template>
 
@@ -143,6 +143,12 @@ export default {
         phone: [
           { required: true, message: '请输入联系电话' },
           { type: 'number', message: '电话号码必须是数字' }
+        ],
+        startTime: [
+          { required: true, message: '请输入营业时间', trigger: 'blur' }
+        ],
+        endTime: [
+          { required: true, message: '请输入营业时间', trigger: 'blur' }
         ]
       },
       baseUrl,
@@ -152,22 +158,32 @@ export default {
   components: {
     headTop
   },
-  mounted() {},
+  mounted() {
+    if (this.restaurantInfo) {
+      this.formData.name = this.restaurantInfo.name //店铺名称
+      this.formData.address = this.restaurantInfo.address //地址
+      this.formData.description = this.restaurantInfo.description //介绍
+      this.formData.phone = parseInt(this.restaurantInfo.phone)
+      this.formData.startTime = this.restaurantInfo.opening_hours[0].split(
+        '/'
+      )[0]
+      this.formData.endTime = this.restaurantInfo.opening_hours[0].split('/')[1]
+    }
+  },
 
   computed: {
     ...mapState(['userInfo', 'restaurantInfo'])
   },
   watch: {
     restaurantInfo: function(newValue) {
-      let startTime = newValue.opening_hours[0].split('/')[0]
-      let endTime = newValue.opening_hours[0].split('/')[1]
-
       this.formData.name = newValue.name //店铺名称
       this.formData.address = newValue.address //地址
       this.formData.description = newValue.description //介绍
       this.formData.phone = parseInt(newValue.phone)
-      this.formData.startTime = startTime
-      this.formData.endTime = endTime
+      this.formData.startTime = this.restaurantInfo.opening_hours[0].split(
+        '/'
+      )[0]
+      this.formData.endTime = this.restaurantInfo.opening_hours[0].split('/')[1]
     }
   },
   methods: {
@@ -282,11 +298,11 @@ export default {
             console.log(err)
           }
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '请检查输入是否正确',
-            offset: 100
+          this.$message({
+            type: 'error',
+            message: '请检查输入是否正确'
           })
+
           return false
         }
       })
@@ -319,11 +335,11 @@ export default {
             console.log(err)
           }
         } else {
-          this.$notify.error({
-            title: '错误',
-            message: '请检查输入是否正确',
-            offset: 100
+          this.$message({
+            type: 'error',
+            message: '请检查输入是否正确'
           })
+
           return false
         }
       })
