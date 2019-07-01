@@ -19,7 +19,7 @@
                   <el-input
                     v-model="registerForm.username"
                     placeholder="用户名"
-                  ><span>dsfsf</span></el-input>
+                  ></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                   <el-input

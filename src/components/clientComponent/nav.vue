@@ -108,6 +108,19 @@
       </el-submenu>
       <el-menu-item
         index="8"
+        @click="toggleFullScreen"
+      >
+        <i
+          class="iconfont"
+          :class="!isZoomIn?'icon-zoom-in':'icon-zoom-out'"
+        ></i>
+        <span
+          slot='title'
+          class="title"
+        >{{!isZoomIn?'放大':'缩小'}}</span>
+      </el-menu-item>
+      <el-menu-item
+        index="9"
         @click="exitButton"
       >
         <i class="iconfont icon-exit"> </i>
@@ -133,13 +146,15 @@ import { imgBaseUrl } from '@/config/env'
 
 import { removeAllStore } from '@/config/mUtils'
 import { mapMutations, mapState } from 'vuex'
+import { toggleFullScreen } from '@/config/toggleFullScreen'
 export default {
   name: 'Nav',
 
   data() {
     return {
       imgBaseUrl,
-      isCollapse: true
+      isCollapse: true,
+      isZoomIn: false
     }
   },
   created() {},
@@ -172,6 +187,11 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath)
+    },
+
+    toggleFullScreen() {
+      this.isZoomIn = !this.isZoomIn
+      toggleFullScreen()
     },
     changeLanguageZh() {
       this.$i18n.locale = 'zh'
