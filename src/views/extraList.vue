@@ -49,6 +49,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           label="操作"
           width="160"
         >
@@ -62,6 +63,18 @@
               type="danger"
               @click="handleDelete(scope.row)"
             >删除</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="拖拽"
+          width="100"
+        >
+          <template>
+            <i
+              class=" iconfont icon-drag"
+              style="font-size: 25px;"
+            ></i>
           </template>
         </el-table-column>
       </el-table>
@@ -339,7 +352,7 @@ export default {
 .sortable-ghost {
   opacity: 0.8;
   color: #fff !important;
-  background: #42b983 !important;
+  background: #20a0ff !important;
 }
 </style>
 

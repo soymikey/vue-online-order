@@ -7,7 +7,7 @@
       >
         <el-menu
           :default-active="defaultActive"
-          style="min-height: 100%"
+          style="min-height: 100%;"
           background-color="#324057"
           text-color="#bfcbd9"
           router
@@ -127,4 +127,8 @@ export default {
 
 <style lang="scss" scoped>
 @import '../style/mixin';
+
+.el-menu-item {
+  min-width: 0px;
+}
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div class="home-left">
+
     <el-tabs>
       <el-tab-pane>
         <span slot="label"> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 点餐 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </span>
@@ -10,7 +11,9 @@
             @cell-dblclick="showDialog"
             border
             :height='tableHeight'
+            @row-click='showDialog'
           >
+            >
             >
             <el-table-column
               prop="nameWithSpecs"
@@ -29,19 +32,22 @@
               </template>
 
             </el-table-column>
-            <el-table-column
-              label="价格"
-              width="70"
-            >
-              <template slot-scope="scope">
-                <span>{{foodAndExtraPrice(scope.row)}}</span>
+            <template v-if='!fitToMobile'>
+              <el-table-column
+                label="价格"
+                width="70"
+              >
+                <template slot-scope="scope">
+                  <span>{{foodAndExtraPrice(scope.row)}}</span>
 
-              </template>
-            </el-table-column>
+                </template>
+              </el-table-column>
+            </template>
+
             <el-table-column
               prop="num"
               label="数量"
-              width="70"
+              width="50"
             ></el-table-column>
 
             <el-table-column
@@ -73,7 +79,33 @@
             <strong>{{totalPrice}}</strong> 元
           </div>
           <div class="order-btn">
-            <el-button
+            <el-row>
+              <el-col :span="8">
+                <el-button
+                  type="warning"
+                  class="button"
+                  :disabled='totalNum===0'
+                  @click="notAvailable()"
+                >挂单</el-button>
+              </el-col>
+              <el-col :span="8">
+                <el-button
+                  type="danger"
+                  class="button"
+                  @click="clearCart()"
+                  :disabled='totalNum===0'
+                >删除</el-button>
+              </el-col>
+              <el-col :span="8">
+                <el-button
+                  type="success"
+                  class="button"
+                  @click="checkout()"
+                  :disabled='totalNum===0'
+                > 结账</el-button>
+              </el-col>
+            </el-row>
+            <!-- <el-button
               type="warning"
               class="button"
               :disabled='totalNum===0'
@@ -90,7 +122,7 @@
               class="button"
               @click="checkout()"
               :disabled='totalNum===0'
-            > 结账</el-button>
+            > 结账</el-button> -->
 
           </div>
         </div>
@@ -99,9 +131,12 @@
 
       <el-tab-pane>
         <span slot="label"> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 挂单 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </span>
+        <div>此功能还未开放</div>
       </el-tab-pane>
       <el-tab-pane label="外卖">
         <span slot="label"> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 外卖 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </span>
+        <div>此功能还未开放</div>
+
       </el-tab-pane>
 
     </el-tabs>
@@ -194,23 +229,25 @@ export default {
       tableData: [], //订单列表的值
 
       totalMoney: 0, //订单总价格
-      tableHeight: window.innerHeight - 216, //table的高度
+      tableHeight: 0, //table的高度
+      // tableHeight: window.innerHeight - 216, //table的高度
       showExtra: false,
       extraMenu: null,
       selectedFood: null,
       canvasUrl: null,
-      foodIndex: null
+      fitToMobile: false
     }
   },
-  created() {},
+  created() {
+    if (window.innerWidth < 1024) {
+      this.fitToMobile = true
+      this.tableHeight = window.innerHeight - 157
+    } else {
+      this.tableHeight = window.innerHeight - 216
+    }
+  },
   mounted: function() {
     this.initData()
-    window.addEventListener(
-      'resize',
-      function(event) {
-        this.tableHeight = event.currentTarget.innerHeight - 216
-      }.bind(this)
-    )
   },
   computed: {
     ...mapState(['userInfo', 'cartList', 'restaurantInfo']),
@@ -244,7 +281,16 @@ export default {
   watch: {},
   methods: {
     ...mapMutations(['ADD_CART', 'REDUCE_CART', 'CLEAR_CART']),
-    //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
+    //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食style  tableRowStyle({ row, rowIndex }) {
+    // tableRowStyle({ row, rowIndex }) {
+    //   const index = this.tableData.indexOf(this.selectedFood)
+
+    //   if (rowIndex === index) {
+    //     return { backgroundColor: '#409EFF' }
+    //   }
+    //   return ''
+    // },
+
     async initData() {
       const extras = await getExtras({
         restaurantId: this.userInfo.restaurantId
@@ -259,6 +305,7 @@ export default {
       this.extraMenu = formatedExtras
       // this.extraMenu = extras.data
     },
+
     foodAndExtraPrice(item) {
       let totalprice = 0
       if (item.extra.length) {
@@ -455,8 +502,27 @@ export default {
   }
 }
 .button {
-  width: 150px;
+  width: 80%;
   height: 80px;
+}
+.el-table .warning-row {
+  background: blue;
+}
+
+.el-table .success-row {
+  background: #f0f9eb;
+}
+
+@media screen and (max-width: 1023px) {
+  .button {
+    width: 80%;
+    height: 40px;
+  }
+  .order-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
 }
 
 //#409EFF

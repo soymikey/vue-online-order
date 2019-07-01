@@ -277,4 +277,12 @@ export default {
   border-color: #3199e8;
   color: #3199e8;
 }
+@media screen and (max-width: 1023px) {
+  .foodName {
+    font-size: 15px;
+  }
+  .foodPrice {
+    font-size: 15px;
+  }
+}
 </style>

@@ -7,15 +7,15 @@
         :gutter="20"
         style="margin-bottom: 10px;"
       >
-        <el-col :span="4">
+        <el-col :span="5">
           <div class="data_list today_head"><span class="data_num head">当日数据：</span></div>
         </el-col>
 
-        <el-col :span="4">
-          <div class="data_list"> 今日营业额<span class="data_num">{{totalMoneyCount}}</span></div>
+        <el-col :span="6">
+          <div class="data_list"> <span class="data_title">今日营业额:</span><span class="data_num">{{totalMoneyCount}}</span></div>
         </el-col>
-        <el-col :span="4">
-          <div class="data_list"> 新增订单<span class="data_num">{{orderCount}}</span></div>
+        <el-col :span="6">
+          <div class="data_list"> <span class="data_title">今日订单:</span> <span class="data_num">{{orderCount}}</span></div>
         </el-col>
 
       </el-row>
@@ -150,10 +150,17 @@ export default {
     color: #666;
     border-radius: 6px;
     background: #e5e9f2;
+
+    .data_title {
+      color: #333;
+      font-size: 26px;
+      padding: 4px 0;
+    }
     .data_num {
       color: #333;
       font-size: 26px;
       margin: 0 10px 0 10px;
+      padding: 4px 0;
     }
     .head {
       border-radius: 6px;

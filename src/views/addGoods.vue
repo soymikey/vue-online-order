@@ -375,7 +375,7 @@ export default {
       this.foodForm.specs.push({ ...this.specsForm })
       this.specsForm.specs = ''
       // this.specsForm.packing_fee = 0
-      this.specsForm.price = 20
+      this.specsForm.price = 0
       this.dialogFormVisible = false
     },
     handleDelete(index) {

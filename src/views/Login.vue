@@ -1,130 +1,128 @@
 <template>
   <div class="login_page fillcontain">
-    <transition
-      name="form-fade"
-      mode="in-out"
-    >
-      <div class="form_contianer">
-        <el-tabs type="border-card">
-
-          <el-tab-pane label="登陆">
-            <el-form
-              :model="loginForm"
-              :rules="loginRules"
-              ref="loginForm"
-              v-loading="loading"
-            >
-              <el-form-item prop="username">
+    <div class="logo-container"><img
+        :src="logo"
+        alt=""
+      ></div>
+    <div class="form_contianer">
+      <el-tabs type="border-card">
+        <el-tab-pane label="登陆">
+          <el-form
+            :model="loginForm"
+            :rules="loginRules"
+            ref="loginForm"
+            v-loading="loading"
+          >
+            <el-form-item prop="username">
+              <el-input
+                v-model="loginForm.username"
+                placeholder="用户名"
+              ><span>dsfsf</span></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                type="password"
+                placeholder="密码"
+                v-model="loginForm.password"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="captchaCode">
+              <el-col :span="14">
                 <el-input
-                  v-model="loginForm.username"
-                  placeholder="用户名"
-                ><span>dsfsf</span></el-input>
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input
-                  type="password"
-                  placeholder="密码"
-                  v-model="loginForm.password"
+                  type="text"
+                  placeholder="验证码"
+                  v-model="loginForm.captchaCode"
                 ></el-input>
-              </el-form-item>
-              <el-form-item prop="captchaCode">
-                <el-col :span="14">
-                  <el-input
-                    type="text"
-                    placeholder="验证码"
-                    v-model="loginForm.captchaCode"
-                  ></el-input>
-                </el-col>
-                <el-col :span="6">
-                  <img
-                    :src="captchaImg"
-                    alt="captcha"
-                  >
+              </el-col>
+              <el-col :span="6">
+                <img
+                  :src="captchaImg"
+                  alt="captcha"
+                >
 
-                </el-col>
-                <el-col :span="4">
-                  <el-link
-                    @click="refreshCaptcha"
-                    type="primary"
-                    :underline="false"
-                  >刷新</el-link>
-                </el-col>
-
-              </el-form-item>
-              <el-form-item>
-                <el-button
+              </el-col>
+              <el-col :span="4">
+                <el-link
+                  @click="refreshCaptcha"
                   type="primary"
-                  @click="loginButton('loginForm')"
-                  class="submit_btn"
-                >登陆</el-button>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-          <el-tab-pane label="注册">
-            <el-form
-              :model="registerForm"
-              :rules="registerRules"
-              ref="registerForm"
-              v-loading="loading"
-            >
-              <el-form-item prop="username">
-                <el-input
-                  v-model="registerForm.username"
-                  placeholder="用户名"
-                ></el-input>
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input
-                  type="password"
-                  placeholder="密码"
-                  v-model="registerForm.password"
-                ></el-input>
-              </el-form-item>
-              <el-form-item prop="checkPassword">
-                <el-input
-                  type="password"
-                  placeholder="确认密码"
-                  v-model="registerForm.checkPassword"
-                ></el-input>
-              </el-form-item>
-              <el-form-item prop="captchaCode">
-                <el-col :span="14">
-                  <el-input
-                    type="text"
-                    placeholder="验证码"
-                    v-model="registerForm.captchaCode"
-                  ></el-input>
-                </el-col>
-                <el-col :span="6">
-                  <img
-                    :src="captchaImg"
-                    alt="captcha"
-                  >
+                  :underline="false"
+                >刷新</el-link>
+              </el-col>
 
-                </el-col>
-                <el-col :span="4">
-                  <el-link
-                    @click="refreshCaptcha"
-                    type="primary"
-                    :underline="false"
-                  >刷新</el-link>
-                </el-col>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="loginButton('loginForm')"
+                class="submit_btn"
+              >登陆</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="注册">
+          <el-form
+            :model="registerForm"
+            :rules="registerRules"
+            ref="registerForm"
+            v-loading="loading"
+          >
+            <el-form-item prop="username">
+              <el-input
+                v-model="registerForm.username"
+                placeholder="用户名"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                type="password"
+                placeholder="密码"
+                v-model="registerForm.password"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="checkPassword">
+              <el-input
+                type="password"
+                placeholder="确认密码"
+                v-model="registerForm.checkPassword"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="captchaCode">
+              <el-col :span="14">
+                <el-input
+                  type="text"
+                  placeholder="验证码"
+                  v-model="registerForm.captchaCode"
+                ></el-input>
+              </el-col>
+              <el-col :span="6">
+                <img
+                  :src="captchaImg"
+                  alt="captcha"
+                >
 
-              </el-form-item>
-              <el-form-item>
-                <el-button
+              </el-col>
+              <el-col :span="4">
+                <el-link
+                  @click="refreshCaptcha"
                   type="primary"
-                  @click="registerButton('registerForm')"
-                  class="submit_btn"
-                >注册</el-button>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
+                  :underline="false"
+                >刷新</el-link>
+              </el-col>
 
-        </el-tabs>
-      </div>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="registerButton('registerForm')"
+                class="submit_btn"
+              >注册</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
 
-    </transition>
+      </el-tabs>
+    </div>
+
   </div>
 </template>
 
@@ -139,7 +137,7 @@ import { Loading } from 'element-ui'
 import { setStore, removeStore } from '../config/mUtils'
 import { mapActions, mapState } from 'vuex'
 import store from '../store/index.js'
-
+import logo from '../assets/logo.png'
 export default {
   data() {
     const checkPassword = (rule, value, callback) => {
@@ -199,7 +197,8 @@ export default {
       },
       showLogin: false,
       loading: false,
-      captchaImg: ''
+      captchaImg: '',
+      logo: logo
     }
   },
   created() {
@@ -229,18 +228,24 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           this.loading = true
-          const result = await login({
-            username: this.loginForm.username,
-            password: this.loginForm.password,
-            captchaCode: this.loginForm.captchaCode
-          })
-          this.loading = false
-          setStore('username', result.username)
-          setStore('token', result.token)
-          removeStore('captcha')
-          store.dispatch('getUserData').then(() => {
-            this.$router.push('home')
-          })
+          try {
+            const result = await login({
+              username: this.loginForm.username,
+              password: this.loginForm.password,
+              captchaCode: this.loginForm.captchaCode
+            })
+            this.loading = false
+            setStore('username', result.username)
+            setStore('token', result.token)
+            removeStore('captcha')
+            store.dispatch('getUserData').then(() => {
+              this.$router.push('home')
+            })
+          } catch (err) {
+            this.loading = false
+            this.getCaptcha()
+            this.loginForm.captchaCode = ''
+          }
         } else {
           this.$message({
             type: 'error',
@@ -255,22 +260,28 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           this.loading = true
-          const result = await register({
-            username: this.registerForm.username,
-            password: this.registerForm.password,
-            captchaCode: this.registerForm.captchaCode
-          })
-          this.loading = false
-          this.$message({
-            type: 'success',
-            message: result.message
-          })
-          setStore('username', result.username)
-          setStore('token', result.token)
+          try {
+            const result = await register({
+              username: this.registerForm.username,
+              password: this.registerForm.password,
+              captchaCode: this.registerForm.captchaCode
+            })
+            this.loading = false
+            this.$message({
+              type: 'success',
+              message: result.message
+            })
+            setStore('username', result.username)
+            setStore('token', result.token)
 
-          store.dispatch('getUserData').then(() => {
-            this.$router.push('manage/addShop')
-          })
+            store.dispatch('getUserData').then(() => {
+              this.$router.push('manage/addShop')
+            })
+          } catch (err) {
+            this.loading = false
+            this.getCaptcha()
+            this.loginForm.captchaCode = ''
+          }
         } else {
           this.$message({
             type: 'error',
@@ -301,6 +312,10 @@ export default {
 .login_page {
   background-color: #324057;
   height: 100%;
+  display: flex;
+  // justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 .manage_tip {
   position: absolute;
@@ -312,13 +327,17 @@ export default {
     color: #fff;
   }
 }
+.logo-container {
+  margin-top: 5%;
+  margin-bottom: 3%;
+}
 .form_contianer {
   @include wh(320px, 210px);
-  @include ctp(320px, 210px);
-  padding: 25px;
+  // @include ctp(320px, 210px);
+  // padding: 25px;
   border-radius: 5px;
   text-align: center;
-  // background-color: #fff;
+
   .submit_btn {
     width: 100%;
     font-size: 16px;

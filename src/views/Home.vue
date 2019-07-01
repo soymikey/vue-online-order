@@ -8,13 +8,13 @@
     <div class="main">
       <el-row>
         <el-col
-          :span="8"
+          :span="leftColum"
           class="pos-order"
           id="order-list"
         >
           <home-Left></home-Left>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="rightColum">
           <home-Right :menu="menuList"></home-Right>
         </el-col>
 
@@ -37,10 +37,17 @@ export default {
     return {
       showActivities: false, //是否显示活动详情
       menuList: [], //食品列表
-      extraList: [] // 额外选项列表
+      extraList: [], // 额外选项列表,
+      leftColum: 8,
+      rightColum: 16
     }
   },
-  created() {},
+  created() {
+    if (window.innerWidth < 1024) {
+      this.leftColum = 9
+      this.rightColum = 15
+    }
+  },
   mounted() {
     this.initData()
   },
@@ -69,6 +76,11 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+@media screen and (max-width: 1023px) {
+  .nav {
+    display: none;
+  }
+}
 .home {
   height: 100%;
   font-size: 12px;
