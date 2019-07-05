@@ -229,8 +229,9 @@ export default {
         if (valid) {
           this.loading = true
           try {
+            const username = this.loginForm.username.toLowerCase()
             const result = await login({
-              username: this.loginForm.username,
+              username,
               password: this.loginForm.password,
               captchaCode: this.loginForm.captchaCode
             })
@@ -261,8 +262,9 @@ export default {
         if (valid) {
           this.loading = true
           try {
+            const username = this.registerForm.username.toLowerCase()
             const result = await register({
-              username: this.registerForm.username,
+              username,
               password: this.registerForm.password,
               captchaCode: this.registerForm.captchaCode
             })

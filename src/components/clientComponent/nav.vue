@@ -13,11 +13,9 @@
     >
 
       <el-menu-item index="-1">
-
         <img
           :src="imgBaseUrl + userInfo.avatar"
           class="avator iconfont"
-          style='margin-right:0px'
         >
         <span class="title">{{userInfo.username}}</span>
       </el-menu-item>
@@ -220,7 +218,8 @@ export default {
   /* width: 5%; */
 }
 .iconfont {
-  font-size: 36px;
+  font-size: 30px;
+  margin-right: 5px;
 }
 /* .left-nav ul {
   padding: 0px;
@@ -232,19 +231,19 @@ export default {
   /* border-bottom: 1px solid #20a0ff; */
   /* padding: 10px; */
 }
-.el-menu-vertical-demo {
-  width: 100%;
-}
+// .el-menu-vertical-demo {
+//   width: 100%;
+// }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;
 }
-.title {
-  display: inline-block;
-  margin-left: 10px;
-}
+// .title {
+//   display: inline-block;
+//   margin-left: 10px;
+// }
 .avator {
-  @include wh(36px, 36px);
+  @include wh(30px, 30px);
   border-radius: 50%;
 }
 </style>

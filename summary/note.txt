@@ -1,403 +1,251 @@
 <template>
-  <div class="home-left">
-    <el-tabs>
-      <el-tab-pane label="点餐">
-        <div id='order-details'>
-          <el-table
-            :data="cartList"
-            style="width: 100%"
-            @cell-dblclick="showDialog"
-            border
-            :height='tableHeight'
-          >
+  <div class="left-nav">
 
-            >
-            <el-table-column
-              prop="nameWithSpecs"
-              label="商品"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.nameWithSpecs }}
-
-                <div v-if="scope.row.extra.length">
-                  <el-tag
-                    size="medium"
-                    :key="index"
-                    v-for="(item, index) in scope.row.extra"
-                  >{{item.name }}</el-tag>
-                </div>
-
-              </template>
-
-            </el-table-column>
-            <el-table-column
-              prop="num"
-              label="数量"
-              width="70"
-            ></el-table-column>
-
-            <el-table-column
-              label="操作"
-              width="110"
-            >
-              <template slot-scope="scope">
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click="addToCart(scope.row.id, scope.row.name, scope.row.price, scope.row.specs,scope.row.extra,scope.row)"
-                >+</el-button>
-                <el-button
-                  type="danger"
-                  size="small"
-                  @click="removeOutCart(scope.row)"
-                >-</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-
-        </div>
-        <div class="summary">
-          <div class="totalDiv">
-            <small>数量：</small>
-
-            <strong>{{totalNum}}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-            <small>总计：</small>
-            <strong>{{totalPrice}}</strong> 元
-          </div>
-          <div class="order-btn">
-            <el-button
-              type="warning"
-              class="button"
-              :disabled='totalNum===0'
-            >挂单</el-button>
-            <el-button
-              type="danger"
-              class="button"
-              @click="clearCart()"
-              :disabled='totalNum===0'
-            >删除</el-button>
-            <el-button
-              type="success"
-              class="button"
-              @click="checkout()"
-              :disabled='totalNum===0'
-            > 结账</el-button>
-
-          </div>
-        </div>
-
-      </el-tab-pane>
-
-      <el-tab-pane label="挂单">
-        挂单
-      </el-tab-pane>
-      <el-tab-pane label="外卖">
-        外卖
-      </el-tab-pane>
-
-    </el-tabs>
-    <!-- 显示额外添加 -->
-    <section
-      class='extra-dialog'
-      v-if="showExtra"
+    <el-menu
+      default-active="1-4-1"
+      class="el-menu-vertical-demo"
+      background-color="#304156"
+      text-color="#bfcbd9"
+      active-text-color="#409EFF"
+      @open="handleOpen"
+      @close="handleClose"
+      :collapse="isCollapse"
     >
-      <el-dialog
-        title='额外'
-        :visible.sync="showExtra"
-        width="80%"
-      >
-        <el-tabs type="border-card">
-          <el-tab-pane
-            v-bind:key="
-          category.name"
-            v-for="category in extraMenu "
-            :label="category.name"
-            class="tag-container"
-          >
 
-            <div
-              v-for="(item,index) in category.children"
-              :key='index'
-              class="extra-box"
-              :class="{'actived':item.selected}"
-              @click="selectExtra(item)"
-            >
-              <div
-                class="extra-item"
-                border
-              >{{item.name}}</div>
+      <el-menu-item index="-1">
 
-            </div>
-          </el-tab-pane>
-
-        </el-tabs>
-        <div class="button-container">
-          <el-button @click="cancelExtra">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="confirmExtra"
-          >确 定</el-button>
-        </div>
-
-        <!-- <el-tabs
-          type="border-card"
-          tab-position='left'
-          style="height: 100%;"
+        <img
+          :src="imgBaseUrl + userInfo.avatar"
+          class="avator iconfont"
         >
-          <el-tab-pane
-            v-bind:key="category.name"
-            v-for="category in extraMenu "
-            :label="category.name"
-            class="tag-container"
-          >
-            <div
-              v-for="(item,index) in category.children"
-              :key='index'
-              :label="item"
-              class="tag"
-            >
-              <el-checkbox-button v-model="item.selected">{{item.name}}</el-checkbox-button>
-            </div>
 
-          </el-tab-pane>
-        </el-tabs>
-        <div class="button-container">
-          <el-button @click="cancelExtra">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="confirmExtra"
-          >确 定</el-button>
-        </div> -->
+        <span class="title">{{userInfo.username}}</span>
+      </el-menu-item>
 
-      </el-dialog>
-    </section>
+      <el-menu-item
+        index="0"
+        @click="isShowFullSidebar"
+      >
+        <i
+          class="iconfont"
+          :class="isCollapse?'icon-expand':'icon-shrink'"
+        ></i>
+        <span
+          slot='title'
+          class="title"
+        >{{isCollapse?'展开':'收起'}}</span>
+      </el-menu-item>
+      <el-menu-item index="1">
+        <i class="iconfont icon-cash"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.cashTill")}}</span>
+      </el-menu-item>
+      <el-menu-item index="2">
+        <i class="iconfont icon-shop"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.shop")}}</span>
+      </el-menu-item>
+      <el-menu-item index="3">
+        <i class="iconfont icon-food"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.store")}}</span>
+      </el-menu-item>
+      <el-menu-item index="4">
+        <i class="iconfont icon-vip"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.memebership")}}</span>
+      </el-menu-item>
+      <el-menu-item index="5">
+        <i class="iconfont icon-clock"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.promotion")}}</span>
+      </el-menu-item>
+      <el-menu-item
+        index="6"
+        @click="goToAdminManagement"
+      >
+        <i class="iconfont icon-static"></i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.management")}}</span>
+      </el-menu-item>
+
+      <el-submenu index="7">
+        <template slot="title">
+          <i class="iconfont icon-language"></i>
+          <span
+            slot="title"
+            class="title"
+          >{{$t("sidebar.language")}}</span>
+        </template>
+        <el-menu-item-group>
+          <span slot="title">语言</span>
+          <el-menu-item
+            index="7-1"
+            @click="changeLanguageZh"
+          >{{$t("sidebar.chinese")}}</el-menu-item>
+          <el-menu-item
+            index="7-2"
+            @click="changeLanguageEn"
+          >{{$t("sidebar.english")}}</el-menu-item>
+          <el-menu-item
+            index="7-3"
+            @click="changeLanguageEs"
+          >{{$t("sidebar.spanish")}}</el-menu-item>
+        </el-menu-item-group>
+
+      </el-submenu>
+      <el-menu-item
+        index="8"
+        @click="toggleFullScreen"
+      >
+        <i
+          class="iconfont"
+          :class="!isZoomIn?'icon-zoom-in':'icon-zoom-out'"
+        ></i>
+        <span
+          slot='title'
+          class="title"
+        >{{!isZoomIn?'放大':'缩小'}}</span>
+      </el-menu-item>
+      <el-menu-item
+        index="9"
+        @click="exitButton"
+      >
+        <i class="iconfont icon-exit"> </i>
+        <span
+          slot='title'
+          class="title"
+        >{{$t("sidebar.exit")}}</span>
+      </el-menu-item>
+
+    </el-menu>
+    <!-- <el-radio-group
+      v-model="isCollapse"
+      style="margin-bottom: 20px;"
+    >
+      <el-radio-button :label="false">展开</el-radio-button>
+      <el-radio-button :label="true">收起</el-radio-button>
+    </el-radio-group> -->
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
-import PrintHTML from '../../config/PrintHTML.js'
-import extraMenu from '../../assets/extraMenu.js'
-import { placeOrder } from '../../apiService/clientApi.js'
+import { imgBaseUrl } from '@/config/env'
 
+import { removeAllStore } from '@/config/mUtils'
+import { mapMutations, mapState } from 'vuex'
+import { toggleFullScreen } from '@/config/toggleFullScreen'
 export default {
-  props: {
-    extras: { type: Array }
-  },
+  name: 'Nav',
+
   data() {
     return {
-      data: [],
-      tableData: [], //订单列表的值
-
-      totalMoney: 0, //订单总价格
-      tableHeight: window.innerHeight - 216, //table的高度
-      showExtra: false,
-      extraMenu: extraMenu,
-      selectedFood: null,
-      canvasUrl: null,
-      foodIndex: null
+      imgBaseUrl,
+      isCollapse: true,
+      isZoomIn: false
     }
   },
   created() {},
-  mounted: function() {
-    window.addEventListener(
-      'resize',
-      function(event) {
-        this.tableHeight = event.currentTarget.innerHeight - 216
-      }.bind(this)
-    )
-  },
   computed: {
-    ...mapState(['userInfo', 'cartList', 'restaurantInfo']),
-
-    //购物车中总共商品的价格
-    totalPrice: function() {
-      let total = 0
-      this.cartList.forEach(item => {
-        total += item.num * item.price
-      })
-      return total.toFixed(2)
-    },
-
-    //购物车中总共商品的数量
-    totalNum: function() {
-      let num = 0
-      this.cartList.forEach(item => {
-        num += item.num
-      })
-      return num
-    }
+    ...mapState(['userInfo'])
   },
-  watch: {},
   methods: {
-    ...mapMutations(['ADD_CART', 'REDUCE_CART', 'CLEAR_CART']),
-    //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-
-    addToCart(food_id, name, price, specs, extra) {
-      let nameWithSpecs = specs ? `${name}+${specs}` : name
-      this.ADD_CART({
-        shopid: this.restaurantInfo.restaurantId,
-        food_id,
-        name,
-        price,
-        specs,
-        nameWithSpecs,
-        extra
+    ...mapMutations(['RESET_STATE']),
+    isShowFullSidebar() {
+      this.isCollapse = !this.isCollapse
+    },
+    exitButton() {
+      this.$confirm('是否退出?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
-    },
-
-    //移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-    removeOutCart(food) {
-      let index = this.cartList.indexOf(food)
-
-      this.REDUCE_CART({
-        index
-      })
-    },
-
-    //清除购物车
-    clearCart() {
-      // this.toggleCartList();
-      this.CLEAR_CART()
-    },
-    showDialog(row, column, cell, event) {
-      if (column.label == '商品') {
-        this.selectedFood = row
-
-        if (this.selectedFood.extra.length) {
-          //把已选择的extra id 放到数组里面
-          let extraId = []
-          for (const extra of this.selectedFood.extra) {
-            extraId.push(extra.id)
-          }
-
-          for (const category of this.extraMenu) {
-            for (const item of category.children) {
-              if (extraId.includes(item.id)) {
-                item.selected = true
-              } else {
-                item.selected = false
-              }
-            }
-          }
-        } else {
-          for (const category of this.extraMenu) {
-            for (const item of category.children) {
-              item.selected = false
-            }
-          }
-        }
-        this.showExtra = !this.showExtra
-      }
-    },
-
-    cancelExtra() {
-      this.showExtra = !this.showExtra
-    },
-    confirmExtra() {
-      const selectedExtraList = []
-      for (const category of this.extraMenu) {
-        for (const item of category.children) {
-          if (item.selected) {
-            selectedExtraList.push({
-              name: category.name + item.name,
-              id: item.id
-            })
-          }
-        }
-      }
-      let food_id = this.selectedFood.id
-      let name = this.selectedFood.name
-      let price = this.selectedFood.price
-      let specs = this.selectedFood.specs
-      let nameWithSpecs = this.selectedFood.nameWithSpecs
-      let extra = selectedExtraList
-      let food = this.selectedFood
-
-      this.ADD_CART({
-        shopid: this.restaurantInfo.restaurantId,
-        food_id,
-        name,
-        price,
-        specs,
-        nameWithSpecs,
-        extra,
-        food
-      })
-
-      this.showExtra = !this.showExtra
-    },
-    async checkout() {
-      if (this.cartList.length) {
-        // PrintHTML(this.cartList, this.totalNum, this.totalPrice)
-        const param = {
-          userName: this.userInfo.username,
-          userId: this.userInfo.userId,
-          restaurantId: this.restaurantInfo.restaurantId,
-          restaurantName: this.restaurantInfo.name,
-          cartId: new Date().valueOf(),
-          totalPrice: this.totalPrice,
-          totalQuantity: this.totalNum,
-          entities: this.cartList,
-          address: 123,
-          description: '测试订单'
-        }
-
-        const result = await placeOrder(param)
-        this.$message({
-          type: 'success',
-          message: result.message
+        .then(async () => {
+          this.RESET_STATE()
+          window.localStorage.clear()
+          this.$router.push('/')
         })
-      } else {
-        window.alert('没有需要打印的')
-      }
+        .catch(() => {})
     },
-    selectExtra(item) {
-      item.selected = !item.selected
+    goToAdminManagement() {
+      this.$router.push('/manage/home')
+    },
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath)
+    },
+
+    toggleFullScreen() {
+      this.isZoomIn = !this.isZoomIn
+      toggleFullScreen()
+    },
+    changeLanguageZh() {
+      this.$i18n.locale = 'zh'
+    },
+    changeLanguageEn() {
+      this.$i18n.locale = 'en'
+    },
+    changeLanguageEs() {
+      this.$i18n.locale = 'es'
     }
   }
 }
 </script>
 
-<style scoped  lang="scss">
-.order-btn {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  text-align: center;
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss">
+@import '../../style/mixin';
+.left-nav {
+  color: #fff;
+  font-size: 10px;
+  height: 100%;
+  width: 100%;
+  background-color: #304156;
+  text-align: left;
+  /* float: left; */
+  /* width: 5%; */
 }
-
-.totalDiv {
-  height: auot;
-  overflow: hidden;
-  text-align: right;
-  font-size: 16px;
-  background-color: #fff;
-  border-bottom: 1px solid #e5e9f2;
-  padding: 10px;
+.iconfont {
+  font-size: 30px;
+  margin-right: 5px;
 }
-.button-container {
-  margin-top: 30px;
+/* .left-nav ul {
+  padding: 0px;
+  margin: 0px;
+} */
+.left-nav li {
+  list-style: none;
+  text-align: left;
+  /* border-bottom: 1px solid #20a0ff; */
+  /* padding: 10px; */
 }
-.tag-container {
-  display: flex;
-  flex-wrap: wrap;
-  .extra-box {
-    width: 15%;
-    height: 40px;
-    border: 1px solid #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 1px 0 1px;
-  }
-  .actived {
-    background-color: #409eff;
-  }
+// .el-menu-vertical-demo {
+//   width: 100%;
+// }
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
 }
-.button {
-  width: 150px;
-  height: 80px;
+// .title {
+//   display: inline-block;
+//   margin-left: 10px;
+// }
+.avator {
+  @include wh(30px, 30px);
+  border-radius: 50%;
 }
-
-//#409EFF
 </style>

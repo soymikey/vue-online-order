@@ -82,8 +82,9 @@ export default {
     async registerButton(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          const username=this.registerForm.username.toLowerCase()
           const result = await registerStaff({
-            username: this.registerForm.username,
+            username,
             password: this.registerForm.password,
             restaurantId: this.userInfo.restaurantId,
             managerId: this.userInfo.userId
