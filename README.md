@@ -28,6 +28,8 @@ yarn run build
 
 
 ## Picture paints thousand words
+## PC端/手机端/平板电脑
+
 ## 前台
 
 #### 首页
@@ -65,3 +67,12 @@ yarn run build
 #### 店铺信息设置
 ![店铺信息设置](./src/assets/screenshots/shopsetup.png)
 
+## 手机端
+
+#### 手机接单页面
+![首页](./src/assets/screenshots/phonescreen.png)
+
+## 平板电脑
+
+#### 平板电脑接单页面
+![首页](./src/assets/screenshots/ipadscreen.png)
