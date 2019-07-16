@@ -4,8 +4,12 @@
 :online-order-system：基于 Vue(2.6) + vuex + vue-router + vue-axios + element-ui + sortablejs + sortablejs + Scss + ES6 等开发一款自适应接单管理系统（手机/平板电脑/PC）
 
 :yum: 项目演示地址：[接单和管理系统](http://pos.migaox.com)，或者可以扫描二维码访问：
- ![](./src/assets/qr.png)
 
+
+![接单和管理系统](./src/assets/qr.png)
+
+__注：此项目纯属个人瞎搞，不用于任何商业用途。__
+后端项目地址： https://github.com/soymikey/online-order-backend-koa2.git
 
 ## Project setup
 ```
