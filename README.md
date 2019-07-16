@@ -30,23 +30,38 @@ yarn run build
 ## Picture paints thousand words
 ## 前台
 
+#### 首页
 ![首页](./src/assets/screenshots/homepage.png)
+#### 订单显示
 ![订单显示](./src/assets/screenshots/orderpad.png)
+#### 中文导航栏
 ![中文导航栏](./src/assets/screenshots/sidebarchinese.png)
+#### 英文导航栏
 ![英文导航栏](./src/assets/screenshots/sidebarenglish.png)
+#### 更多选项
 ![更多选项](./src/assets/screenshots/moreselections.png)
 
 
 ## 后台管理
 
+#### 后台管理首页
 ![后台管理首页](./src/assets/screenshots/adminhomepage.png)
+#### 后台管理导航栏
 ![后台管理导航栏](./src/assets/screenshots/adminsidebar.png)
+#### 可视化数据
 ![可视化数据](./src/assets/screenshots/echart.png)
+#### 员工管理列表
 ![员工管理列表](./src/assets/screenshots/stafflist.png)
+#### 订单列表
 ![订单列表](./src/assets/screenshots/orderlist.png)
+#### 食品列表
 ![食品列表](./src/assets/screenshots/foodlist.png)
+#### 食品列表拖拽
 ![食品列表拖拽](./src/assets/screenshots/foodlist-draggble.png)
+#### 添加食品
 ![添加食品](./src/assets/screenshots/addfood.png)
+#### 管理员信息设置
 ![管理员信息设置](./src/assets/screenshots/adminsetup.png)
+#### 店铺信息设置
 ![店铺信息设置](./src/assets/screenshots/shopsetup.png)
 
