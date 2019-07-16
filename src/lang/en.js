@@ -177,7 +177,9 @@ export default {
     closeAll: 'Close All'
   },
   sidebar: {
-    cashTill: 'CashTill',
+		cashTill: 'CashTill',
+		expand:'Expand',
+		shrink:'Shrink',
     shop: 'Shop',
     store: 'Store',
     memebership: 'Memebership',
@@ -186,7 +188,9 @@ export default {
     language: 'Language',
     chinese: 'Chinese',
     english: 'English',
-    spanish: 'Spanish',
-    exit: 'exit'
+		spanish: 'Spanish',
+		zoomIn:'Full Screen',
+		zoomOut:'Normal Screen',
+    exit: 'Exit'
   }
 }

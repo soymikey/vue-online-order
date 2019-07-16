@@ -1,17 +1,14 @@
 <template>
   <div id="app">
     <!-- <div>{{userInfo}}</div>
-    <div>{{restaurantInfo}}</div> -->
+    <div>{{restaurantInfo}}</div>-->
 
-    <router-view />
-
+    <router-view/>
   </div>
 </template>
 <script>
 export default {
-  data() {
-    return {}
-  },
+  data() {},
   mounted() {},
   computed: {},
   watch: {}

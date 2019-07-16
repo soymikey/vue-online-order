@@ -173,7 +173,9 @@ export default {
     closeAll: '关闭所有'
   },
   sidebar: {
-    cashTill: '收银',
+		cashTill: '收银',
+		expand:'展开',
+		shrink:'收起',
     shop: '店铺',
     store: '商店',
     memebership: '会员',
@@ -183,7 +185,8 @@ export default {
     chinese: '中文',
     english: '英语',
     spanish: '西班牙语',
-
+		zoomIn:'全屏',
+		zoomOut:'正常',
     exit: '退出'
   }
 }

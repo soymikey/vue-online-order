@@ -28,10 +28,13 @@
           class="iconfont"
           :class="isCollapse?'icon-expand':'icon-shrink'"
         ></i>
-        <span
+     <span  v-if="isCollapse"
           slot='title'
           class="title"
-        >{{isCollapse?'展开':'收起'}}</span>
+        >{{$t("sidebar.expand")}}</span> <span v-else
+          slot='title'
+          class="title"
+        >{{$t("sidebar.shrink")}}</span>
       </el-menu-item>
       <el-menu-item index="1">
         <i class="iconfont icon-cash"></i>
@@ -88,7 +91,10 @@
           >{{$t("sidebar.language")}}</span>
         </template>
         <el-menu-item-group>
-          <span slot="title">语言</span>
+           <span
+            slot="title"
+            class="title"
+          >{{$t("sidebar.language")}}</span>
           <el-menu-item
             index="7-1"
             @click="changeLanguageZh"
@@ -112,10 +118,19 @@
           class="iconfont"
           :class="!isZoomIn?'icon-zoom-in':'icon-zoom-out'"
         ></i>
-        <span
+        <!-- <span
           slot='title'
           class="title"
-        >{{!isZoomIn?'放大':'缩小'}}</span>
+        >{{!isZoomIn?'放大':'缩小'}}</span> -->
+
+				<span  v-if="isZoomIn"
+          slot='title'
+          class="title"
+        >{{$t("sidebar.zoomOut")}}</span> <span v-else
+          slot='title'
+          class="title"
+        >{{$t("sidebar.zoomIn")}}</span>
+
       </el-menu-item>
       <el-menu-item
         index="9"

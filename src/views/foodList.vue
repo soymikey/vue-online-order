@@ -42,7 +42,7 @@
         <el-table-column
           align="center"
           label="食品分类"
-          width="150"
+          width="250"
         >
           <template slot-scope="scope">
             <span>{{scope.row.categoryName}}</span>
