@@ -11,6 +11,12 @@
 __注：此项目纯属个人瞎搞，不用于任何商业用途。__
 后端项目地址： https://github.com/soymikey/online-order-backend-koa2.git
 
+## 登录
+```
+用户名： kasasushi 
+密码：123456
+```
+
 ## Project setup
 ```
 yarn install

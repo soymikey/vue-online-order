@@ -9,10 +9,11 @@ let routerMode = 'hash'
 let imgBaseUrl = ''
 
 if (process.env.NODE_ENV === 'development') {
-  imgBaseUrl = 'http://localhost:4000/img/'
+  imgBaseUrl = 'http://pos.migaox.com/img/'
+
 } else if (process.env.NODE_ENV === 'production') {
-  baseUrl = '//test.migaox.com'
-  imgBaseUrl = 'http://test.migaox.com/img/'
+  baseUrl = '//pos.migaox.com'
+  imgBaseUrl = 'http://pos.migaox.com/img/'
 }
 // if (process.env.NODE_ENV === 'development') {
 //   imgBaseUrl = 'http://localhost:4000/img/'

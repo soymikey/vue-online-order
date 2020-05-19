@@ -6,8 +6,8 @@ import { Message } from 'element-ui'
 const instance = axios.create({
   baseURL:
     process.env.NODE_ENV === 'development'
-      ? 'http://127.0.0.1:4000/api'
-      : 'http://test.migaox.com/api', // api的base_url
+      ? 'http://pos.migaox.com/api'
+      : 'http://pos.migaox.com/api', // api的base_url
   timeout: 20000 // 请求超时时间
 })
 
