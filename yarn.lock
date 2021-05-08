@@ -5123,9 +5123,9 @@ lodash.uniq@^4.5.0:
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
 lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0, lodash@~4.17.10:
-  version "4.17.11"
-  resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
-  integrity sha1-s56mIp72B+zYniyN8SU2iRysm40=
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 log-symbols@^2.2.0:
   version "2.2.0"
@@ -8051,11 +8051,6 @@ thunky@^1.0.2:
   resolved "https://registry.npm.taobao.org/thunky/download/thunky-1.0.3.tgz#f5df732453407b09191dae73e2a8cc73f381a826"
   integrity sha1-9d9zJFNAewkZHa5z4qjMc/OBqCY=
 
-time-formater@^1.0.1:
-  version "1.1.2"
-  resolved "https://registry.npm.taobao.org/time-formater/download/time-formater-1.1.2.tgz#08995a4407c5dbca93ea2e9676922186ed298f17"
-  integrity sha1-CJlaRAfF28qT6i6WdpIhhu0pjxc=
-
 timers-browserify@^2.0.4:
   version "2.0.10"
   resolved "https://registry.npm.taobao.org/timers-browserify/download/timers-browserify-2.0.10.tgz#1d28e3d2aadf1d5a5996c4e9f95601cd053480ae"
@@ -8427,11 +8422,6 @@ vm-browserify@0.0.4:
   integrity sha1-XX6kW7755Kb/ZflUOOCofDV9WnM=
   dependencies:
     indexof "0.0.1"
-
-vue-draggable@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.npm.taobao.org/vue-draggable/download/vue-draggable-2.0.2.tgz#301aa1707698fb764044ae22d7c6bcbb878a523f"
-  integrity sha1-MBqhcHaY+3ZARK4i18a8u4eKUj8=
 
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
